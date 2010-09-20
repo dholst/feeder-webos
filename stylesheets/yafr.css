@@ -1,0 +1,30 @@
+.palm-page-header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 50px;
+}
+
+.palm-page-header .center {
+    text-align: center;
+    color: #444;
+    font-size: 20px;
+    padding: 13px 40px;
+}
+
+.palm-page-header .my-right-icon {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 50px;
+    height: 50px;
+}
+
+.palm-page-header .my-left-icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 50px;
+    height: 50px;
+}
+

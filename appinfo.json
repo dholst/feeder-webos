@@ -1,0 +1,9 @@
+{
+	"id": "com.semicolonapps.yafr",
+	"version": "0.0.1",
+	"vendor": "SemicolonApps",
+	"type": "web",
+	"main": "index.html",
+	"title": "Yafr",
+	"icon": "icon.png"
+}
