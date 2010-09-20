@@ -9,6 +9,7 @@ var FeedAssistant = Class.create(BaseAssistant, {
   setup: function($super) {
     $super()
     this.controller.setupWidget("items", {itemTemplate: "feed/item"}, this.feedItems)
+    this.controller.listen("items", Mojo.Event.listTap, this.itemTapped = this.itemTapped.bind(this))
   },
   
   ready: function($super) {
@@ -24,6 +25,7 @@ var FeedAssistant = Class.create(BaseAssistant, {
 
   cleanup: function($super) {
     $super()
+    this.controller.listen("items", Mojo.Event.listTap, this.itemTapped)
   },
     
   foundItems: function(items) {
@@ -31,5 +33,9 @@ var FeedAssistant = Class.create(BaseAssistant, {
     this.feedItems.items.push.apply(this.feedItems.items, items)
     this.controller.modelChanged(this.feedItems)
     this.spinnerOff()
+  },
+  
+  itemTapped: function(event) {
+    this.controller.stageController.pushScene("item", this.google, this.feed, event.item)    
   }
 })

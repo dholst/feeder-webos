@@ -13,5 +13,6 @@
   {"source": "app/assistants/login-assistant.js"},
   {"source": "app/assistants/credentials-assistant.js"},
   {"source": "app/assistants/feeds-assistant.js"},
-  {"source": "app/assistants/feed-assistant.js"}
+  {"source": "app/assistants/feed-assistant.js"},
+  {"source": "app/assistants/item-assistant.js"}
 ]
