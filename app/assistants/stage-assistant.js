@@ -3,7 +3,7 @@ var StageAssistant = Class.create({
     Log.debug("sending metrix data")
     Yafr.Metrix.postDeviceData()
 
-    Log.debug("pushing 'first' scene")
-    this.controller.pushScene("first")
+    Log.debug("pushing 'login' scene")
+    this.controller.pushScene("login")
   }
 })
