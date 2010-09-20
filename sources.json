@@ -1,7 +1,7 @@
 [
-  {"source": "app/models/yafr.js"},
   {"source": "app/models/asyncWrappers.js"},
   {"source": "app/models/metrix.js"},
+  {"source": "app/models/yafr.js"},
 
   {"source": "app/lib/ajax.js"},
   {"source": "app/lib/log.js"},

@@ -1,14 +1,14 @@
 Ajax.Responders.register({
   onCreate: function(request) {
-  	Mojo.Log.info("ajax request started,", request.method, request.url)
+  	Log.debug("ajax request started, " + request.method + " " + request.url)
   },
 
   onComplete: function(request) {
-    Mojo.Log.info("ajax request completed with status code", request.getStatus())
+    Log.debug("ajax request completed with status code " + request.getStatus())
   },
 
   onException: function(request, exception) {
-    Mojo.Log.info("ajax exception -", exception.message)
+    Log.debug("ajax exception - " + exception.message)
   }
 })
 
