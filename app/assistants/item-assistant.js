@@ -13,6 +13,9 @@ var ItemAssistant = Class.create(BaseAssistant, {
   },
   
   cleanUp: function(content) {
-    return content.replace(/<iframe[^>]+>/g, '')
+    var cleaned = content.replace(/<script.*?<\/script.*?>/g , "")
+    cleaned = cleaned.replace(/<iframe.*?<\/iframe.*?>/g , "")
+    cleaned = cleaned.replace(/<object.*?<\/object.*?>/g , "")
+    return cleaned
   }
 })
