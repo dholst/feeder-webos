@@ -1,8 +1,7 @@
-var FeedsAssistant = Class.create(BaseAssistant, {
-  initialize: function($super, google) {
+var MainAssistant = Class.create(BaseAssistant, {
+  initialize: function($super, api) {
     $super()
-    this.google = google
-    this.feeds = {items: []}
+    this.subscriptions = new Subscriptions(api)
   },
   
   setup: function($super) {
