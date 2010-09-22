@@ -27,6 +27,6 @@ var MainAssistant = Class.create(BaseAssistant, {
   },
   
   subscriptionTapped: function(event) {
-    this.controller.stageController.pushScene("feed", event.item)
+    this.controller.stageController.pushScene("subscription", event.item)
   }
 })

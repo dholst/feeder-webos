@@ -1,0 +1,44 @@
+var SubscriptionAssistant = Class.create(BaseAssistant, {
+  initialize: function($super, subscription) {
+    $super()
+    this.subscription = subscription
+  },
+  
+  setup: function($super) {
+    $super()
+    this.controller.setupWidget("articles", {itemTemplate: "subscription/article"}, this.subscription)
+    this.controller.listen("articles", Mojo.Event.listTap, this.articleTapped = this.articleTapped.bind(this))
+  },
+  
+  ready: function($super) {
+    $super()
+    this.controller.get("header").update(this.subscription.title)
+    this.findArticles()
+  },
+  
+  cleanup: function($super) {
+    $super()
+    this.controller.listen("articles", Mojo.Event.listTap, this.articleTapped)
+  },
+    
+  foundArticles: function() {
+    var articles = this.controller.get("articles")
+    articles.mojo.noticeUpdatedItems(0, this.subscription.items)
+    articles.mojo.setLength(this.subscription.items.length)
+    this.spinnerOff()
+  },
+  
+  articleTapped: function(event) {
+    if(event.item.load_more) {
+      this.findArticles()
+    }
+    else {
+      this.controller.stageController.pushScene("article", event.item)
+    }
+  },
+  
+  findArticles: function() {
+    this.spinnerOn("retrieving articles...")
+    this.subscription.findArticles(this.foundArticles.bind(this), this.bail.bind(this))
+  }
+})

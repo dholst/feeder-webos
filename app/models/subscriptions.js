@@ -9,7 +9,7 @@ var Subscriptions = Class.create({
       this.items.clear()
       
       subscriptions.each(function(subscriptionData) {
-        this.items.push(new Subscription(subscriptionData))
+        this.items.push(new Subscription(this.api, subscriptionData))
       }.bind(this))
       
       this.addUnreadCounts(success, failure)

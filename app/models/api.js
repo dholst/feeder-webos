@@ -34,13 +34,22 @@ var Api = Class.create({
     })
   },
   
-  getAllSubscriptionItems: function(subscription, success, failure) {
-    new Ajax.Request(Api.BASE_URL + "stream/contents/" + subscription.id, {
+  getAllArticlesFor: function(id, continuation, success, failure) {
+    var parameters = {output: "json", n: 50, r: "o", xt: "user/-/state/com.google/read"}
+    
+    if(continuation) {
+      parameters.c = continuation
+    }
+    
+    new Ajax.Request(Api.BASE_URL + "stream/contents/" + id, {
       method: "get",
-      parameters: {output: "json", n: 200, r: "o", xt: "user/-/state/com.google/read"},
+      parameters: parameters,
       requestHeaders: {Authorization:"GoogleLogin auth=" + this.auth},
-      onSuccess: function(response) {success(new Articles(response.responseText.evalJSON()))},
-      onFailure: failure
+      onFailure: failure,
+      onSuccess: function(response) {
+        var articles = response.responseText.evalJSON()
+        success(articles.items, articles.continuation)
+      }
     })
   }
 })
