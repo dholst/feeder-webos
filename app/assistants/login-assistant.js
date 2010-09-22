@@ -2,7 +2,7 @@ var LoginAssistant = Class.create(BaseAssistant, {
   initialize: function($super, credentials) {
     $super()
     this.credentials = credentials || new Credentials()
-    this.google = new Google()
+    this.api = new Api()
   },
   
   activate: function($super) {
@@ -11,7 +11,7 @@ var LoginAssistant = Class.create(BaseAssistant, {
     if(this.credentials.email) {
       Log.debug("logging in as " + this.credentials.email)
       this.spinnerOn("logging in...")
-      this.google.login(this.credentials, this.loginSuccess.bind(this), this.loginFailure.bind(this))
+      this.api.login(this.credentials, this.loginSuccess.bind(this), this.loginFailure.bind(this))
     }
     else {
       Log.debug("no credentials found")
@@ -20,21 +20,11 @@ var LoginAssistant = Class.create(BaseAssistant, {
   },
   
   loginSuccess: function() {
-    try {
-      this.credentials.save()
-      this.controller.stageController.swapScene("feeds", this.google)
-    }
-    catch(e) {
-      console.log("WTF?")
-    }
+    this.credentials.save()
+    this.controller.stageController.swapScene("main", this.api)
   },
 
   loginFailure: function() {
-    try {
-      this.controller.stageController.swapScene("credentials", this.credentials, true)
-    }
-    catch(e) {
-      console.log("WTF?")
-    }
+    this.controller.stageController.swapScene("credentials", this.credentials, true)
   }  
 })

@@ -20,10 +20,7 @@ var Api = Class.create({
       parameters: {output: "json"},
       requestHeaders: {Authorization:"GoogleLogin auth=" + this.auth},
       onFailure: failure,
-      onSuccess: function(response) {
-        var subscriptions = new Subscriptions(this, response.responseText.evalJSON())
-        subscriptions.addUnreadCounts(success, failure)
-      }.bind(this)
+      onSuccess: function(response) {success(response.responseText.evalJSON().subscriptions)}
     })
   },
 
@@ -33,9 +30,7 @@ var Api = Class.create({
       parameters: {output: "json"},
       requestHeaders: {Authorization:"GoogleLogin auth=" + this.auth},
       onFailure: failure,
-      onSuccess: function(response) {
-        success(response.responseText.evalJSON().unreadcounts)
-      },
+      onSuccess: function(response) {success(response.responseText.evalJSON().unreadcounts)}
     })
   },
   
@@ -44,7 +39,7 @@ var Api = Class.create({
       method: "get",
       parameters: {output: "json", n: 200, r: "o", xt: "user/-/state/com.google/read"},
       requestHeaders: {Authorization:"GoogleLogin auth=" + this.auth},
-      onSuccess: function(response) {success(new Articles(response.responseText.evalJSON())},
+      onSuccess: function(response) {success(new Articles(response.responseText.evalJSON()))},
       onFailure: failure
     })
   }

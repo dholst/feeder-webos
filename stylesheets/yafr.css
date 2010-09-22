@@ -28,16 +28,16 @@
   height: 50px;
 }
 
-#feeds .feed-title {
-  width: 245px;
+.subscription .title {
+  width: 235px;
   margin-right: 0;
   padding-right: 0;
   float: left;
   font-weight: bold;
 }
 
-#feeds .feed-count {
-  width: 45px;
+.subscription .count {
+  width: 40px;
   text-align: right;
   float: right;
   margin-left: 0;
