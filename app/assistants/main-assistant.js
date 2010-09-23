@@ -1,32 +1,43 @@
 var MainAssistant = Class.create(BaseAssistant, {
   initialize: function($super, api) {
     $super()
-    this.subscriptions = new Subscriptions(api)
+    this.sources = new AllSources(api)
   },
   
   setup: function($super) {
     $super()
-    this.controller.setupWidget("subscriptions", {itemTemplate: "main/subscription"}, this.subscriptions)
-    this.controller.listen("subscriptions", Mojo.Event.listTap, this.feedTapped = this.subscriptionTapped.bind(this))
+    
+    var listAttributes = {
+      itemTemplate: "main/source",
+      dividerTemplate: "main/divider",
+  		dividerFunction: this.divide
+    }
+    
+    this.controller.setupWidget("sources", listAttributes, this.sources)
+    this.controller.listen("sources", Mojo.Event.listTap, this.sourceTapped = this.sourceTapped.bind(this))
   },
   
   cleanup: function($super) {
     $super()
-    this.controller.stopListening("subscriptions", Mojo.Event.listTap, this.subscriptionTapped)
+    this.controller.stopListening("sources", Mojo.Event.listTap, this.sourceTapped)
   },
   
   activate: function($super) {
     $super()
-    this.spinnerOn("retrieving subscriptions...")
-    this.subscriptions.findAll(this.foundSubscriptions.bind(this), this.bail.bind(this))
+    this.spinnerOn()
+    this.sources.findAll(this.foundEm.bind(this), this.bail.bind(this))
   },
   
-  foundSubscriptions: function(feeds) {
-    this.controller.modelChanged(this.subscriptions)
+  foundEm: function(feeds) {
+    this.controller.modelChanged(this.sources)
     this.spinnerOff()
   },
   
-  subscriptionTapped: function(event) {
+  sourceTapped: function(event) {
     this.controller.stageController.pushScene("subscription", event.item)
+  },
+  
+  divide: function(source) {
+    return source.divideBy
   }
 })

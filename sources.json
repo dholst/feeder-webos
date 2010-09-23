@@ -8,6 +8,7 @@
   {"source": "app/models/subscription.js"},
   {"source": "app/models/subscriptions.js"},
   {"source": "app/models/load-more.js"},
+  {"source": "app/models/all-sources.js"},
 
   {"source": "app/lib/ajax.js"},
   {"source": "app/lib/log.js"},
