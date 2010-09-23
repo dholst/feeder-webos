@@ -28,19 +28,29 @@
   height: 50px;
 }
 
+.palm-row .rss {
+  height: 50px;
+  width: 40px;
+  background: url(../images/rss.png) center center no-repeat;
+}
+
+.subscription-title, .subscription-count {
+  font-size: 15px;
+  color: #666;
+  margin: 0px 10px;
+  padding: 0;
+  line-height: 50px;
+}
+
 .subscription-title {
-  width: 220px;
-  margin-right: 0;
-  padding-right: 0;
   float: left;
+  width: 200px;
 }
 
 .subscription-count {
+  float: right;
   width: 40px;
   text-align: right;
-  float: right;
-  margin-left: 0;
-  padding-left: 0;
 }
 
 .not-read {
