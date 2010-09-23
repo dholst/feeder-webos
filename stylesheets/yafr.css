@@ -28,19 +28,21 @@
   height: 50px;
 }
 
-.subscription .title {
-  width: 235px;
+.subscription-title {
+  width: 220px;
   margin-right: 0;
   padding-right: 0;
   float: left;
-  font-weight: bold;
 }
 
-.subscription .count {
+.subscription-count {
   width: 40px;
   text-align: right;
   float: right;
   margin-left: 0;
   padding-left: 0;
+}
+
+.not-read {
   font-weight: bold;
 }

@@ -21,15 +21,17 @@ var Subscriptions = Class.create({
   addUnreadCounts: function(success, failure) {
     var onSuccess = function(counts) {
       this.items.each(function(item){
+        item.klass = "read"
+        
         counts.each(function(count) {
           if(item.id == count.id) {
-            item.unreadCount = count.count
+            item.setUnreadCount(count.count)
             return
           }
         })
       })
       
-      this.filterItems()
+      // this.filterItems()
       success()
     }.bind(this)
     

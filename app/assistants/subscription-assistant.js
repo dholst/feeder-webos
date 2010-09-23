@@ -6,7 +6,14 @@ var SubscriptionAssistant = Class.create(BaseAssistant, {
   
   setup: function($super) {
     $super()
-    this.controller.setupWidget("articles", {itemTemplate: "subscription/article"}, this.subscription)
+    
+    var listAttributes = {
+      itemTemplate: "subscription/article",
+      dividerTemplate: "subscription/divider",
+  		dividerFunction: this.divide
+    }
+    
+    this.controller.setupWidget("articles", listAttributes, this.subscription)
     this.controller.listen("articles", Mojo.Event.listTap, this.articleTapped = this.articleTapped.bind(this))
   },
   
@@ -40,5 +47,9 @@ var SubscriptionAssistant = Class.create(BaseAssistant, {
   findArticles: function() {
     this.spinnerOn("retrieving articles...")
     this.subscription.findArticles(this.foundArticles.bind(this), this.bail.bind(this))
+  },
+  
+  divide: function(article) {
+    return article.sortDate
   }
 })

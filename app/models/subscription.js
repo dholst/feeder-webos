@@ -5,7 +5,13 @@ var Subscription = Class.create({
     this.title = data.title
     this.unreadCount = 0
     this.continuation = false
+    this.klass = "read"
     this.items = []
+  },
+  
+  setUnreadCount: function(count) {
+    this.unreadCount = count
+    this.klass = this.unreadCount ? "not-read" : "read"
   },
   
   findArticles: function(success, failure) {
