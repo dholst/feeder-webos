@@ -1,53 +1,37 @@
 var AllSources = Class.create({
   initialize: function(api) {
+    this.items = []
     this.allArticles = new AllArticles(api)
     this.starred = new Starred(api)
     this.subscriptions = new Subscriptions(api)
-    
-    this.items = []
+    this.resetItems()
+  },
+  
+  resetItems: function() {
+    this.items.clear()
+    this.items.push(this.allArticles)
+    this.items.push(this.starred)
   },
   
   findAll: function(success, failure) {
-    this.items.clear()
     this.success = success
     this.failure = failure
-    this.findAllSubscriptions()
-  },
-  
-  findAllSubscriptions: function() {
+    this.resetItems()
     this.subscriptions.findAll(this.foundSubscriptions.bind(this), this.failure)
   },
   
   foundSubscriptions: function() {
-    this.subscriptions.items.each(function(subscription) {
-      subscription.divideBy = "Subscriptions"
-      subscription.icon = "rss"
-      this.items.push(subscription)
-    }.bind(this))
-
-    this.addStarredItem()
-  },
-  
-  addStarredItem: function() {
-    this.starred.icon = "star"
-    this.items.unshift(this.starred)
-    this.addAllArticlesItem()
-  },
-    
-  addAllArticlesItem: function() {
-    this.allArticles.icon = "list"
+    var items = this.items    
+    this.subscriptions.folders.items.each(function(folder) {items.push(folder)})
+    this.subscriptions.items.each(function(subscription) {items.push(subscription)})
     this.allArticles.unreadCount = this.subscriptions.unreadCount
-    this.items.unshift(this.allArticles)
-    this.addFolders()
+    this.filterReadItems()
+    this.success()
   },
   
-  addFolders: function() {
-    this.subscriptions.folders.items.each(function(folder) {
-      folder.divideBy = "Folders"
-      folder.icon = "folder"
-      this.items.push(folder)
-    }.bind(this))
-
-    this.success()
+  filterReadItems: function() {
+    var filtered = $A(this.items).select(function(item){return item.sticky || item.unreadCount})
+    this.items.clear()
+    this.items.push.apply(this.items, filtered)    
   }
 }) 

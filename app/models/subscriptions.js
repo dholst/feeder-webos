@@ -52,16 +52,9 @@ var Subscriptions = Class.create({
         }
       }.bind(this))
       
-      this.filterItems()
       success()
     }.bind(this)
     
     this.api.getUnreadCounts(onSuccess, failure)
-  },
-  
-  filterItems: function() {
-    var filtered = $A(this.items).select(function(item){return item.unreadCount})
-    this.items.clear()
-    this.items.push.apply(this.items, filtered)
   }
 })

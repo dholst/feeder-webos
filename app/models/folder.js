@@ -2,6 +2,8 @@ var Folder = Class.create({
   initialize: function(title, id) {
     this.id = id
     this.title = title
+    this.icon = "folder"
+    this.divideBy = "Folder"
     this.unreadCount = 0
     this.items = []
   },

@@ -30,7 +30,9 @@ var MainAssistant = Class.create(BaseAssistant, {
   },
   
   foundEm: function(feeds) {
-    this.controller.modelChanged(this.sources)
+    var sources = this.controller.get("sources")
+    sources.mojo.noticeUpdatedItems(0, this.sources.items)
+    sources.mojo.setLength(this.sources.items.length)
     this.spinnerOff()
   },
   
