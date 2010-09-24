@@ -2,6 +2,7 @@ var Subscriptions = Class.create({
   initialize: function(api) {
     this.api = api
     this.items = []
+    this.unreadCount = 0
   },
   
   findAll: function(success, failure) {
@@ -23,11 +24,12 @@ var Subscriptions = Class.create({
       this.items.each(function(item){
         counts.each(function(count) {
           if(item.id == count.id) {
-            item.setUnreadCount(count.count)
+            item.unreadCount = count.count
+            this.unreadCount += count.count
             return
           }
-        })
-      })
+        }.bind(this))
+      }.bind(this))
       
       this.filterItems()
       success()

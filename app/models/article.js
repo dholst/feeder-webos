@@ -3,7 +3,6 @@ var Article = Class.create({
     this.title = data.title
     this.summary = this.cleanUp(data.summary.content)
     this.setReadState(data.categories)
-    this.klass = this.isRead ? "read" : "not-read"
     this.setDates(parseInt(data.crawlTimeMsec))
   },
   

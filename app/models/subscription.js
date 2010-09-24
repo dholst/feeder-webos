@@ -8,11 +8,6 @@ var Subscription = Class.create({
     this.items = []
   },
   
-  setUnreadCount: function(count) {
-    this.unreadCount = count
-    this.klass = this.unreadCount ? "not-read" : "read"
-  },
-  
   findArticles: function(success, failure) {
     var onSuccess = function(articles, continuation) {
       Log.debug("continuation token is " + continuation)

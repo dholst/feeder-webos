@@ -1,17 +1,3 @@
-/*.palm-divider.labeled .left {
-  background: url(../images/divider-line.png) no-repeat 100% 50%;
-}
-
-.palm-divider.labeled .right {
-  background: url(../images/divider-line.png) no-repeat 0% 50%;
-}
-
-.palm-divider.labeled .label {
-  color: #555;
-}
-*/
-
-
 .palm-page-header {
   position: fixed;
   top: 0;
@@ -88,6 +74,6 @@
   text-align: right;
 }
 
-.not-read {
+.unread {
   font-weight: bold;
 }

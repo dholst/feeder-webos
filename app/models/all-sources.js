@@ -4,32 +4,13 @@ var AllSources = Class.create({
     this.starred = new Starred(api)
     this.subscriptions = new Subscriptions(api)
     this.folders = new Folders(api)
+    this.items = []
   },
   
   findAll: function(success, failure) {
-    this.items = []
+    this.items.clear()
     this.success = success
     this.failure = failure
-    this.findAllArticles()
-  },
-  
-  findAllArticles: function() {
-    this.foundAllArticles()
-  },
-  
-  foundAllArticles: function() {
-    this.allArticles.icon = "list"
-    this.items.push(this.allArticles)
-    this.findAllStarred()
-  },
-  
-  findAllStarred: function() {
-    this.foundAllStarred()
-  },
-  
-  foundAllStarred: function() {
-    this.starred.icon = "star"
-    this.items.push(this.starred)
     this.findAllSubscriptions()
   },
   
@@ -44,6 +25,19 @@ var AllSources = Class.create({
       this.items.push(subscription)
     }.bind(this))
 
+    this.addStarredItem()
+  },
+  
+  addStarredItem: function() {
+    this.starred.icon = "star"
+    this.items.unshift(this.starred)
+    this.addAllArticlesItem()
+  },
+    
+  addAllArticlesItem: function() {
+    this.allArticles.icon = "list"
+    this.allArticles.unreadCount = this.subscriptions.unreadCount
+    this.items.unshift(this.allArticles)
     this.findAllFolders()
   },
   

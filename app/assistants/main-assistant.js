@@ -10,7 +10,8 @@ var MainAssistant = Class.create(BaseAssistant, {
     var listAttributes = {
       itemTemplate: "main/source",
       dividerTemplate: "main/divider",
-  		dividerFunction: this.divide
+  		dividerFunction: this.divide,
+  		onItemRendered: this.itemRendered
     }
     
     this.controller.setupWidget("sources", listAttributes, this.sources)
@@ -22,7 +23,7 @@ var MainAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("sources", Mojo.Event.listTap, this.sourceTapped)
   },
   
-  activate: function($super) {
+  ready: function($super) {
     $super()
     this.spinnerOn()
     this.sources.findAll(this.foundEm.bind(this), this.bail.bind(this))
@@ -39,5 +40,11 @@ var MainAssistant = Class.create(BaseAssistant, {
   
   divide: function(source) {
     return source.divideBy
+  },
+  
+  itemRendered: function(listWidget, itemModel, itemNode) {
+    if(itemModel.unreadCount) {
+      $(itemNode).addClassName("unread")
+    }
   }
 })
