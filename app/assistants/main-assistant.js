@@ -37,7 +37,12 @@ var MainAssistant = Class.create(BaseAssistant, {
   },
   
   sourceTapped: function(event) {
-    this.controller.stageController.pushScene("subscription", event.item)
+    if(event.item.constructor == Folder) {
+      this.controller.stageController.pushScene("folder", event.item)
+    }
+    else {
+      this.controller.stageController.pushScene("articles", event.item)
+    }
   },
   
   divide: function(source) {

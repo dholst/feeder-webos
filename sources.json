@@ -5,6 +5,7 @@
   {"source": "app/models/credentials.js"},
   {"source": "app/models/api.js"},
   {"source": "app/models/article.js"},
+  {"source": "app/models/article-container.js"},
   {"source": "app/models/subscription.js"},
   {"source": "app/models/subscriptions.js"},
   {"source": "app/models/load-more.js"},
@@ -22,6 +23,7 @@
   {"source": "app/assistants/login-assistant.js"},
   {"source": "app/assistants/credentials-assistant.js"},
   {"source": "app/assistants/main-assistant.js"},
-  {"source": "app/assistants/subscription-assistant.js"},
-  {"source": "app/assistants/article-assistant.js"}
+  {"source": "app/assistants/articles-assistant.js"},
+  {"source": "app/assistants/article-assistant.js"},
+  {"source": "app/assistants/folder-assistant.js"}
 ]

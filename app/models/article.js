@@ -1,7 +1,8 @@
 var Article = Class.create({
   initialize: function(data) {
     this.title = data.title
-    this.summary = this.cleanUp(data.summary.content)
+    var content = data.content || data.summary
+    this.summary = this.cleanUp(content.content)
     this.setReadState(data.categories)
     this.setDates(parseInt(data.crawlTimeMsec))
   },

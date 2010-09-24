@@ -34,7 +34,19 @@ var Api = Class.create({
     })
   },
   
+  getAllArticles: function(continuation, success, failure) {
+    this._getArticles("user/-/state/com.google/reading-list", continuation, success, failure)
+  },
+  
+  getAllStarred: function(continuation, success, failure) {
+    this._getArticles("user/-/state/com.google/starred", continuation, success, failure)
+  },
+  
   getAllArticlesFor: function(id, continuation, success, failure) {
+    this._getArticles(id, continuation, success, failure)
+  },
+  
+  _getArticles: function(id, continuation, success, failure) {
     var parameters = {output: "json", n: 50, r: "o", xt: "user/-/state/com.google/read"}
     
     if(continuation) {

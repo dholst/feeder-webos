@@ -1,9 +1,13 @@
-var AllArticles = Class.create({
-  initialize: function(api, unreadCount) {
-    this.api = api
+var AllArticles = Class.create(ArticleContainer, {
+  initialize: function($super, api) {
+    $super(api)
     this.title = "All Items"
     this.icon = "list"
     this.sticky = true
-    this.unreadCount = unreadCount
+    this.unreadCount = 0
+  },
+
+  makeApiCall: function(continuation, success, failure) {
+    this.api.getAllArticles(continuation, success, failure)
   }
 })

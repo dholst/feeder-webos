@@ -1,4 +1,4 @@
-var SubscriptionAssistant = Class.create(BaseAssistant, {
+var ArticlesAssistant = Class.create(BaseAssistant, {
   initialize: function($super, subscription) {
     $super()
     this.subscription = subscription
@@ -8,8 +8,8 @@ var SubscriptionAssistant = Class.create(BaseAssistant, {
     $super()
     
     var listAttributes = {
-      itemTemplate: "subscription/article",
-      dividerTemplate: "subscription/divider",
+      itemTemplate: "articles/article",
+      dividerTemplate: "articles/divider",
   		dividerFunction: this.divide
     }
     
