@@ -10,7 +10,8 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     var listAttributes = {
       itemTemplate: "articles/article",
       dividerTemplate: "articles/divider",
-  		dividerFunction: this.divide
+  		dividerFunction: this.divide,
+  		onItemRendered: this.itemRendered
     }
     
     this.controller.setupWidget("articles", listAttributes, this.subscription)
@@ -51,5 +52,11 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
   
   divide: function(article) {
     return article.sortDate
+  },
+  
+  itemRendered: function(listWidget, itemModel, itemNode) {
+    if(!itemModel.isRead) {
+      $(itemNode).addClassName("unread")
+    }
   }
 })
