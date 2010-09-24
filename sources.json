@@ -9,6 +9,10 @@
   {"source": "app/models/subscriptions.js"},
   {"source": "app/models/load-more.js"},
   {"source": "app/models/all-sources.js"},
+  {"source": "app/models/all-articles.js"},
+  {"source": "app/models/starred.js"},
+  {"source": "app/models/folders.js"},
+  {"source": "app/models/folder.js"},
 
   {"source": "app/lib/ajax.js"},
   {"source": "app/lib/log.js"},

@@ -1,3 +1,15 @@
+.palm-divider.labeled .left {
+  background: url(../images/divider-line.png) no-repeat 100% 50%;
+}
+
+.palm-divider.labeled .right {
+  background: url(../images/divider-line.png) no-repeat 0% 50%;
+}
+
+.palm-divider.labeled .label {
+  color: #555;
+}
+
 .palm-page-header {
   position: fixed;
   top: 0;
@@ -30,8 +42,26 @@
 
 .palm-row .rss {
   height: 50px;
-  width: 40px;
-  background: url(../images/rss.png) center center no-repeat;
+  width: 30px;
+  background: url(../images/rss-grey.png) center center no-repeat;
+}
+
+.palm-row .folder {
+  height: 50px;
+  width: 30px;
+  background: url(../images/folder-grey.png) center center no-repeat;
+}
+
+.palm-row .star {
+  height: 50px;
+  width: 30px;
+  background: url(../images/starred-grey.png) center center no-repeat;
+}
+
+.palm-row .list {
+  height: 50px;
+  width: 30px;
+  background: url(../images/list.png) center center no-repeat;
 }
 
 .subscription-title, .subscription-count {
@@ -44,7 +74,8 @@
 
 .subscription-title {
   float: left;
-  width: 200px;
+  width: 210px;
+  margin-left: 5px;
 }
 
 .subscription-count {

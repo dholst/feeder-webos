@@ -5,7 +5,6 @@ var Subscription = Class.create({
     this.title = data.title
     this.unreadCount = 0
     this.continuation = false
-    this.klass = "read"
     this.items = []
   },
   
