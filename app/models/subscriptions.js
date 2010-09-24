@@ -1,6 +1,7 @@
 var Subscriptions = Class.create({
   initialize: function(api) {
     this.api = api
+    this.folders = new Folders(api)
     this.items = []
     this.unreadCount = 0
   },
@@ -10,7 +11,12 @@ var Subscriptions = Class.create({
       this.items.clear()
       
       subscriptions.each(function(subscriptionData) {
-        this.items.push(new Subscription(this.api, subscriptionData))
+        if(subscriptionData.categories && subscriptionData.categories.length) {
+          this.addSubscriptionToFolders(subscriptionData)
+        }
+        else {
+          this.items.push(new Subscription(this.api, subscriptionData))          
+        }
       }.bind(this))
       
       this.addUnreadCounts(success, failure)
@@ -19,16 +25,31 @@ var Subscriptions = Class.create({
     this.api.getAllSubscriptions(onSuccess, failure)
   },
   
+  addSubscriptionToFolders: function(subscriptionData) {
+    var subscription = new Subscription(this.api, subscriptionData)
+    
+    subscriptionData.categories.each(function(category) {
+      if(category.label) {
+        this.folders.addSubscription(category.id, category.label, subscription)
+      }
+    }.bind(this))
+  },
+  
   addUnreadCounts: function(success, failure) {
     var onSuccess = function(counts) {
-      this.items.each(function(item){
-        counts.each(function(count) {
-          if(item.id == count.id) {
-            item.unreadCount = count.count
-            this.unreadCount += count.count
-            return
-          }
-        }.bind(this))
+      counts.each(function(count) {
+        if(count.id.startsWith("feed")) {
+          this.unreadCount += count.count
+
+          this.items.each(function(item) {
+            if(item.id == count.id) {
+              item.unreadCount = count.count
+            }
+          })
+
+          this.folders.addUnreadCounts(count)
+          
+        }
       }.bind(this))
       
       this.filterItems()

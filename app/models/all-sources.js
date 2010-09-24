@@ -3,7 +3,7 @@ var AllSources = Class.create({
     this.allArticles = new AllArticles(api)
     this.starred = new Starred(api)
     this.subscriptions = new Subscriptions(api)
-    this.folders = new Folders(api)
+    
     this.items = []
   },
   
@@ -38,15 +38,11 @@ var AllSources = Class.create({
     this.allArticles.icon = "list"
     this.allArticles.unreadCount = this.subscriptions.unreadCount
     this.items.unshift(this.allArticles)
-    this.findAllFolders()
+    this.addFolders()
   },
   
-  findAllFolders: function() {
-    this.folders.findAll(this.foundFolders.bind(this), this.failure)
-  },
-  
-  foundFolders: function() {
-    this.folders.items.each(function(folder) {
+  addFolders: function() {
+    this.subscriptions.folders.items.each(function(folder) {
       folder.divideBy = "Folders"
       folder.icon = "folder"
       this.items.push(folder)

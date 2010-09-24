@@ -4,9 +4,20 @@ var Folders = Class.create({
     this.items = []
   },
   
-  findAll: function(success, failure) {
-    this.items.push(new Folder("Test folder 1", 78))
-    this.items.push(new Folder("Test folder 2", 87))
-    success()
+  addSubscription: function(id, label, subscription) {
+    var folder = this.items.find(function(f) {return f.id == id})
+    
+    if(!folder) {
+      folder = new Folder(label, id)
+      this.items.push(folder)
+    }
+    
+    folder.items.push(subscription)
+  },
+  
+  addUnreadCounts: function(count) {
+    this.items.each(function(item) {
+      item.addUnreadCounts(count)
+    })
   }
 })
