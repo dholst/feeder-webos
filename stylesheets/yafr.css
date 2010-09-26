@@ -2,6 +2,10 @@ body {
   background-color: #e6e3de !important;
 }
 
+.hide-divider {
+  display: none;
+}
+
 .palm-row {
   background-image: url(../images/list-separator.png);
 }
@@ -28,7 +32,8 @@ body {
 
 .palm-page-header .center {
   text-align: center;
-  color: #e4e4e4;
+  color: #fff;
+  font-weight: bold;
   font-size: 20px;
   padding: 13px 40px;
   background: url(../images/gradient.png) repeat-x;
@@ -107,6 +112,6 @@ body {
 #small-spinner {
   position: fixed;
   z-index: 99999;
-  top: 10px;
-  right: 10px;
+  top: 8px;
+  right: 9px;
 }

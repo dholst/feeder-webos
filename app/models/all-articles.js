@@ -5,6 +5,8 @@ var AllArticles = Class.create(ArticleContainer, {
     this.icon = "list"
     this.sticky = true
     this.unreadCount = 0
+    this.divideBy = "Home"
+    this.hideDivider = "hide-divider"
   },
 
   makeApiCall: function(continuation, success, failure) {
