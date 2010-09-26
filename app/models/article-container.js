@@ -5,6 +5,11 @@ var ArticleContainer = Class.create({
     this.items = [] 
   },
 
+  reset: function() {
+    this.items.clear()
+    this.continuation = false
+  },
+  
   findArticles: function(success, failure) {
     var onSuccess = function(articles, continuation) {
       Log.debug("continuation token is " + continuation)

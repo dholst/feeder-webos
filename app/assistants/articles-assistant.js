@@ -2,6 +2,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
   initialize: function($super, subscription) {
     $super()
     this.subscription = subscription
+    this.subscription.reset()
   },
   
   setup: function($super) {
@@ -28,7 +29,12 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     $super()
     this.controller.listen("articles", Mojo.Event.listTap, this.articleTapped)
   },
-    
+
+  findArticles: function() {
+    this.smallSpinnerOn()
+    this.subscription.findArticles(this.foundArticles.bind(this), this.bail.bind(this))
+  },
+      
   foundArticles: function() {
     var articles = this.controller.get("articles")
     articles.mojo.noticeUpdatedItems(0, this.subscription.items)
@@ -43,11 +49,6 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     else {
       this.controller.stageController.pushScene("article", event.item)
     }
-  },
-  
-  findArticles: function() {
-    this.smallSpinnerOn()
-    this.subscription.findArticles(this.foundArticles.bind(this), this.bail.bind(this))
   },
   
   divide: function(article) {
