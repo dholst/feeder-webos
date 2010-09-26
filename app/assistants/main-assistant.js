@@ -16,24 +16,25 @@ var MainAssistant = Class.create(BaseAssistant, {
     
     this.controller.setupWidget("sources", listAttributes, this.sources)
     this.controller.listen("sources", Mojo.Event.listTap, this.sourceTapped = this.sourceTapped.bind(this))
+    this.controller.listen("refresh", Mojo.Event.tap, this.refresh = this.refresh.bind(this))
   },
   
   cleanup: function($super) {
     $super()
     this.controller.stopListening("sources", Mojo.Event.listTap, this.sourceTapped)
+    this.controller.stopListening("refresh", Mojo.Event.tap, this.refresh)
   },
   
   ready: function($super) {
     $super()
-    this.spinnerOn()
-    this.sources.findAll(this.foundEm.bind(this), this.bail.bind(this))
+    this.refresh()
   },
   
   foundEm: function(feeds) {
     var sources = this.controller.get("sources")
     sources.mojo.noticeUpdatedItems(0, this.sources.items)
     sources.mojo.setLength(this.sources.items.length)
-    this.spinnerOff()
+    this.smallSpinnerOff()
   },
   
   sourceTapped: function(event) {
@@ -53,5 +54,10 @@ var MainAssistant = Class.create(BaseAssistant, {
     if(itemModel.unreadCount) {
       $(itemNode).addClassName("unread")
     }
+  },
+  
+  refresh: function() {
+    this.smallSpinnerOn()
+    this.sources.findAll(this.foundEm.bind(this), this.bail.bind(this))
   }
 })

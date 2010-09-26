@@ -1,9 +1,11 @@
 var BaseAssistant = Class.create({
   initialize: function() {
+    this.smallSpinner = {spinning: false}
   },
 
   setup: function() {
     this.controller.setupWidget("spinner", {spinnerSize: Mojo.Widget.spinnerLarge}, {})
+    this.controller.setupWidget("small-spinner", {spinnerSize: "small"}, this.smallSpinner)
   },
 
   ready: function() {
@@ -20,6 +22,28 @@ var BaseAssistant = Class.create({
   },
 
   cleanup: function() {
+  },
+
+  smallSpinnerOn: function() {
+    this.hideRefreshButton()
+    this.smallSpinner.spinning = true
+    this.controller.modelChanged(this.smallSpinner)    
+  },
+  
+  smallSpinnerOff: function() {
+    this.smallSpinner.spinning = false
+    this.controller.modelChanged(this.smallSpinner)
+    this.showRefreshButton()
+  },
+  
+  hideRefreshButton: function() {
+    var button = this.controller.get("refresh")
+    if(button) button.hide()
+  },
+  
+  showRefreshButton: function() {
+    var button = this.controller.get("refresh")
+    if(button) button.show()
   },
   
   spinnerOn: function(message) {

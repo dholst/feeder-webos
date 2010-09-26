@@ -3,6 +3,10 @@ var Folders = Class.create({
     this.api = api
     this.items = []
   },
+
+  clear: function() {
+    this.items.clear()
+  },
   
   addSubscription: function(id, label, subscription) {
     var folder = this.items.find(function(f) {return f.id == id})

@@ -33,7 +33,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     var articles = this.controller.get("articles")
     articles.mojo.noticeUpdatedItems(0, this.subscription.items)
     articles.mojo.setLength(this.subscription.items.length)
-    this.spinnerOff()
+    this.smallSpinnerOff()
   },
   
   articleTapped: function(event) {
@@ -46,7 +46,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
   },
   
   findArticles: function() {
-    this.spinnerOn("retrieving articles...")
+    this.smallSpinnerOn()
     this.subscription.findArticles(this.foundArticles.bind(this), this.bail.bind(this))
   },
   

@@ -1,3 +1,24 @@
+body {
+  background-color: #e6e3de !important;
+}
+
+.palm-row {
+  background-image: url(../images/list-separator.png);
+}
+
+.palm-divider.labeled .left {
+  background: url(../images/divider-line.png) no-repeat 100% 60%;
+}
+
+.palm-divider.labeled .right {
+  background: url(../images/divider-line.png) no-repeat 0% 60%;
+}
+
+.palm-divider .label {
+  color: #999;
+  text-transform: none;
+}
+
 .palm-page-header {
   position: fixed;
   top: 0;
@@ -7,9 +28,10 @@
 
 .palm-page-header .center {
   text-align: center;
-  color: #444;
+  color: #e4e4e4;
   font-size: 20px;
   padding: 13px 40px;
+  background: url(../images/gradient.png) repeat-x;
 }
 
 .palm-page-header .my-right-icon {
@@ -26,6 +48,10 @@
   top: 0;
   width: 50px;
   height: 50px;
+}
+
+.palm-page-header #refresh {
+  background: url(../images/refresh.png) no-repeat center;
 }
 
 
@@ -76,4 +102,11 @@
 
 .unread {
   font-weight: bold;
+}
+
+#small-spinner {
+  position: fixed;
+  z-index: 99999;
+  top: 10px;
+  right: 10px;
 }

@@ -4,6 +4,7 @@
 	"vendor": "SemicolonApps",
 	"type": "web",
 	"main": "index.html",
-	"title": "yar",
-	"icon": "icon.png"
+	"title": "Yar",
+	"icon": "icon.png",
+	"splashicon": "icon-original.png"
 }

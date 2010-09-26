@@ -8,7 +8,9 @@ var Subscriptions = Class.create({
   
   findAll: function(success, failure) {
     var onSuccess = function(subscriptions) {
+      this.unreadCount = 0
       this.items.clear()
+      this.folders.clear()
       
       subscriptions.each(function(subscriptionData) {
         if(subscriptionData.categories && subscriptionData.categories.length) {

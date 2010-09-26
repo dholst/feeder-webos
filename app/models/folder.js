@@ -3,7 +3,7 @@ var Folder = Class.create({
     this.id = id
     this.title = title
     this.icon = "folder"
-    this.divideBy = "Folder"
+    this.divideBy = "Folders"
     this.unreadCount = 0
     this.items = []
   },
