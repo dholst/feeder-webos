@@ -23,14 +23,31 @@ body {
   text-transform: none;
 }
 
-.palm-page-header {
+
+
+.article #header {
+  background-color: #eeecea;
+  color: #666;
+  padding: 10px;
+  font-size: 16px;
+  border-bottom: 1px solid #444;
+  min-height: 50px;
+}
+
+.article #author {
+  font-size: 14px;
+  color: #999;
+  padding-top: 5px;
+}
+
+.palm-page-header.fixed {
   position: fixed;
   top: 0;
   width: 100%;
   height: 50px;
 }
 
-.palm-page-header .center {
+.palm-page-header.fixed .center {
   text-align: center;
   color: #fff;
   font-weight: bold;
@@ -39,7 +56,11 @@ body {
   background: url(../images/gradient.png) repeat-x;
 }
 
-.palm-page-header .my-right-icon {
+.palm-page-header.fixed .full {
+  padding: 13px;
+}
+
+.palm-page-header.fixed .my-right-icon {
   position: absolute;
   right: 0;
   top: 0;
@@ -47,7 +68,7 @@ body {
   height: 50px;
 }
 
-.palm-page-header .my-left-icon {
+.palm-page-header.fixed .my-left-icon {
   position: absolute;
   left: 0;
   top: 0;
@@ -55,9 +76,11 @@ body {
   height: 50px;
 }
 
-.palm-page-header #refresh {
+.palm-page-header.fixed #refresh {
   background: url(../images/refresh.png) no-repeat center;
 }
+
+
 
 
 .palm-row .rss {
@@ -114,4 +137,27 @@ body {
   z-index: 99999;
   top: 8px;
   right: 9px;
+}
+
+#footer {
+  position: fixed;
+  bottom: 0px;
+  height: 50px;
+  width: 100%;
+  background: url(../images/gradient-bottom.png) repeat-x;
+}
+
+#footer table {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#footer table td {
+  padding: 0;
+  margin: 0;
+  width: 25%;
+  height: 100%;
+  background: url(../images/starred-big.png) center center no-repeat;
 }
