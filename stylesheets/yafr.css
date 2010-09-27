@@ -176,3 +176,7 @@ body {
 #footer #shared {
   background: url(../images/shared-footer.png) center center no-repeat;
 }
+
+#summary img {
+  max-width: 250px;
+}
