@@ -159,5 +159,20 @@ body {
   margin: 0;
   width: 25%;
   height: 100%;
-  background: url(../images/starred-big.png) center center no-repeat;
+}
+
+#footer #starred {
+  background: url(../images/starred-footer.png) center center no-repeat;
+}
+
+#footer #read {
+  background: url(../images/read-footer.png) center center no-repeat;
+}
+
+#footer #sendto {
+  background: url(../images/sendto-footer.png) center center no-repeat;
+}
+
+#footer #shared {
+  background: url(../images/shared-footer.png) center center no-repeat;
 }
