@@ -60,9 +60,55 @@ var Api = Class.create({
       onFailure: failure,
       onSuccess: function(response) {
         var articles = response.responseText.evalJSON()
-        success(articles.items, articles.continuation)
+        success(articles.items, articles.id, articles.continuation)
       }
     })
+  },
+
+  setArticleUnread: function(articleId, subscriptionId, success) {
+  },
+  
+  setArticleRead: function(articleId, subscriptionId, success) {
+    Log.debug("setting article read, article id = " + articleId + ", subscription id = " + subscriptionId)
+
+    this._getEditToken(function(token) {
+      new Ajax.Request(Api.BASE_URL + "edit-tag?client=scroll", {
+        method: "post",
+        parameters:  {
+          T: token,
+          a: "user/-/state/com.google/read",
+          i: articleId,
+          s: subscriptionId,
+          async: "true"
+        },
+        requestHeaders: {Authorization:"GoogleLogin auth=" + this.auth},
+        onSuccess: success
+      })
+    }.bind(this))
+  },
+  
+  _getEditToken: function(success) {
+    if(this.editToken) {
+      Log.debug("using last edit token - " + this.editToken)
+      success(this.editToken)
+    }
+    else {
+      var parameters = {
+        
+      }
+      
+      new Ajax.Request(Api.BASE_URL + "token", {
+        method: "get",
+        parameters: parameters,
+        requestHeaders: {Authorization:"GoogleLogin auth=" + this.auth},
+        onSuccess: function(response) {
+          this.editToken = response.responseText
+          Log.debug("retrieved edit token - " + this.editToken)
+          success(this.editToken)
+        }.bind(this)
+        
+      })
+    }
   }
 })
 

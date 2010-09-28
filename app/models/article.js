@@ -1,5 +1,8 @@
 var Article = Class.create({
-  initialize: function(data) {
+  initialize: function(data, subscription) {
+    this.api = subscription.api
+    this.id = data.id
+    this.subscriptionId = subscription.id || (data.origin ? data.origin.streamId : "")
     this.title = data.title
     this.author = data.author
     this.origin = data.origin ? data.origin.title : null
@@ -49,5 +52,29 @@ var Article = Class.create({
   leftPad: function(number) {
     var s = "0000" + number
     return s.substr(s.length - 2)
+  },
+  
+  turnReadOn: function(done) {
+    this.api.setArticleRead(this.id, this.subscriptionId, done)
+  },
+  
+  turnReadOff: function(done) {
+    this.api.setArticleUnread(this.id, this.subscriptionId, done)
+  },
+  
+  turnShareOn: function(done) {
+    done()
+  },
+  
+  turnShareOff: function(done) {
+    done()
+  },
+  
+  turnStarOn: function(done) {
+    done()
+  },
+  
+  turnStarOff: function(done) {
+    done()
   }
 })

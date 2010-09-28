@@ -11,8 +11,9 @@ var ArticleContainer = Class.create({
   },
   
   findArticles: function(success, failure) {
-    var onSuccess = function(articles, continuation) {
+    var onSuccess = function(articles, id, continuation) {
       Log.debug("continuation token is " + continuation)
+      
       this.continuation = continuation
       
       if(this.items.length && this.items[this.items.length - 1].load_more) {
@@ -20,7 +21,7 @@ var ArticleContainer = Class.create({
       }
       
       $A(articles).each(function(articleData) {
-        this.items.push(new Article(articleData))
+        this.items.push(new Article(articleData, this))
       }.bind(this))
       
       if(this.continuation) {

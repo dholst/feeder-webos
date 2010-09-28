@@ -189,6 +189,9 @@ body {
   background: url(../images/shared-footer-on.png) center center no-repeat;
 }
 
+#footer .working {
+}
+
 #summary img {
   max-width: 250px;
 }
