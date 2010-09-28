@@ -35,22 +35,44 @@ var Api = Class.create({
   },
   
   getAllArticles: function(continuation, success, failure) {
-    this._getArticles("user/-/state/com.google/reading-list", continuation, success, failure)
+    this._getArticles(
+      "user/-/state/com.google/reading-list", 
+      "user/-/state/com.google/read", 
+      continuation, 
+      success, 
+      failure
+    )
   },
   
   getAllStarred: function(continuation, success, failure) {
-    this._getArticles("user/-/state/com.google/starred", continuation, success, failure)
+    this._getArticles(
+      "user/-/state/com.google/starred", 
+      null, 
+      continuation, 
+      success, 
+      failure
+    )
   },
   
   getAllArticlesFor: function(id, continuation, success, failure) {
-    this._getArticles(id, continuation, success, failure)
+    this._getArticles(
+      id, 
+      "user/-/state/com.google/read", 
+      continuation, 
+      success, 
+      failure
+    )
   },
   
-  _getArticles: function(id, continuation, success, failure) {
-    var parameters = {output: "json", n: 50, r: "o", xt: "user/-/state/com.google/read"}
+  _getArticles: function(id, exclude, continuation, success, failure) {
+    var parameters = {output: "json", n: 50, r: "o" }
     
     if(continuation) {
       parameters.c = continuation
+    }
+    
+    if(exclude) {
+      parameters.xt = exclude
     }
     
     new Ajax.Request(Api.BASE_URL + "stream/contents/" + id, {
