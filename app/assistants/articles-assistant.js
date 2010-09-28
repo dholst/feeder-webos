@@ -25,6 +25,11 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     this.findArticles()
   },
   
+  activate: function($super) {
+    $super()
+    this.controller.modelChanged(this.subscription)
+  },
+  
   cleanup: function($super) {
     $super()
     this.controller.listen("articles", Mojo.Event.listTap, this.articleTapped)

@@ -18,7 +18,7 @@ var Api = Class.create({
     new Ajax.Request(Api.BASE_URL + "subscription/list", {
       method: "get",
       parameters: {output: "json"},
-      requestHeaders: {Authorization:"GoogleLogin auth=" + this.auth},
+      requestHeaders: this._requestHeaders(),
       onFailure: failure,
       onSuccess: function(response) {success(response.responseText.evalJSON().subscriptions)}
     })
@@ -28,7 +28,7 @@ var Api = Class.create({
     new Ajax.Request(Api.BASE_URL + "unread-count", {
       method: "get",
       parameters: {output: "json"},
-      requestHeaders: {Authorization:"GoogleLogin auth=" + this.auth},
+      requestHeaders: this._requestHeaders(),
       onFailure: failure,
       onSuccess: function(response) {success(response.responseText.evalJSON().unreadcounts)}
     })
@@ -56,7 +56,7 @@ var Api = Class.create({
     new Ajax.Request(Api.BASE_URL + "stream/contents/" + id, {
       method: "get",
       parameters: parameters,
-      requestHeaders: {Authorization:"GoogleLogin auth=" + this.auth},
+      requestHeaders: this._requestHeaders(),
       onFailure: failure,
       onSuccess: function(response) {
         var articles = response.responseText.evalJSON()
@@ -66,25 +66,49 @@ var Api = Class.create({
   },
 
   setArticleUnread: function(articleId, subscriptionId, success) {
+    this._editTag(
+      articleId, 
+      subscriptionId, 
+      "user/-/state/com.google/kept-unread", 
+      "user/-/state/com.google/read", 
+      success
+    )
   },
   
   setArticleRead: function(articleId, subscriptionId, success) {
-    Log.debug("setting article read, article id = " + articleId + ", subscription id = " + subscriptionId)
-
+    this._editTag(
+      articleId, 
+      subscriptionId, 
+      "user/-/state/com.google/read", 
+      null, 
+      success
+    )
+  },
+  
+  _editTag: function(articleId, subscriptionId, addTag, removeTag, success) {
+    Log.debug("editing tag for article id = " + articleId + " and subscription id = " + subscriptionId)
+    
     this._getEditToken(function(token) {
-      new Ajax.Request(Api.BASE_URL + "edit-tag?client=scroll", {
+      var parameters = {
+        T: token,
+        i: articleId,
+        s: subscriptionId
+      }
+      
+      if(addTag) parameters.a = addTag
+      if(removeTag) parameters.r = removeTag
+
+      new Ajax.Request(Api.BASE_URL + "edit-tag", {
         method: "post",
-        parameters:  {
-          T: token,
-          a: "user/-/state/com.google/read",
-          i: articleId,
-          s: subscriptionId,
-          async: "true"
-        },
-        requestHeaders: {Authorization:"GoogleLogin auth=" + this.auth},
+        parameters:  parameters,
+        requestHeaders: this._requestHeaders(),
         onSuccess: success
       })
     }.bind(this))
+  },
+  
+  _requestHeaders: function() {
+    return {Authorization:"GoogleLogin auth=" + this.auth}  
   },
   
   _getEditToken: function(success) {

@@ -55,11 +55,17 @@ var Article = Class.create({
   },
   
   turnReadOn: function(done) {
-    this.api.setArticleRead(this.id, this.subscriptionId, done)
+    this.api.setArticleRead(this.id, this.subscriptionId, function() {
+      this.isRead = true
+      done()
+    }.bind(this))
   },
   
   turnReadOff: function(done) {
-    this.api.setArticleUnread(this.id, this.subscriptionId, done)
+    this.api.setArticleUnread(this.id, this.subscriptionId, function() {
+      this.isRead = false
+      done()
+    }.bind(this))
   },
   
   turnShareOn: function(done) {
