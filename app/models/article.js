@@ -62,25 +62,37 @@ var Article = Class.create({
   },
   
   turnReadOff: function(done) {
-    this.api.setArticleUnread(this.id, this.subscriptionId, function() {
+    this.api.setArticleNotRead(this.id, this.subscriptionId, function() {
       this.isRead = false
       done()
     }.bind(this))
   },
   
   turnShareOn: function(done) {
-    done()
+    this.api.setArticleShared(this.id, this.subscriptionId, function() {
+      this.isShared = true
+      done()
+    }.bind(this))
   },
   
   turnShareOff: function(done) {
-    done()
+    this.api.setArticleNotShared(this.id, this.subscriptionId, function() {
+      this.isShared = false
+      done()
+    }.bind(this))
   },
   
   turnStarOn: function(done) {
-    done()
+    this.api.setArticleStarred(this.id, this.subscriptionId, function() {
+      this.isStarred = true
+      done()
+    }.bind(this))  
   },
   
   turnStarOff: function(done) {
-    done()
+    this.api.setArticleNotStarred(this.id, this.subscriptionId, function() {
+      this.isStarred = false
+      done()
+    }.bind(this))  
   }
 })

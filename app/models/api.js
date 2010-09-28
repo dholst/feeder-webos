@@ -65,7 +65,17 @@ var Api = Class.create({
     })
   },
 
-  setArticleUnread: function(articleId, subscriptionId, success) {
+  setArticleRead: function(articleId, subscriptionId, success) {
+    this._editTag(
+      articleId, 
+      subscriptionId, 
+      "user/-/state/com.google/read", 
+      null, 
+      success
+    )
+  },
+
+  setArticleNotRead: function(articleId, subscriptionId, success) {
     this._editTag(
       articleId, 
       subscriptionId, 
@@ -75,12 +85,42 @@ var Api = Class.create({
     )
   },
   
-  setArticleRead: function(articleId, subscriptionId, success) {
+  setArticleShared: function(articleId, subscriptionId, success) {
     this._editTag(
       articleId, 
       subscriptionId, 
-      "user/-/state/com.google/read", 
+      "user/-/state/com.google/broadcast", 
       null, 
+      success
+    )
+  },
+  
+  setArticleNotShared: function(articleId, subscriptionId, success) {
+    this._editTag(
+      articleId, 
+      subscriptionId, 
+      null,
+      "user/-/state/com.google/broadcast", 
+      success
+    )
+  },
+
+  setArticleStarred: function(articleId, subscriptionId, success) {
+    this._editTag(
+      articleId, 
+      subscriptionId, 
+      "user/-/state/com.google/starred", 
+      null, 
+      success
+    )
+  },
+  
+  setArticleNotStarred: function(articleId, subscriptionId, success) {
+    this._editTag(
+      articleId, 
+      subscriptionId, 
+      null, 
+      "user/-/state/com.google/starred", 
       success
     )
   },
