@@ -33,5 +33,13 @@ var AllSources = Class.create({
     var filtered = $A(this.items).select(function(item){return item.sticky || item.unreadCount})
     this.items.clear()
     this.items.push.apply(this.items, filtered)    
+  },
+  
+  articleReadIn: function(subscriptionId) {
+    this.items.each(function(source){source.articleRead(subscriptionId)})
+  },
+
+  articleNotReadIn: function(subscriptionId) {
+    this.items.each(function(source){source.articleNotRead(subscriptionId)})
   }
 }) 

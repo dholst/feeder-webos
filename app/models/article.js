@@ -55,44 +55,34 @@ var Article = Class.create({
   },
   
   turnReadOn: function(done) {
-    this.api.setArticleRead(this.id, this.subscriptionId, function() {
-      this.isRead = true
-      done()
-    }.bind(this))
+    this._setState("Read", "isRead", true, done)
   },
   
   turnReadOff: function(done) {
-    this.api.setArticleNotRead(this.id, this.subscriptionId, function() {
-      this.isRead = false
-      done()
-    }.bind(this))
+    this._setState("NotRead", "isRead", false, done)
   },
   
   turnShareOn: function(done) {
-    this.api.setArticleShared(this.id, this.subscriptionId, function() {
-      this.isShared = true
-      done()
-    }.bind(this))
+    this._setState("Shared", "isShared", true, done)
   },
   
   turnShareOff: function(done) {
-    this.api.setArticleNotShared(this.id, this.subscriptionId, function() {
-      this.isShared = false
-      done()
-    }.bind(this))
+    this._setState("NotShared", "isShared", false, done)
   },
   
   turnStarOn: function(done) {
-    this.api.setArticleStarred(this.id, this.subscriptionId, function() {
-      this.isStarred = true
-      done()
-    }.bind(this))  
+    this._setState("Starred", "isStarred", true, done)
   },
   
   turnStarOff: function(done) {
-    this.api.setArticleNotStarred(this.id, this.subscriptionId, function() {
-      this.isStarred = false
+    this._setState("NotStarred", "isStarred", false, done)
+  },
+  
+  _setState: function(apiState, localProperty, localValue, done) {
+    this.api["setArticle" + apiState](this.id, this.subscriptionId, function() {
+      this[localProperty] = localValue
+      Mojo.Event.send(document, "Article" + apiState, {subscriptionId: this.subscriptionId})
       done()
-    }.bind(this))  
+    }.bind(this))    
   }
 })

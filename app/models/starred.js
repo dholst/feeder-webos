@@ -10,5 +10,11 @@ var Starred = Class.create(ArticleContainer, {
 
   makeApiCall: function(continuation, success, failure) {
     this.api.getAllStarred(continuation, success, failure)
+  },
+  
+  articleRead: function(subscriptionId) {
+  },
+  
+  articleNotRead: function(subscriptionId) {
   }
 })

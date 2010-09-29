@@ -79,5 +79,10 @@ var BaseAssistant = Class.create({
     if(itemModel.unreadCount) {
       $(itemNode).addClassName("unread")
     }
+  },
+  
+  refreshList: function(list, items) {
+    list.mojo.noticeUpdatedItems(0, items)
+    list.mojo.setLength(items.length)    
   }
 })

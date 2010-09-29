@@ -18,6 +18,11 @@ var FolderAssistant = Class.create(BaseAssistant, {
   ready: function($super) {
     this.controller.get("header").update(this.folders.title)
   },
+
+  activate: function($super) {
+    $super()
+    this.refreshList(this.controller.get("folders"), this.folders.items)
+  },
   
   folderTapped: function(event) {
     this.controller.stageController.pushScene("articles", event.item)

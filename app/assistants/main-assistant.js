@@ -17,17 +17,25 @@ var MainAssistant = Class.create(BaseAssistant, {
     this.controller.setupWidget("sources", listAttributes, this.sources)
     this.controller.listen("sources", Mojo.Event.listTap, this.sourceTapped = this.sourceTapped.bind(this))
     this.controller.listen("refresh", Mojo.Event.tap, this.refresh = this.refresh.bind(this))
+    this.controller.listen(document, "ArticleRead", this.articleRead = this.articleRead.bind(this))
+    this.controller.listen(document, "ArticleNotRead", this.articleNotRead = this.articleNotRead.bind(this))
   },
   
   cleanup: function($super) {
     $super()
     this.controller.stopListening("sources", Mojo.Event.listTap, this.sourceTapped)
     this.controller.stopListening("refresh", Mojo.Event.tap, this.refresh)
+    this.controller.stopListening(document, "ArticleRead", this.articleRead)
+    this.controller.stopListening(document, "ArticleNotRead", this.articleNotRead)
   },
   
   ready: function($super) {
     $super()
     this.refresh()
+  },
+  
+  activate: function() {
+    this.controller.modelChanged(this.sources)
   },
   
   foundEm: function(feeds) {
@@ -53,5 +61,13 @@ var MainAssistant = Class.create(BaseAssistant, {
   refresh: function() {
     this.smallSpinnerOn()
     this.sources.findAll(this.foundEm.bind(this), this.bail.bind(this))
+  },
+  
+  articleRead: function(event) {
+    this.sources.articleReadIn(event.subscriptionId)
+  },
+  
+  articleNotRead: function(event) {
+    this.sources.articleNotReadIn(event.subscriptionId)
   }
 })

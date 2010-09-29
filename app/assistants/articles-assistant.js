@@ -27,7 +27,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
   
   activate: function($super) {
     $super()
-    this.controller.modelChanged(this.subscription)
+    this.refreshList(this.controller.get("articles"), this.subscription.items)
   },
   
   cleanup: function($super) {
@@ -41,12 +41,10 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
   },
       
   foundArticles: function() {
-    var articles = this.controller.get("articles")
-    articles.mojo.noticeUpdatedItems(0, this.subscription.items)
-    articles.mojo.setLength(this.subscription.items.length)
+    this.refreshList(this.controller.get("articles"), this.subscription.items)
     this.smallSpinnerOff()
   },
-  
+    
   articleTapped: function(event) {
     if(event.item.load_more) {
       this.findArticles()

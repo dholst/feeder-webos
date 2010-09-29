@@ -9,5 +9,17 @@ var Subscription = Class.create(ArticleContainer, {
 
   makeApiCall: function(continuation, success, failure) {
     this.api.getAllArticlesFor(this.id, continuation, success, failure)
+  },
+  
+  articleRead: function(subscriptionId) {
+    if(this.id == subscriptionId) {
+      this.incrementUnreadCountBy(-1)
+    }
+  },
+  
+  articleNotRead: function(subscriptionId) {
+    if(this.id == subscriptionId) {
+      this.incrementUnreadCountBy(1)
+    }
   }
 })
