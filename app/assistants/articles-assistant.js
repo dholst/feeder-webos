@@ -17,12 +17,17 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     
     this.controller.setupWidget("articles", listAttributes, this.subscription)
     this.controller.listen("articles", Mojo.Event.listTap, this.articleTapped = this.articleTapped.bind(this))
+    this.controller.listen("mark-all-read", Mojo.Event.tap, this.markAllRead = this.markAllRead.bind(this))
   },
   
   ready: function($super) {
     $super()
     this.controller.get("header").update(this.subscription.title)
     this.findArticles()
+    
+    if(this.subscription.markAllRead) {
+      this.controller.get("mark-all-read").show()
+    }
   },
   
   activate: function($super) {
@@ -62,5 +67,16 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     if(!itemModel.isRead) {
       $(itemNode).addClassName("unread")
     }
+  },
+  
+  markAllRead: function(event) {
+    this.smallSpinnerOn()    
+    var count = this.subscription.getUnreadCount()
+    
+    this.subscription.markAllRead(function() {
+      this.smallSpinnerOff()
+      this.refreshList(this.controller.get("articles"), this.subscription.items)
+      Mojo.Event.send(document, "MassMarkAsRead", {count: count})
+    }.bind(this))
   }
 })

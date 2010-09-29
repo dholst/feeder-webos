@@ -19,6 +19,7 @@ var MainAssistant = Class.create(BaseAssistant, {
     this.controller.listen("refresh", Mojo.Event.tap, this.refresh = this.refresh.bind(this))
     this.controller.listen(document, "ArticleRead", this.articleRead = this.articleRead.bind(this))
     this.controller.listen(document, "ArticleNotRead", this.articleNotRead = this.articleNotRead.bind(this))
+    this.controller.listen(document, "MassMarkAsRead", this.massMarkAsRead = this.massMarkAsRead.bind(this))
   },
   
   cleanup: function($super) {
@@ -27,6 +28,7 @@ var MainAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("refresh", Mojo.Event.tap, this.refresh)
     this.controller.stopListening(document, "ArticleRead", this.articleRead)
     this.controller.stopListening(document, "ArticleNotRead", this.articleNotRead)
+    this.controller.stopListening(document, "MassMarkAsRead", this.massMarkAsRead)
   },
   
   ready: function($super) {
@@ -35,7 +37,7 @@ var MainAssistant = Class.create(BaseAssistant, {
   },
   
   activate: function() {
-    this.controller.modelChanged(this.sources)
+    this.refreshList(this.controller.get("sources"), this.sources.items)
   },
   
   foundEm: function(feeds) {
@@ -69,5 +71,9 @@ var MainAssistant = Class.create(BaseAssistant, {
   
   articleNotRead: function(event) {
     this.sources.articleNotReadIn(event.subscriptionId)
+  },
+  
+  massMarkAsRead: function(event) {
+    this.sources.massMarkAsRead(event.count)
   }
 })

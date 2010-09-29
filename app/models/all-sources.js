@@ -38,8 +38,12 @@ var AllSources = Class.create({
   articleReadIn: function(subscriptionId) {
     this.items.each(function(source){source.articleRead(subscriptionId)})
   },
-
+  
   articleNotReadIn: function(subscriptionId) {
     this.items.each(function(source){source.articleNotRead(subscriptionId)})
+  },
+  
+  massMarkAsRead: function(count) {
+    this.allArticles.decrementUnreadCountBy(count)
   }
 }) 

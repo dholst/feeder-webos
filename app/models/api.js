@@ -87,6 +87,22 @@ var Api = Class.create({
     })
   },
 
+  markAllRead: function(id, success) {
+    this._getEditToken(function(token) {
+      var parameters = {
+        T: token,
+        s: id
+      }
+      
+      new Ajax.Request(Api.BASE_URL + "mark-all-as-read", {
+        method: "post",
+        parameters: parameters,
+        requestHeaders: this._requestHeaders(),
+        onSuccess: success
+      })    
+    }.bind(this))
+  },
+  
   setArticleRead: function(articleId, subscriptionId, success) {
     this._editTag(
       articleId, 

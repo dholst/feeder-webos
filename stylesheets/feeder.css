@@ -202,6 +202,10 @@ body {
 #footer .working {
 }
 
+#mark-all-read {
+  background: url(../images/read-footer.png) no-repeat center;
+}
+
 #summary img {
   max-width: 250px;
 }

@@ -1,6 +1,7 @@
 var AllArticles = Class.create(ArticleContainer, {
   initialize: function($super, api) {
     $super(api)
+    this.id = "user/-/state/com.google/reading-list"
     this.title = "All Items"
     this.icon = "list"
     this.sticky = true

@@ -1,6 +1,7 @@
 var Starred = Class.create(ArticleContainer, {
   initialize: function($super, api) {
     $super(api)
+    this.id = "user/-/state/com.google/starred"
     this.title = "Starred"
     this.icon = "star"
     this.sticky = true

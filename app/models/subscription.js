@@ -21,5 +21,12 @@ var Subscription = Class.create(ArticleContainer, {
     if(this.id == subscriptionId) {
       this.incrementUnreadCountBy(1)
     }
-  }
+  },
+  
+  markAllRead: function(success) {
+    this.api.markAllRead(this.id, function() {
+      this.items.each(function(item) {item.isRead = true})
+      success()
+    }.bind(this))
+  } 
 })

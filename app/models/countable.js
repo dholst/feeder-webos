@@ -1,5 +1,5 @@
 var Countable = Class.create({
-  initialize: function($super) {
+  initialize: function() {
   },
   
   clearUnreadCount: function() {
@@ -8,11 +8,20 @@ var Countable = Class.create({
   
   setUnreadCount: function(count) {
     this.unreadCount = count
+    
+    if(this.unreadCount < 0) {
+      this.unreadCount = 0
+    }
+    
     this.unreadCountDisplay = count > 999 ? "1000+" : count
   },
   
   incrementUnreadCountBy: function(count) {
     this.setUnreadCount((this.getUnreadCount() || 0) + count)
+  },
+  
+  decrementUnreadCountBy: function(count) {
+    this.incrementUnreadCountBy(-count)
   },
   
   getUnreadCount: function() {
