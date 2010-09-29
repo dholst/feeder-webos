@@ -10,6 +10,7 @@ var Article = Class.create({
     this.summary = this.cleanUp(content.content)
     this.setStates(data.categories)
     this.setDates(parseInt(data.crawlTimeMsec))
+    this.setArticleLink(data.alternate)    
   },
   
   cleanUp: function(content) {
@@ -47,6 +48,15 @@ var Article = Class.create({
     
     this.displayDate = month + "/" + day + "/" + year
     this.sortDate = year + month + day
+  },
+  
+  setArticleLink: function(alternates) {
+    alternates.each(function(alternate) {
+      if(alternate.type.include("html")) {
+        this.url = alternate.href
+        return
+      }
+    }.bind(this))
   },
   
   leftPad: function(number) {

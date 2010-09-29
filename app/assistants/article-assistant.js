@@ -6,10 +6,11 @@ var ArticleAssistant = Class.create(BaseAssistant, {
   
   setup: function($super) {
     $super()
-    this.controller.listen("starred", Mojo.Event.tap, this.setStarred.bind(this))
-    this.controller.listen("shared", Mojo.Event.tap, this.setShared.bind(this))
-    this.controller.listen("read", Mojo.Event.tap, this.setRead.bind(this))
-    this.controller.listen("sendto", Mojo.Event.tap, this.sendTo.bind(this))
+    this.controller.listen("starred", Mojo.Event.tap, this.setStarred = this.setStarred.bind(this))
+    this.controller.listen("shared", Mojo.Event.tap, this.setShared = this.setShared.bind(this))
+    this.controller.listen("read", Mojo.Event.tap, this.setRead = this.setRead.bind(this))
+    this.controller.listen("sendto", Mojo.Event.tap, this.sendTo = this.sendTo.bind(this))
+    this.controller.listen("header", Mojo.Event.tap, this.openInBrowser = this.openInBrowser.bind(this))
   },
   
   cleanup: function($super) {
@@ -18,6 +19,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("shared", Mojo.Event.tap, this.setShared)
     this.controller.stopListening("read", Mojo.Event.tap, this.setRead)
     this.controller.stopListening("sendto", Mojo.Event.tap, this.sendTo)
+    this.controller.stopListening("header", Mojo.Event.tap, this.openInBrowser)
   },
   
   ready: function($super) {
@@ -68,5 +70,19 @@ var ArticleAssistant = Class.create(BaseAssistant, {
   
   sendTo: function(event) {
     
+  },
+  
+  openInBrowser: function() {
+    if(this.article.url) {
+      this.controller.serviceRequest("palm://com.palm.applicationManager", {
+        method: "open",
+        parameters: {
+          id: "com.palm.app.browser",
+          params: {
+            target: this.article.url
+          }
+        }
+      })
+    }
   }
 })

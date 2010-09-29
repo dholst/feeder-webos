@@ -1,3 +1,7 @@
+.clear {
+  clear: both;
+}
+
 body {
   background-color: #e6e3de !important;
 }
@@ -30,12 +34,24 @@ body {
   font-size: 16px;
   border-bottom: 1px solid #444;
   min-height: 50px;
+  padding-right: 50px;
+}
+
+.article #header table {
+  padding: 0;
+  margin: 0;
+  width: 300px;
 }
 
 .article #author {
   font-size: 14px;
   color: #999;
   padding-top: 5px;
+}
+
+.article #right-arrow {
+  width: 20px;
+  background: url(../images/rightarrow.png) center center no-repeat;
 }
 
 .palm-page-header.fixed {
