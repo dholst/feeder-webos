@@ -23,8 +23,6 @@ body {
   text-transform: none;
 }
 
-
-
 .article #header {
   background-color: #eeecea;
   color: #666;
@@ -49,7 +47,7 @@ body {
 
 .palm-page-header.fixed .center {
   text-align: center;
-  color: #fff;
+  color: #dbdbdb;
   font-weight: bold;
   font-size: 20px;
   padding: 13px 40px;
