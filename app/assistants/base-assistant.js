@@ -73,5 +73,11 @@ var BaseAssistant = Class.create({
   
   bail: function(message) {
     Log.debug("Crap, bailing..." + message)
-  }  
+  },
+  
+  sourceRendered: function(listWidget, itemModel, itemNode) {
+    if(itemModel.unreadCount) {
+      $(itemNode).addClassName("unread")
+    }
+  }
 })

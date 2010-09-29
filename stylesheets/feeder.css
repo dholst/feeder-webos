@@ -78,9 +78,6 @@ body {
   background: url(../images/refresh.png) no-repeat center;
 }
 
-
-
-
 .palm-row .rss {
   height: 50px;
   width: 30px;
@@ -105,7 +102,6 @@ body {
   background: url(../images/list.png) center center no-repeat;
 }
 
-
 .subscription-title, .subscription-count, .folder-title, .folder-count {
   font-size: 16px;
   color: #444;
@@ -116,13 +112,13 @@ body {
 
 .subscription-title, .folder-title {
   float: left;
-  width: 210px;
+  width: 205px;
   margin-left: 5px;
 }
 
 .subscription-count, .folder-count {
   float: right;
-  width: 40px;
+  width: 45px;
   text-align: right;
 }
 

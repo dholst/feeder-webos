@@ -11,7 +11,7 @@ var MainAssistant = Class.create(BaseAssistant, {
       itemTemplate: "main/source",
       dividerTemplate: "main/divider",
   		dividerFunction: this.divide,
-  		onItemRendered: this.itemRendered
+  		onItemRendered: this.sourceRendered
     }
     
     this.controller.setupWidget("sources", listAttributes, this.sources)
@@ -48,12 +48,6 @@ var MainAssistant = Class.create(BaseAssistant, {
   
   divide: function(source) {
     return source.divideBy
-  },
-  
-  itemRendered: function(listWidget, itemModel, itemNode) {
-    if(itemModel.unreadCount) {
-      $(itemNode).addClassName("unread")
-    }
   },
   
   refresh: function() {

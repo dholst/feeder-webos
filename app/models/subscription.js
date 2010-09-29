@@ -5,7 +5,6 @@ var Subscription = Class.create(ArticleContainer, {
     this.title = data.title
     this.icon = "rss"
     this.divideBy = "Subscriptions"
-    this.unreadCount = 0
   },
 
   makeApiCall: function(continuation, success, failure) {

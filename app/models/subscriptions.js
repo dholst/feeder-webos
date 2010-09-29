@@ -1,14 +1,14 @@
-var Subscriptions = Class.create({
-  initialize: function(api) {
+var Subscriptions = Class.create(Countable, {
+  initialize: function($super, api) {
+    $super()
     this.api = api
     this.folders = new Folders(api)
     this.items = []
-    this.unreadCount = 0
   },
   
   findAll: function(success, failure) {
     var onSuccess = function(subscriptions) {
-      this.unreadCount = 0
+      this.clearUnreadCount()
       this.items.clear()
       this.folders.clear()
       
@@ -41,16 +41,15 @@ var Subscriptions = Class.create({
     var onSuccess = function(counts) {
       counts.each(function(count) {
         if(count.id.startsWith("feed")) {
-          this.unreadCount += count.count
+          this.incrementUnreadCountBy(count.count)
 
           this.items.each(function(item) {
             if(item.id == count.id) {
-              item.unreadCount = count.count
+              item.setUnreadCount(count.count)
             }
           })
 
           this.folders.addUnreadCounts(count)
-          
         }
       }.bind(this))
       

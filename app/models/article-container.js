@@ -1,5 +1,6 @@
-var ArticleContainer = Class.create({
-  initialize: function(api) {
+var ArticleContainer = Class.create(Countable, {
+  initialize: function($super, api) {
+    $super()
     this.api = api
     this.continuation = false
     this.items = [] 

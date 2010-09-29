@@ -4,7 +4,6 @@ var AllArticles = Class.create(ArticleContainer, {
     this.title = "All Items"
     this.icon = "list"
     this.sticky = true
-    this.unreadCount = 0
     this.divideBy = "Home"
     this.hideDivider = "hide-divider"
   },

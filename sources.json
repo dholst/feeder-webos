@@ -4,6 +4,7 @@
   {"source": "app/models/feeder.js"},
   {"source": "app/models/credentials.js"},
   {"source": "app/models/api.js"},
+  {"source": "app/models/countable.js"},
   {"source": "app/models/article.js"},
   {"source": "app/models/article-container.js"},
   {"source": "app/models/subscription.js"},

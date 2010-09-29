@@ -24,7 +24,7 @@ var AllSources = Class.create({
     var items = this.items    
     this.subscriptions.folders.items.each(function(folder) {items.push(folder)})
     this.subscriptions.items.each(function(subscription) {items.push(subscription)})
-    this.allArticles.unreadCount = this.subscriptions.unreadCount
+    this.allArticles.setUnreadCount(this.subscriptions.getUnreadCount())
     this.filterReadItems()
     this.success()
   },

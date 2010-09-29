@@ -20,8 +20,8 @@ var Folders = Class.create({
   },
   
   addUnreadCounts: function(count) {
-    this.items.each(function(item) {
-      item.addUnreadCounts(count)
+    this.items.each(function(folder) {
+      folder.addUnreadCounts(count)
     })
   }
 })

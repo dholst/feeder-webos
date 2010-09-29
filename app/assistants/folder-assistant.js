@@ -6,7 +6,7 @@ var FolderAssistant = Class.create(BaseAssistant, {
   
   setup: function($super) {
     $super()
-    this.controller.setupWidget("folders", {itemTemplate: "folder/folder", onItemRendered: this.itemRendered}, this.folders)
+    this.controller.setupWidget("folders", {itemTemplate: "folder/folder", onItemRendered: this.sourceRendered}, this.folders)
     this.controller.listen("folders", Mojo.Event.listTap, this.folderTaped = this.folderTapped.bind(this))
   },
   
@@ -17,12 +17,6 @@ var FolderAssistant = Class.create(BaseAssistant, {
 
   ready: function($super) {
     this.controller.get("header").update(this.folders.title)
-  },
-  
-  itemRendered: function(listWidget, itemModel, itemNode) {
-    if(itemModel.unreadCount) {
-      $(itemNode).addClassName("unread")
-    }
   },
   
   folderTapped: function(event) {
