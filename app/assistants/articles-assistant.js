@@ -81,7 +81,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
       this.smallSpinnerOff()
       this.showMarkAllRead()
       this.refreshList(this.controller.get("articles"), this.subscription.items)
-      Mojo.Event.send(document, "MassMarkAsRead", {count: count})
+      Mojo.Event.send(document, "MassMarkAsRead", {id: this.subscription.id, count: count})
     }.bind(this))
   }
 })
