@@ -25,6 +25,7 @@ var Subscription = Class.create(ArticleContainer, {
   
   markAllRead: function(success) {
     this.api.markAllRead(this.id, function() {
+      this.clearUnreadCount()
       this.items.each(function(item) {item.isRead = true})
       success()
     }.bind(this))

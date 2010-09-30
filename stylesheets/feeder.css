@@ -167,8 +167,16 @@ body {
 #footer table td {
   padding: 0;
   margin: 0;
-  width: 25%;
+  width: 53px;
   height: 100%;
+}
+
+#footer #previous-article {
+  background: url(../images/previous-article.png) center center no-repeat;
+}
+
+#footer #next-article {
+  background: url(../images/next-article.png) center center no-repeat;
 }
 
 #footer #starred {
@@ -203,7 +211,7 @@ body {
 }
 
 #mark-all-read {
-  background: url(../images/read-footer.png) no-repeat center;
+  background: url(../images/mark-all-read.png) no-repeat center;
 }
 
 #summary img {
