@@ -58,6 +58,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
       this.findArticles()
     }
     else {
+      event.item.index = event.index
       this.controller.stageController.pushScene("article", event.item)
     }
   },

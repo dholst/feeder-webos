@@ -2,6 +2,7 @@ var Article = Class.create({
   initialize: function(data, subscription) {
     this.api = subscription.api
     this.id = data.id
+    this.subscription = subscription
     this.subscriptionId = subscription.id || (data.origin ? data.origin.streamId : "")
     this.title = data.title
     this.author = data.author
@@ -94,5 +95,40 @@ var Article = Class.create({
       Mojo.Event.send(document, "Article" + apiState, {subscriptionId: this.subscriptionId})
       done()
     }.bind(this))    
+  },
+  
+  getPrevious: function(callback) {
+    var previousIndex = this.index - 1
+    var previous = null
+    
+    if(this.index) {
+      previous = this.subscription.items[previousIndex]
+      previous.index = previousIndex
+    }
+
+    callback(previous)
+  },
+  
+  getNext: function(callback) {
+    var nextIndex = this.index + 1
+    var next = null
+    
+    if(nextIndex < this.subscription.items.length) {
+      next = this.subscription.items[nextIndex]
+      next.index = nextIndex
+    }
+    
+    if(next && next.load_more) {
+      var foundMore = function() {
+        next = this.subscription.items[nextIndex]
+        next.index = nextIndex
+        callback(next)        
+      }.bind(this)
+      
+      this.subscription.findArticles(foundMore, callback)
+    }
+    else {
+      callback(next)
+    }    
   }
 })
