@@ -1,15 +1,16 @@
-var LoginAssistant = Class.create(BaseAssistant, { 
+var LoginAssistant = Class.create(BaseAssistant, {
   initialize: function($super, credentials) {
     $super()
     this.credentials = credentials || new Credentials()
     this.api = new Api()
     this.triedLogin = false
+    this.hideLogout = true
   },
-  
+
   activate: function($super) {
     $super()
-    
-    if(this.credentials.email) {      
+
+    if(this.credentials.email && this.credentials.password) {
       if(this.triedLogin) {
         Log.debug("ALREADY TRIED LOGGING IN, WHAT MAKES YOU THINK ITS GOING TO WORK NOW")
       }
@@ -25,7 +26,7 @@ var LoginAssistant = Class.create(BaseAssistant, {
       this.controller.stageController.swapScene("credentials", this.credentials)
     }
   },
-  
+
   loginSuccess: function() {
     this.credentials.save()
     this.controller.stageController.swapScene("main", this.api)
@@ -33,5 +34,5 @@ var LoginAssistant = Class.create(BaseAssistant, {
 
   loginFailure: function() {
     this.controller.stageController.swapScene("credentials", this.credentials, true)
-  }  
+  }
 })
