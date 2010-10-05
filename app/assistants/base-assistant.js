@@ -7,15 +7,17 @@ var BaseAssistant = Class.create({
     var appMenuItems = []
     appMenuItems.push(Mojo.Menu.editItem)
 
-    if(!this.hidePreferences) {
-      appMenuItems.push({label: "Preferences", command: Mojo.Menu.prefsCmd})
-    }
+    if(!this.hideAppMenu) {
+      if(!this.hidePreferences) {
+        appMenuItems.push({label: "Preferences", command: Mojo.Menu.prefsCmd})
+      }
 
-    if(!this.hideLogout) {
-      appMenuItems.push({label: "Logout", command: "logout"})
-    }
+      if(!this.hideLogout) {
+        appMenuItems.push({label: "Logout", command: "logout"})
+      }
 
-    appMenuItems.push({label: "Help", command: Mojo.Menu.helpCmd})
+      appMenuItems.push({label: "Help", command: Mojo.Menu.helpCmd})
+    }
 
     this.controller.setupWidget(Mojo.Menu.appMenu, {omitDefaultItems: true}, {visible: true, items: appMenuItems})
     this.controller.setupWidget("spinner", {spinnerSize: Mojo.Widget.spinnerLarge}, {})
@@ -105,6 +107,15 @@ var BaseAssistant = Class.create({
       if("logout" == event.command) {
         this.controller.stageController.popScenesTo("main", "logout")
       }
+      else if(Mojo.Menu.helpCmd == event.command) {
+        this.controller.stageController.pushScene("help")
+        event.stop()
+      }
+      else if(Mojo.Menu.prefsCmd == event.command) {
+        this.controller.stageController.pushScene("preferences")
+        event.stop()
+      }
+      
     }
   },
 

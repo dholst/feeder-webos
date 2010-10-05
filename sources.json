@@ -21,6 +21,7 @@
 
   {"source": "app/assistants/stage-assistant.js"},
   {"source": "app/assistants/base-assistant.js"},
+  {"source": "app/assistants/help-assistant.js"},
   {"source": "app/assistants/login-assistant.js"},
   {"source": "app/assistants/credentials-assistant.js"},
   {"source": "app/assistants/main-assistant.js"},
