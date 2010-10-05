@@ -44,14 +44,14 @@ var MainAssistant = Class.create(BaseAssistant, {
       this.controller.stageController.swapScene("credentials", creds)
     }
     else {
+      this.filterReadItems(this.sources)
       this.refreshList(this.controller.get("sources"), this.sources.items)
     }
   },
 
   foundEm: function(feeds) {
-    var sources = this.controller.get("sources")
-    sources.mojo.noticeUpdatedItems(0, this.sources.items)
-    sources.mojo.setLength(this.sources.items.length)
+    this.filterReadItems(this.sources)
+    this.refreshList(this.controller.get("sources"), this.sources.items)
     this.smallSpinnerOff()
   },
 

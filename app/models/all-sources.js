@@ -25,14 +25,7 @@ var AllSources = Class.create({
     this.subscriptions.folders.items.each(function(folder) {items.push(folder)})
     this.subscriptions.items.each(function(subscription) {items.push(subscription)})
     this.allArticles.setUnreadCount(this.subscriptions.getUnreadCount())
-    this.filterReadItems()
     this.success()
-  },
-
-  filterReadItems: function() {
-    var filtered = $A(this.items).select(function(item){return item.sticky || item.unreadCount})
-    this.items.clear()
-    this.items.push.apply(this.items, filtered)
   },
 
   articleReadIn: function(subscriptionId) {

@@ -108,4 +108,9 @@ var BaseAssistant = Class.create({
     }
   },
 
+  filterReadItems: function(list) {
+    var filtered = $A(list.items).select(function(item){return item.sticky || item.unreadCount})
+    list.items.clear()
+    list.items.push.apply(list.items, filtered)
+  }
 })
