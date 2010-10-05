@@ -12,9 +12,9 @@ var BaseAssistant = Class.create({
     }
 
     if(!this.hideLogout) {
-      appMenuItems.push({label: "Logout", command: "logout"})      
+      appMenuItems.push({label: "Logout", command: "logout"})
     }
-    
+
     appMenuItems.push({label: "Help", command: Mojo.Menu.helpCmd})
 
     this.controller.setupWidget(Mojo.Menu.appMenu, {omitDefaultItems: true}, {visible: true, items: appMenuItems})
@@ -51,12 +51,12 @@ var BaseAssistant = Class.create({
   },
 
   hideRefreshButton: function() {
-    var button = this.controller.get("refresh")
+    var button = this.controller.sceneElement.querySelector(".my-right-icon")
     if(button) button.hide()
   },
 
   showRefreshButton: function() {
-    var button = this.controller.get("refresh")
+    var button = this.controller.sceneElement.querySelector(".my-right-icon")
     if(button) button.show()
   },
 
