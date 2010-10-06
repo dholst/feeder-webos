@@ -1,12 +1,21 @@
 Preferences = {
   OLDEST_FIRST: "oldest-first",
+  HIDE_READ: "hide-read",
 
   isOldestFirst: function() {
     return this.getCookie(this.OLDEST_FIRST, false)
   },
-  
+
   setOldestFirst: function(oldestFirst) {
     this.setCookie(this.OLDEST_FIRST, oldestFirst)
+  },
+
+  hideRead: function() {
+    return this.getCookie(this.HIDE_READ, true)
+  },
+
+  setHideRead: function(hideRead) {
+    this.setCookie(this.HIDE_READ, hideRead)
   },
 
   getCookie: function(name, defaultValue) {

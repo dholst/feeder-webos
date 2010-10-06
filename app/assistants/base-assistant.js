@@ -115,13 +115,23 @@ var BaseAssistant = Class.create({
         this.controller.stageController.pushScene("preferences")
         event.stop()
       }
-      
+
     }
   },
 
   filterReadItems: function(list) {
-    var filtered = $A(list.items).select(function(item){return item.sticky || item.unreadCount})
-    list.items.clear()
-    list.items.push.apply(list.items, filtered)
+    if(Preferences.hideRead()) {
+      list.originalItems = []
+      list.originalItems.push.apply(list.originalItems, list.items)
+      
+      var filtered = $A(list.items).select(function(item){return item.sticky || item.unreadCount})
+      list.items.clear()
+      list.items.push.apply(list.items, filtered)
+    }
+    else if(list.originalItems) {
+      list.items.clear()
+      list.items.push.apply(list.items, list.originalItems)
+      list.originalItems = null
+    }
   }
 })
