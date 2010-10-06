@@ -79,7 +79,7 @@ var Api = Class.create({
       parameters.xt = exclude
     }
 
-    new Ajax.Request(Api.BASE_URL + "stream/contents/" + id, {
+    new Ajax.Request(Api.BASE_URL + "stream/contents/" + escape(id), {
       method: "get",
       parameters: parameters,
       requestHeaders: this._requestHeaders(),

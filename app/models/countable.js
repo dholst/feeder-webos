@@ -14,7 +14,7 @@ var Countable = Class.create({
     }
     
     this.unreadCountDisplay = count > 999 ? "1000+" : count
-    this.unreadCountDisplay = count == 0 ? "" : count
+    this.unreadCountDisplay = count == 0 ? "" : this.unreadCountDisplay
   },
   
   incrementUnreadCountBy: function(count) {
