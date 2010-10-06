@@ -1,6 +1,7 @@
 var LoginAssistant = Class.create(BaseAssistant, {
   initialize: function($super, credentials) {
     $super()
+    this.hidePreferences = true
     this.credentials = credentials || new Credentials()
     this.api = new Api()
     this.triedLogin = false

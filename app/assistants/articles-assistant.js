@@ -26,14 +26,21 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     this.findArticles()
   },
 
-  activate: function($super) {
+  activate: function($super, changes) {
     $super()
-    this.refreshList(this.controller.get("articles"), this.subscription.items)
+
+    if(changes && changes.sortOrderChanged) {
+      this.subscription.reset()
+      this.findArticles()
+    }
+    else {
+      this.refreshList(this.controller.get("articles"), this.subscription.items)
+    }
   },
 
   cleanup: function($super) {
     $super()
-    this.controller.listen("articles", Mojo.Event.listTap, this.articleTapped)
+    this.controller.stopListening("articles", Mojo.Event.listTap, this.articleTapped)
   },
 
   findArticles: function() {

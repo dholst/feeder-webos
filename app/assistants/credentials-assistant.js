@@ -1,6 +1,7 @@
 var CredentialsAssistant = Class.create(BaseAssistant, {
   initialize: function($super, credentials, showMessage) {
     $super()
+    this.hidePreferences = true
     this.credentials = credentials
     this.showMessage = showMessage
     this.button = {buttonLabel: "Login"}

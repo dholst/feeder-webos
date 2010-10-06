@@ -15,6 +15,7 @@
   {"source": "app/models/starred.js"},
   {"source": "app/models/folders.js"},
   {"source": "app/models/folder.js"},
+  {"source": "app/models/preferences.js"},
 
   {"source": "app/lib/ajax.js"},
   {"source": "app/lib/log.js"},
@@ -22,6 +23,7 @@
   {"source": "app/assistants/stage-assistant.js"},
   {"source": "app/assistants/base-assistant.js"},
   {"source": "app/assistants/help-assistant.js"},
+  {"source": "app/assistants/preferences-assistant.js"},
   {"source": "app/assistants/login-assistant.js"},
   {"source": "app/assistants/credentials-assistant.js"},
   {"source": "app/assistants/main-assistant.js"},
