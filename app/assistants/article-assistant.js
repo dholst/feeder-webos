@@ -73,7 +73,121 @@ var ArticleAssistant = Class.create(BaseAssistant, {
   },
 
   sendTo: function(event) {
+    var items = [
+      {label: "Google", items: [
+        {label: (this.article.isShared ? "Unshare" : "Share"), command: (this.article.isShared ? "unshare-with-google" : "share-with-google")}
+      ]},
 
+      {label: "Twitter", items: [
+        {label: "Bad Kitty", command: "send-to-bad-kitty"}
+      ]},
+
+      {label: "Read Later", items: [
+        {label: "Relego", command: "send-to-relego"},
+        {label: "Spare Time", command: "send-to-spare-time"}
+      ]}
+    ]
+
+    this.controller.popupSubmenu({
+      placeNear: $("sendto"),
+      items: items,
+
+      onChoose: function(command) {
+        switch(command) {
+          case "share-with-google":
+            this.shareWithGoogle()
+            break
+
+          case "unshare-with-google":
+            this.unshareWithGoogle()
+            break
+
+          case "send-to-spare-time":
+            this.sendToSpareTime()
+            break
+
+          case "send-to-relego":
+            this.sendToRelego()
+            break
+
+          case "send-to-bad-kitty":
+            this.sendToBadKitty()
+            break
+        }
+      }.bind(this)
+    })
+  },
+
+  shareWithGoogle: function() {
+    this.article.turnShareOn(function() {
+      Feeder.notify("Article shared.")
+    })
+  },
+
+  unshareWithGoogle: function() {
+    this.article.turnShareOff(function() {
+      Feeder.notify("Article unshared.")
+    })
+  },
+
+  sendToBadKitty: function() {
+    this.controller.serviceRequest("palm://com.palm.applicationManager", {
+      method: "open",
+
+      parameters: {
+        id: "com.superinhuman.badkitty",
+        params: {action: "tweet", tweet: this.article.title + " - " + this.article.url}
+      },
+
+      onFailure: this.offerToInstallApp.bind(this, "Bad Kitty", "com.superinhuman.badkitty")
+    })
+  },
+  
+  sendToSpareTime: function() {
+    this.controller.serviceRequest("palm://com.palm.applicationManager", {
+      method: "open",
+
+      parameters: {
+        id: "com.semicolonapps.sparetime",
+        params: {action: "add_url", url: this.article.url, title: this.article.title}
+      },
+
+      onFailure: this.offerToInstallApp.bind(this, "Spare Time", "com.semicolonapps.sparetime")
+    })
+  },
+  
+  sendToRelego: function() {
+    this.controller.serviceRequest("palm://com.palm.applicationManager", {
+      method: "open",
+
+      parameters: {
+  			id: "com.webosroundup.relego",
+  			params: {action: 'addtorelego', url: this.article.url, title: this.article.title}
+      },
+
+      onFailure: this.offerToInstallApp.bind(this, "Relego", "com.webosroundup.relego")
+    })
+  },
+
+  offerToInstallApp: function(name, id) {
+    this.controller.showAlertDialog({
+      title: $L(name + " is not installed"),
+      message: $L(name + " is not installed. Would you like to install it?"),
+
+      choices:[
+        {label:$L("Yes"), value:"yes", type:"affirmative"},
+        {label:$L("No"), value:"no", type:"dismissal"}
+      ],
+
+      onChoose: function(value){
+        if("yes" == value){
+          this.controller.serviceRequest("palm://com.palm.applicationManager", {
+            method:"open",
+            parameters:{target: "http://developer.palm.com/appredirect/?packageid=" + id}
+          })
+        }
+      }
+    })
   },
 
   openInBrowser: function() {
