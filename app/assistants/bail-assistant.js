@@ -1,0 +1,2 @@
+BailAssistant = Class.create(BaseAssistant, {
+})

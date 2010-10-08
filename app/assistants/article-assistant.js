@@ -142,7 +142,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
       onFailure: this.offerToInstallApp.bind(this, "Bad Kitty", "com.superinhuman.badkitty")
     })
   },
-  
+
   sendToSpareTime: function() {
     this.controller.serviceRequest("palm://com.palm.applicationManager", {
       method: "open",
@@ -155,7 +155,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
       onFailure: this.offerToInstallApp.bind(this, "Spare Time", "com.semicolonapps.sparetime")
     })
   },
-  
+
   sendToRelego: function() {
     this.controller.serviceRequest("palm://com.palm.applicationManager", {
       method: "open",

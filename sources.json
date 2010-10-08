@@ -23,6 +23,7 @@
   {"source": "app/assistants/stage-assistant.js"},
   {"source": "app/assistants/base-assistant.js"},
   {"source": "app/assistants/help-assistant.js"},
+  {"source": "app/assistants/bail-assistant.js"},
   {"source": "app/assistants/preferences-assistant.js"},
   {"source": "app/assistants/login-assistant.js"},
   {"source": "app/assistants/credentials-assistant.js"},

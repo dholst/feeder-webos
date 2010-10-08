@@ -88,7 +88,7 @@ var BaseAssistant = Class.create({
   },
 
   bail: function(message) {
-    Log.debug("Crap, bailing..." + message)
+    this.controller.stageController.pushScene("bail")
   },
 
   sourceRendered: function(listWidget, itemModel, itemNode) {
@@ -123,7 +123,7 @@ var BaseAssistant = Class.create({
     if(Preferences.hideRead()) {
       list.originalItems = []
       list.originalItems.push.apply(list.originalItems, list.items)
-      
+
       var filtered = $A(list.items).select(function(item){return item.sticky || item.unreadCount})
       list.items.clear()
       list.items.push.apply(list.items, filtered)
