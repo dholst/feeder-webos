@@ -23,6 +23,10 @@ var FolderAssistant = Class.create(BaseAssistant, {
     $super()
     this.filterReadItems(this.folders)
     this.refreshList(this.controller.get("folders"), this.folders.items)
+
+    if(!this.folders.items.length) {
+      this.controller.stageController.popScene()
+    }
   },
 
   folderTapped: function(event) {
