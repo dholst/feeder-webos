@@ -118,6 +118,11 @@ body {
   background: url(../images/list.png) center center no-repeat;
 }
 
+.article-title {
+  font-size: 16px;
+  color: #444;
+}
+
 .subscription-title, .subscription-count, .folder-title, .folder-count {
   font-size: 16px;
   color: #444;
