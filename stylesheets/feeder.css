@@ -225,5 +225,10 @@ body {
 }
 
 #summary img {
-  max-width: 250px;
+  max-width: 265px !important;
+  height: auto !important;
+}
+
+#summary p {
+  padding: 5px;
 }
