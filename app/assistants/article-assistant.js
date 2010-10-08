@@ -184,7 +184,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
 
       parameters: {
   			id: "com.palm.app.email",
-        params: {text: this.article.title, summary: this.article.title + "\n\n" + this.article.url}
+        params: {summary: this.article.title, text: this.article.title + "\n\n" + this.article.url}
       }
     })
   },
