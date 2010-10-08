@@ -239,12 +239,17 @@ body {
 }
 
 #summary img {
-  max-width: 265px !important;
+  max-width: 290px !important;
   height: auto !important;
 }
 
 #summary {
-  color: #444;
+  color: #333;
   margin: 10px;
   padding: 5px;
+}
+
+#summary p {
+  padding: 0 !important;
+  padding-bottom: 15px !important;
 }
