@@ -43,6 +43,10 @@ body {
   width: 300px;
 }
 
+.article #title {
+  color: #444;
+}
+
 .article #author, .article #subscription {
   font-size: 14px;
   color: #999;
@@ -239,6 +243,8 @@ body {
   height: auto !important;
 }
 
-#summary p {
+#summary {
+  color: #444;
+  margin: 10px;
   padding: 5px;
 }
