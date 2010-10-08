@@ -7,6 +7,7 @@ var Starred = Class.create(ArticleContainer, {
     this.sticky = true
     this.divideBy = "Home"    
     this.hideDivider = "hide-divider"
+    this.showOrigin = true
   },
 
   makeApiCall: function(continuation, success, failure) {

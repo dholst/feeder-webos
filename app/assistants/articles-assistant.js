@@ -12,7 +12,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
       itemTemplate: "articles/article",
       dividerTemplate: "articles/divider",
   		dividerFunction: this.divide,
-  		onItemRendered: this.itemRendered
+  		onItemRendered: this.itemRendered.bind(this)
     }
 
     this.controller.setupWidget("articles", listAttributes, this.subscription)
@@ -77,6 +77,12 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
   itemRendered: function(listWidget, itemModel, itemNode) {
     if(!itemModel.isRead) {
       $(itemNode).addClassName("unread")
+    }
+
+    if(this.subscription.showOrigin) {
+      var origin = itemNode.down(".article-origin")
+      origin.update(itemModel.origin)
+      origin.show()
     }
   },
 

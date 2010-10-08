@@ -43,7 +43,7 @@ body {
   width: 300px;
 }
 
-.article #author {
+.article #author, .article #subscription {
   font-size: 14px;
   color: #999;
   padding-top: 5px;
@@ -118,9 +118,19 @@ body {
   background: url(../images/list.png) center center no-repeat;
 }
 
+.palm-row .article {
+  padding: 10px;
+}
+
 .article-title {
   font-size: 16px;
   color: #444;
+}
+
+.article-origin {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #999;
 }
 
 .subscription-title, .subscription-count, .folder-title, .folder-count {
