@@ -2,14 +2,15 @@ var ArticleAssistant = Class.create(BaseAssistant, {
   initialize: function($super, article) {
     $super()
     this.article = article
+    this.workingSpinner = {spinning: false}
   },
 
   setup: function($super) {
     $super()
+    this.controller.setupWidget("working-spinner", {spinnerSize: "small"}, this.workingSpinner)
     this.controller.listen("previous-article", Mojo.Event.tap, this.previousArticle = this.previousArticle.bind(this))
     this.controller.listen("next-article", Mojo.Event.tap, this.nextArticle = this.nextArticle.bind(this))
     this.controller.listen("starred", Mojo.Event.tap, this.setStarred = this.setStarred.bind(this))
-    // this.controller.listen("shared", Mojo.Event.tap, this.setShared = this.setShared.bind(this))
     this.controller.listen("read", Mojo.Event.tap, this.setRead = this.setRead.bind(this))
     this.controller.listen("sendto", Mojo.Event.tap, this.sendTo = this.sendTo.bind(this))
     this.controller.listen("header", Mojo.Event.tap, this.openInBrowser = this.openInBrowser.bind(this))
@@ -20,7 +21,6 @@ var ArticleAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("previous-article", Mojo.Event.tap, this.previousArticle)
     this.controller.stopListening("next-article", Mojo.Event.tap, this.nextArticle)
     this.controller.stopListening("starred", Mojo.Event.tap, this.setStarred)
-    // this.controller.stopListening("shared", Mojo.Event.tap, this.setShared)
     this.controller.stopListening("read", Mojo.Event.tap, this.setRead)
     this.controller.stopListening("sendto", Mojo.Event.tap, this.sendTo)
     this.controller.stopListening("header", Mojo.Event.tap, this.openInBrowser)
@@ -51,10 +51,6 @@ var ArticleAssistant = Class.create(BaseAssistant, {
 
   setStarred: function(event) {
     this.toggleState(event.target, "Star")
-  },
-
-  setShared: function(event) {
-    this.toggleState(event.target, "Share")
   },
 
   setRead: function(event) {
@@ -205,24 +201,25 @@ var ArticleAssistant = Class.create(BaseAssistant, {
   },
 
   previousArticle: function() {
-    this.article.getPrevious(function(article) {
-      if(article) {
-        this.controller.stageController.swapScene("article", article)
-      }
-      else {
-        this.controller.stageController.popScene()
-      }
-    }.bind(this))
+    this.article.getPrevious(this.gotAnotherArticle.bind(this), this.loadingMoreArticles.bind(this, "previous-article"))
   },
 
   nextArticle: function() {
-    this.article.getNext(function(article) {
-      if(article) {
-        this.controller.stageController.swapScene("article", article)
-      }
-      else {
-        this.controller.stageController.popScene()
-      }
-    }.bind(this))
+    this.article.getNext(this.gotAnotherArticle.bind(this), this.loadingMoreArticles.bind(this, "next-article"))
+  },
+
+  gotAnotherArticle: function(article) {
+    if(article) {
+      this.controller.stageController.swapScene("article", article)
+    }
+    else {
+      this.controller.stageController.popScene()
+    }
+  },
+
+  loadingMoreArticles: function(arrow) {
+    this.controller.get(arrow).addClassName("working")
+    this.workingSpinner.spinning = true
+    this.controller.modelChanged(this.workingSpinner)
   }
 })

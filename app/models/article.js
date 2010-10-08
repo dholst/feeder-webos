@@ -109,7 +109,7 @@ var Article = Class.create({
     callback(previous)
   },
 
-  getNext: function(callback) {
+  getNext: function(callback, loadingMore) {
     var nextIndex = this.index + 1
     var next = null
 
@@ -119,6 +119,8 @@ var Article = Class.create({
     }
 
     if(next && next.load_more) {
+      loadingMore()
+
       var foundMore = function() {
         next = this.subscription.items[nextIndex]
         next.index = nextIndex

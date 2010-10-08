@@ -154,6 +154,10 @@ body {
   right: 9px;
 }
 
+#footer .spinner {
+  margin-left: 15px;
+}
+
 #footer {
   position: fixed;
   bottom: 0px;
@@ -184,6 +188,10 @@ body {
   background: url(../images/next-article.png) center center no-repeat;
 }
 
+#footer #next-article.working {
+  background: none;
+}
+
 #footer #starred {
   background: url(../images/starred-footer.png) center center no-repeat;
 }
@@ -210,9 +218,6 @@ body {
 
 #footer #shared.on {
   background: url(../images/shared-footer-on.png) center center no-repeat;
-}
-
-#footer .working {
 }
 
 #mark-all-read {
