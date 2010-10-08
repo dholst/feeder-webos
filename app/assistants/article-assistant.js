@@ -78,6 +78,11 @@ var ArticleAssistant = Class.create(BaseAssistant, {
         {label: "Bad Kitty", command: "send-to-bad-kitty"}
       ]},
 
+      {label: "Share", items: [
+        {label: "Email", command: "send-to-email"},
+        {label: "SMS", command: "send-to-sms"}
+      ]},
+
       {label: "Read Later", items: [
         {label: "Relego", command: "send-to-relego"},
         {label: "Spare Time", command: "send-to-spare-time"}
@@ -109,6 +114,14 @@ var ArticleAssistant = Class.create(BaseAssistant, {
           case "send-to-bad-kitty":
             this.sendToBadKitty()
             break
+
+          case "send-to-email":
+            this.sendToEmail()
+            break
+
+          case "send-to-sms":
+            this.sendToSms()
+            break
         }
       }.bind(this)
     })
@@ -132,7 +145,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
 
       parameters: {
         id: "com.superinhuman.badkitty",
-        params: {action: "tweet", tweet: this.article.title + " - " + this.article.url}
+        params: {action: "tweet", tweet: this.article.title + "\n\n" + this.article.url}
       },
 
       onFailure: this.offerToInstallApp.bind(this, "Bad Kitty", "com.superinhuman.badkitty")
@@ -162,6 +175,28 @@ var ArticleAssistant = Class.create(BaseAssistant, {
       },
 
       onFailure: this.offerToInstallApp.bind(this, "Relego", "com.webosroundup.relego")
+    })
+  },
+
+  sendToEmail: function() {
+    this.controller.serviceRequest("palm://com.palm.applicationManager", {
+      method: "open",
+
+      parameters: {
+  			id: "com.palm.app.email",
+        params: {text: this.article.title, summary: this.article.title + "\n\n" + this.article.url}
+      }
+    })
+  },
+
+  sendToSms: function() {
+    this.controller.serviceRequest("palm://com.palm.applicationManager", {
+      method: "open",
+
+      parameters: {
+  			id: "com.palm.app.messaging",
+        params: {messageText: this.article.title + "\n\n" + this.article.url}
+      }
     })
   },
 
