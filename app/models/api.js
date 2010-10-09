@@ -37,7 +37,7 @@ var Api = Class.create({
   getAllArticles: function(continuation, success, failure) {
     this._getArticles(
       "user/-/state/com.google/reading-list",
-      "user/-/state/com.google/read",
+      Preferences.hideReadArticles() ? "user/-/state/com.google/read" : null,
       continuation,
       success,
       failure
@@ -57,7 +57,7 @@ var Api = Class.create({
   getAllArticlesFor: function(id, continuation, success, failure) {
     this._getArticles(
       id,
-      "user/-/state/com.google/read",
+      Preferences.hideReadArticles() ? "user/-/state/com.google/read" : null,
       continuation,
       success,
       failure

@@ -1,6 +1,7 @@
 Preferences = {
   OLDEST_FIRST: "oldest-first",
-  HIDE_READ: "hide-read",
+  HIDE_READ_FEEDS: "hide-read",
+  HIDE_READ_ARTICLES: "hide-read-articles",
 
   isOldestFirst: function() {
     return this.getCookie(this.OLDEST_FIRST, false)
@@ -10,12 +11,20 @@ Preferences = {
     this.setCookie(this.OLDEST_FIRST, oldestFirst)
   },
 
-  hideRead: function() {
-    return this.getCookie(this.HIDE_READ, true)
+  hideReadFeeds: function() {
+    return this.getCookie(this.HIDE_READ_FEEDS, true)
   },
 
-  setHideRead: function(hideRead) {
-    this.setCookie(this.HIDE_READ, hideRead)
+  setHideReadFeeds: function(hideReadFeeds) {
+    this.setCookie(this.HIDE_READ_FEEDS, hideReadFeeds)
+  },
+
+  hideReadArticles: function() {
+    return this.getCookie(this.HIDE_READ_ARTICLES, true)
+  },
+
+  setHideReadArticles: function(hideReadArticles) {
+    this.setCookie(this.HIDE_READ_ARTICLES, hideReadArticles)
   },
 
   getCookie: function(name, defaultValue) {

@@ -120,7 +120,7 @@ var BaseAssistant = Class.create({
   },
 
   filterReadItems: function(list) {
-    if(Preferences.hideRead()) {
+    if(Preferences.hideReadFeeds()) {
       list.originalItems = []
       list.originalItems.push.apply(list.originalItems, list.items)
 

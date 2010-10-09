@@ -29,7 +29,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
   activate: function($super, changes) {
     $super()
 
-    if(changes && changes.sortOrderChanged) {
+    if(changes && (changes.sortOrderChanged || changes.hideReadArticlesChanged)) {
       this.subscription.reset()
       this.findArticles()
     }
