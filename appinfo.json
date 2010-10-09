@@ -1,6 +1,6 @@
 {
 	"id": "com.semicolonapps.feeder.beta",
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"vendor": "SemicolonApps",
 	"type": "web",
 	"main": "index.html",

@@ -7,6 +7,8 @@ var MainAssistant = Class.create(BaseAssistant, {
   setup: function($super) {
     $super()
 
+    Feeder.Metrix.checkBulletinBoard(this.controller, 0);
+
     var listAttributes = {
       itemTemplate: "main/source",
       dividerTemplate: "main/divider",

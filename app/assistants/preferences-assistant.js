@@ -39,14 +39,17 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
   },
 
   setSortOrder: function() {
+    Log.debug("Setting sort order")
     Preferences.setOldestFirst(this.sortOrder.value == "oldest")
   },
 
   setHideReadFeeds: function() {
+    Log.debug("Setting hide read feeds")
     Preferences.setHideReadFeeds(this.hideReadFeeds.value)
   },
 
   setHideReadArticles: function() {
+    Log.debug("Setting hide read articles")
     Preferences.setHideReadArticles(this.hideReadArticles.value)
   },
 

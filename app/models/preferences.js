@@ -1,6 +1,6 @@
 Preferences = {
   OLDEST_FIRST: "oldest-first",
-  HIDE_READ_FEEDS: "hide-read",
+  HIDE_READ_FEEDS: "hide-read-feeds",
   HIDE_READ_ARTICLES: "hide-read-articles",
 
   isOldestFirst: function() {
@@ -39,6 +39,7 @@ Preferences = {
   },
 
   setCookie: function(name, value) {
+    console.log("setting " + name + " to " + value)
     this.cookieFor(name).put(value)
   },
 
