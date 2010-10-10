@@ -35,12 +35,16 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     }
     else {
       this.refreshList(this.controller.get("articles"), this.subscription.items)
-      
+
       if("top" == changes_or_scroll) {
         this.controller.getSceneScroller().mojo.revealTop()
       }
       else if("bottom" == changes_or_scroll) {
         this.controller.getSceneScroller().mojo.revealBottom()
+      }
+      else if(parseInt(changes_or_scroll)) {
+        this.tappedIndex = this.tappedIndex + parseInt(changes_or_scroll)
+        this.controller.get("articles").mojo.revealItem(this.tappedIndex, true)
       }
     }
   },

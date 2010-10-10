@@ -260,5 +260,15 @@ var ArticleAssistant = Class.create(BaseAssistant, {
     this.controller.get(arrow).addClassName("working")
     this.workingSpinner.spinning = true
     this.controller.modelChanged(this.workingSpinner)
+  },
+
+  handleCommand: function($super, event) {
+    if(Mojo.Event.back) {
+      event.stop();
+      this.controller.stageController.popScene(this.scrollingIndex)
+    }
+    else {
+      $super(event)
+    }
   }
 })
