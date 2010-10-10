@@ -38,7 +38,7 @@ var MainAssistant = Class.create(BaseAssistant, {
     this.refresh()
   },
 
-  activate: function($super, command_or_changes) {
+  activate: function($super, command) {
     if("logout" == command) {
       var creds = new Credentials()
       creds.password = false

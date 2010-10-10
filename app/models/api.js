@@ -439,25 +439,25 @@ var Api = Class.create({
   },
 
   getAllSubscriptions: function(success, failure) {
-    success(STATIC_SUBSCRIPTIONS.subscriptions)
-    // new Ajax.Request(Api.BASE_URL + "subscription/list", {
-    //   method: "get",
-    //   parameters: {output: "json"},
-    //   requestHeaders: this._requestHeaders(),
-    //   onFailure: failure,
-    //   onSuccess: function(response) {success(response.responseText.evalJSON().subscriptions)}
-    // })
+    // success(STATIC_SUBSCRIPTIONS.subscriptions)
+    new Ajax.Request(Api.BASE_URL + "subscription/list", {
+      method: "get",
+      parameters: {output: "json"},
+      requestHeaders: this._requestHeaders(),
+      onFailure: failure,
+      onSuccess: function(response) {success(response.responseText.evalJSON().subscriptions)}
+    })
   },
 
   getUnreadCounts: function(success, failure) {
-    success(STATIC_UNREAD_COUNTS.unreadcounts)
-    // new Ajax.Request(Api.BASE_URL + "unread-count", {
-    //   method: "get",
-    //   parameters: {output: "json"},
-    //   requestHeaders: this._requestHeaders(),
-    //   onFailure: failure,
-    //   onSuccess: function(response) {success(response.responseText.evalJSON().unreadcounts)}
-    // })
+    // success(STATIC_UNREAD_COUNTS.unreadcounts)
+    new Ajax.Request(Api.BASE_URL + "unread-count", {
+      method: "get",
+      parameters: {output: "json"},
+      requestHeaders: this._requestHeaders(),
+      onFailure: failure,
+      onSuccess: function(response) {success(response.responseText.evalJSON().unreadcounts)}
+    })
   },
 
   getAllArticles: function(continuation, success, failure) {
