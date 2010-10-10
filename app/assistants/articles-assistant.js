@@ -26,15 +26,22 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     this.findArticles()
   },
 
-  activate: function($super, changes) {
+  activate: function($super, changes_or_scroll) {
     $super()
 
-    if(changes && (changes.sortOrderChanged || changes.hideReadArticlesChanged)) {
+    if(changes_or_scroll && (changes_or_scroll.sortOrderChanged || changes_or_scroll.hideReadArticlesChanged)) {
       this.subscription.reset()
       this.findArticles()
     }
     else {
       this.refreshList(this.controller.get("articles"), this.subscription.items)
+      
+      if("top" == changes_or_scroll) {
+        this.controller.getSceneScroller().mojo.revealTop()
+      }
+      else if("bottom" == changes_or_scroll) {
+        this.controller.getSceneScroller().mojo.revealBottom()
+      }
     }
   },
 
@@ -66,7 +73,8 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     }
     else {
       event.item.index = event.index
-      this.controller.stageController.pushScene("article", event.item)
+      this.tappedIndex = event.index
+      this.controller.stageController.pushScene("article", event.item, 0)
     }
   },
 

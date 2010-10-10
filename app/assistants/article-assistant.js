@@ -1,7 +1,8 @@
 var ArticleAssistant = Class.create(BaseAssistant, {
-  initialize: function($super, article) {
+  initialize: function($super, article, scrollingIndex) {
     $super()
     this.article = article
+    this.scrollingIndex = scrollingIndex
     this.workingSpinner = {spinning: false}
   },
 
@@ -237,19 +238,21 @@ var ArticleAssistant = Class.create(BaseAssistant, {
   },
 
   previousArticle: function() {
+    this.scrollingIndex = this.scrollingIndex - 1
     this.article.getPrevious(this.gotAnotherArticle.bind(this), this.loadingMoreArticles.bind(this, "previous-article"))
   },
 
   nextArticle: function() {
+    this.scrollingIndex = this.scrollingIndex + 1
     this.article.getNext(this.gotAnotherArticle.bind(this), this.loadingMoreArticles.bind(this, "next-article"))
   },
 
   gotAnotherArticle: function(article) {
     if(article) {
-      this.controller.stageController.swapScene("article", article)
+      this.controller.stageController.swapScene("article", article, this.scrollingIndex)
     }
     else {
-      this.controller.stageController.popScene()
+      this.controller.stageController.popScene(this.scrollingIndex < 0 ? "top" : "bottom")
     }
   },
 
