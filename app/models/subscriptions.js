@@ -40,7 +40,6 @@ var Subscriptions = Class.create(Countable, {
   addUnreadCounts: function(success, failure) {
     var onSuccess = function(counts) {
       counts.each(function(count) {
-        console.log(count.count + " " + count.id)
         if(count.id.startsWith("feed")) {
           this.incrementUnreadCountBy(count.count)
 
@@ -50,7 +49,6 @@ var Subscriptions = Class.create(Countable, {
             }
           })
 
-          console.log("adding to folder")
           this.folders.addUnreadCounts(count)
         }
       }.bind(this))

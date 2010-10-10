@@ -11,6 +11,8 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
 
     this.hideReadArticles = {value: Preferences.hideReadArticles()}
     this.originalHideReadArticles = Preferences.hideReadArticles()
+
+    this.backAfterMarkRead = {value: Preferences.goBackAfterMarkAsRead()}
   },
 
   setup: function($super) {
@@ -29,6 +31,9 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
 
     this.controller.setupWidget("hide-read-articles", {}, this.hideReadArticles)
     this.controller.listen("hide-read-articles", Mojo.Event.propertyChange, this.setHideReadArticles = this.setHideReadArticles.bind(this))
+
+    this.controller.setupWidget("back-after-mark-read", {}, this.backAfterMarkRead)
+    this.controller.listen("back-after-mark-read", Mojo.Event.propertyChange, this.setBackAfterMarkRead = this.setBackAfterMarkRead.bind(this))
   },
 
   cleanup: function($super) {
@@ -36,21 +41,23 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("article-sort", Mojo.Event.propertyChange, this.setSortOrder)
     this.controller.stopListening("hide-read-feeds", Mojo.Event.propertyChange, this.setHideReadFeeds)
     this.controller.stopListening("hide-read-articles", Mojo.Event.propertyChange, this.setHideReadArticles)
+    this.controller.stopListening("back-after-mark-read", Mojo.Event.propertyChange, this.setBackAfterMarkRead)
   },
 
   setSortOrder: function() {
-    Log.debug("Setting sort order")
     Preferences.setOldestFirst(this.sortOrder.value == "oldest")
   },
 
   setHideReadFeeds: function() {
-    Log.debug("Setting hide read feeds")
     Preferences.setHideReadFeeds(this.hideReadFeeds.value)
   },
 
   setHideReadArticles: function() {
-    Log.debug("Setting hide read articles")
     Preferences.setHideReadArticles(this.hideReadArticles.value)
+  },
+
+  setBackAfterMarkRead: function() {
+    Preferences.setBackAfterMarkAsRead(this.backAfterMarkRead.value)
   },
 
   handleCommand: function($super) {

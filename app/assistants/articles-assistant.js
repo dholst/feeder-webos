@@ -113,6 +113,10 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
       this.showMarkAllRead()
       this.refreshList(this.controller.get("articles"), this.subscription.items)
       Mojo.Event.send(document, "MassMarkAsRead", {id: this.subscription.id, count: count})
+      
+      if(Preferences.goBackAfterMarkAsRead()) {
+        this.controller.stageController.popScene()
+      }
     }.bind(this))
   }
 })
