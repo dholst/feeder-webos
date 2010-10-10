@@ -31,7 +31,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
 
     if(changes_or_scroll && (changes_or_scroll.sortOrderChanged || changes_or_scroll.hideReadArticlesChanged)) {
       this.subscription.reset()
-      this.findArticles()
+      this.findArticles(true)
     }
     else {
       this.refreshList(this.controller.get("articles"), this.subscription.items)
@@ -54,13 +54,18 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("articles", Mojo.Event.listTap, this.articleTapped)
   },
 
-  findArticles: function() {
+  findArticles: function(scrollToTop) {
     this.smallSpinnerOn()
-    this.subscription.findArticles(this.foundArticles.bind(this), this.bail.bind(this))
+    this.subscription.findArticles(this.foundArticles.bind(this, scrollToTop || false), this.bail.bind(this))
   },
 
-  foundArticles: function() {
+  foundArticles: function(scrollToTop) {
     this.refreshList(this.controller.get("articles"), this.subscription.items)
+    
+    if(scrollToTop) {
+      this.controller.getSceneScroller().mojo.revealTop()
+    }
+    
     this.smallSpinnerOff()
     this.showMarkAllRead()
   },
