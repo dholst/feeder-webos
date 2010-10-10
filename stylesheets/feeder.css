@@ -56,6 +56,7 @@ body {
 .article #right-arrow {
   width: 20px;
   background: url(../images/rightarrow.png) center center no-repeat;
+  z-index: 999999;
 }
 
 .palm-page-header.fixed {

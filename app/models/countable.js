@@ -1,5 +1,6 @@
 var Countable = Class.create({
   initialize: function() {
+    this.unreadCount = 0
   },
   
   clearUnreadCount: function() {

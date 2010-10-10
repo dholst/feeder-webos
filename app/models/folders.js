@@ -7,18 +7,18 @@ var Folders = Class.create({
   clear: function() {
     this.items.clear()
   },
-  
+
   addSubscription: function(id, label, subscription) {
     var folder = this.items.find(function(f) {return f.id == id})
-    
+
     if(!folder) {
       folder = new Folder(label, id)
       this.items.push(folder)
     }
-    
+
     folder.items.push(subscription)
   },
-  
+
   addUnreadCounts: function(count) {
     this.items.each(function(folder) {
       folder.addUnreadCounts(count)
