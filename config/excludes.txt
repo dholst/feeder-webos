@@ -2,3 +2,5 @@
 Rakefile
 spec
 framework
+screenshots
+
