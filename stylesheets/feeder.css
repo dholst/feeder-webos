@@ -33,7 +33,6 @@ body {
   padding: 15px;
   font-size: 16px;
   border-bottom: 1px solid #444;
-  min-height: 50px;
 }
 
 .article #title {
@@ -43,13 +42,19 @@ body {
 .article #author, .article #subscription {
   font-size: 14px;
   color: #999;
-  padding-top: 5px;
+}
+
+#just-header-content {
+  padding-right: 25px;
+  position: relative;
 }
 
 .article #right-arrow {
-  float: right;
+  position: absolute;
+  top: 0;
+  right: 0;
   width: 20px;
-  min-height: 50px;
+  height: 100%;
   background: url(../images/rightarrow.png) right center no-repeat;
 }
 

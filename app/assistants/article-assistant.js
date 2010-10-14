@@ -35,8 +35,6 @@ var ArticleAssistant = Class.create(BaseAssistant, {
     this.controller.get("author").update(this.article.author ? "by " + this.article.author : "")
     this.controller.get("summary").update(this.article.summary)
 
-    this.controller.get("right-arrow").setStyle({"height": this.controller.get("just-header-content").getHeight() + "px"})
-    
     if(this.article.isRead) {
       this.controller.get("read").addClassName("on")
     }
