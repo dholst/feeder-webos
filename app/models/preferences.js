@@ -3,6 +3,7 @@ Preferences = {
   HIDE_READ_FEEDS: "hide-read-feeds",
   HIDE_READ_ARTICLES: "hide-read-articles",
   BACK_AFTER_MARK_AS_READ: "back-after-mark-as-read",
+  ALLOW_LANDSCAPE: "allow-landscape",
 
   isOldestFirst: function() {
     return this.getCookie(this.OLDEST_FIRST, false)
@@ -34,6 +35,14 @@ Preferences = {
 
   setBackAfterMarkAsRead: function(backAfterMarkAsRead) {
     this.setCookie(this.BACK_AFTER_MARK_AS_READ, backAfterMarkAsRead)
+  },
+
+  allowLandscape: function() {
+    return this.getCookie(this.ALLOW_LANDSCAPE, false)
+  },
+
+  setAllowLandscape: function(allowLandscape) {
+    this.setCookie(this.ALLOW_LANDSCAPE, allowLandscape)
   },
 
   getCookie: function(name, defaultValue) {

@@ -4,7 +4,6 @@ var BaseAssistant = Class.create({
   },
 
   setup: function() {
-    this.controller.stageController.setWindowOrientation("free")
     var appMenuItems = []
     appMenuItems.push(Mojo.Menu.editItem)
 
@@ -32,6 +31,7 @@ var BaseAssistant = Class.create({
   },
 
   activate: function() {
+    this.controller.stageController.setWindowOrientation(Preferences.allowLandscape() ? "free" : "up")
   },
 
   deactivate: function() {

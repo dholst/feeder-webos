@@ -3,6 +3,9 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     $super()
     this.hidePreferences = true
 
+    this.allowLandscape = {value: Preferences.allowLandscape()}
+    this.originalAllowLandscape = Preferences.allowLandscape()
+
     this.sortOrder = {value: (Preferences.isOldestFirst() ? "oldest" : "newest")}
     this.originalSortOrder = Preferences.isOldestFirst()
 
@@ -23,6 +26,9 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
       {label: "Sort oldest first", value: "oldest"}
     ]}
 
+    this.controller.setupWidget("allow-landscape", {}, this.allowLandscape)
+    this.controller.listen("allow-landscape", Mojo.Event.propertyChange, this.setAllowLandscape = this.setAllowLandscape.bind(this))
+
     this.controller.setupWidget("article-sort", sortChoices, this.sortOrder)
     this.controller.listen("article-sort", Mojo.Event.propertyChange, this.setSortOrder = this.setSortOrder.bind(this))
 
@@ -38,10 +44,15 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
 
   cleanup: function($super) {
     $super()
+    this.controller.stopListening("allow-landscape", Mojo.Event.propertyChange, this.setAllowLandscape)
     this.controller.stopListening("article-sort", Mojo.Event.propertyChange, this.setSortOrder)
     this.controller.stopListening("hide-read-feeds", Mojo.Event.propertyChange, this.setHideReadFeeds)
     this.controller.stopListening("hide-read-articles", Mojo.Event.propertyChange, this.setHideReadArticles)
     this.controller.stopListening("back-after-mark-read", Mojo.Event.propertyChange, this.setBackAfterMarkRead)
+  },
+
+  setAllowLandscape: function() {
+    Preferences.setAllowLandscape(this.allowLandscape.value)
   },
 
   setSortOrder: function() {
@@ -65,6 +76,10 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
       event.stop();
 
       changes = {}
+
+      if(this.originalAllowLandscape != Preferences.allowLandscape()) {
+        changes.allowLandscapeChanged = true
+      }
 
       if(this.originalSortOrder != Preferences.isOldestFirst()) {
         changes.sortOrderChanged = true
