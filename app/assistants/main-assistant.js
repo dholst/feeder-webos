@@ -7,7 +7,7 @@ var MainAssistant = Class.create(BaseAssistant, {
   setup: function($super) {
     $super()
 
-    Feeder.Metrix.checkBulletinBoard(this.controller, 0);
+    Feeder.Metrix.checkBulletinBoard(this.controller, 20);
 
     var listAttributes = {
       itemTemplate: "main/source",
@@ -40,7 +40,7 @@ var MainAssistant = Class.create(BaseAssistant, {
 
   activate: function($super, command) {
     $super()
-    
+
     if("logout" == command) {
       var creds = new Credentials()
       creds.password = false
