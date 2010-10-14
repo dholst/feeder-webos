@@ -22,8 +22,8 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     $super()
 
     var sortChoices = {choices: [
-      {label: "Sort newest first", value: "newest"},
-      {label: "Sort oldest first", value: "oldest"}
+      {label: $L("Sort newest first"), value: "newest"},
+      {label: $L("Sort oldest first"), value: "oldest"}
     ]}
 
     this.controller.setupWidget("allow-landscape", {}, this.allowLandscape)

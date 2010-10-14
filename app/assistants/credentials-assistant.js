@@ -4,7 +4,7 @@ var CredentialsAssistant = Class.create(BaseAssistant, {
     this.hidePreferences = true
     this.credentials = credentials
     this.showMessage = showMessage
-    this.button = {buttonLabel: "Login"}
+    this.button = {buttonLabel: $L("Login")}
     this.hideLogout = true
   },
 

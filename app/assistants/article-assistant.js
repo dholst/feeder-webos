@@ -32,7 +32,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
     $super()
     this.controller.get("title").update(this.article.title)
     this.controller.get("subscription").update(this.article.origin)
-    this.controller.get("author").update(this.article.author ? "by " + this.article.author : "")
+    this.controller.get("author").update(this.article.author ? $L("by ") + this.article.author : "")
     this.controller.get("summary").update(this.article.summary)
 
     if(this.article.isRead) {
@@ -75,22 +75,22 @@ var ArticleAssistant = Class.create(BaseAssistant, {
 
   sendTo: function(event) {
     var items = [
-      {label: "Google", items: [
-        {label: (this.article.isShared ? "Unshare" : "Share"), command: (this.article.isShared ? "unshare-with-google" : "share-with-google")}
+      {label: $L("Google"), items: [
+        {label: (this.article.isShared ? $L("Unshare") : $L("Share")), command: (this.article.isShared ? "unshare-with-google" : "share-with-google")}
       ]},
 
-      {label: "Twitter", items: [
-        {label: "Bad Kitty", command: "send-to-bad-kitty"}
+      {label: $L("Twitter"), items: [
+        {label: $L("Bad Kitty"), command: "send-to-bad-kitty"}
       ]},
 
-      {label: "Share", items: [
-        {label: "Email", command: "send-to-email"},
-        {label: "SMS", command: "send-to-sms"}
+      {label: $L("Share"), items: [
+        {label: $L("Email"), command: "send-to-email"},
+        {label: $L("SMS"), command: "send-to-sms"}
       ]},
 
-      {label: "Read Later", items: [
-        {label: "Relego", command: "send-to-relego"},
-        {label: "Spare Time", command: "send-to-spare-time"}
+      {label: $L("Read Later"), items: [
+        {label: $L("Relego"), command: "send-to-relego"},
+        {label: $L("Spare Time"), command: "send-to-spare-time"}
       ]}
     ]
 
@@ -134,13 +134,13 @@ var ArticleAssistant = Class.create(BaseAssistant, {
 
   shareWithGoogle: function() {
     this.article.turnShareOn(function() {
-      Feeder.notify("Article shared.")
+      Feeder.notify($L("Article shared."))
     })
   },
 
   unshareWithGoogle: function() {
     this.article.turnShareOff(function() {
-      Feeder.notify("Article unshared.")
+      Feeder.notify($L("Article unshared."))
     })
   },
 
@@ -153,7 +153,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
         params: {action: "tweet", tweet: this.article.title + "\n\n" + this.article.url}
       },
 
-      onFailure: this.offerToInstallApp.bind(this, "Bad Kitty", "com.superinhuman.badkitty")
+      onFailure: this.offerToInstallApp.bind(this, $L("Bad Kitty"), "com.superinhuman.badkitty")
     })
   },
 
@@ -179,7 +179,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
         params: {action: 'addtorelego', url: this.article.url, title: this.article.title}
       },
 
-      onFailure: this.offerToInstallApp.bind(this, "Relego", "com.webosroundup.relego")
+      onFailure: this.offerToInstallApp.bind(this, $L("Relego"), "com.webosroundup.relego")
     })
   },
 
@@ -207,8 +207,8 @@ var ArticleAssistant = Class.create(BaseAssistant, {
 
   offerToInstallApp: function(name, id) {
     this.controller.showAlertDialog({
-      title: $L(name + " is not installed"),
-      message: $L(name + " is not installed. Would you like to install it?"),
+      title: name + $L(" is not installed"),
+      message: name + $L(" is not installed. Would you like to install it?"),
 
       choices:[
         {label:$L("Yes"), value:"yes", type:"affirmative"},

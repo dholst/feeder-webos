@@ -18,7 +18,7 @@ var LoginAssistant = Class.create(BaseAssistant, {
       else {
         this.triedLogin = true
         Log.debug("logging in as " + this.credentials.email)
-        this.spinnerOn("logging in...")
+        this.spinnerOn($L("logging in..."))
         this.api.login(this.credentials, this.loginSuccess.bind(this), this.loginFailure.bind(this))
       }
     }

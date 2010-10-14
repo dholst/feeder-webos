@@ -9,14 +9,14 @@ var BaseAssistant = Class.create({
 
     if(!this.hideAppMenu) {
       if(!this.hidePreferences) {
-        appMenuItems.push({label: "Preferences", command: Mojo.Menu.prefsCmd})
+        appMenuItems.push({label: $L("Preferences"), command: Mojo.Menu.prefsCmd})
       }
 
       if(!this.hideLogout) {
-        appMenuItems.push({label: "Logout", command: "logout"})
+        appMenuItems.push({label: $L("Logout"), command: "logout"})
       }
 
-      appMenuItems.push({label: "Help", command: Mojo.Menu.helpCmd})
+      appMenuItems.push({label: $L("Help"), command: Mojo.Menu.helpCmd})
     }
 
     this.controller.setupWidget(Mojo.Menu.appMenu, {omitDefaultItems: true}, {visible: true, items: appMenuItems})
