@@ -4,6 +4,7 @@ var BaseAssistant = Class.create({
   },
 
   setup: function() {
+    this.controller.stageController.setWindowOrientation("free")
     var appMenuItems = []
     appMenuItems.push(Mojo.Menu.editItem)
 

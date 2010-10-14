@@ -30,17 +30,10 @@ body {
 .article #header {
   background-color: #eeecea;
   color: #666;
-  padding: 10px;
+  padding: 15px;
   font-size: 16px;
   border-bottom: 1px solid #444;
   min-height: 50px;
-  padding-right: 50px;
-}
-
-.article #header table {
-  padding: 0;
-  margin: 0;
-  width: 300px;
 }
 
 .article #title {
@@ -54,9 +47,10 @@ body {
 }
 
 .article #right-arrow {
+  float: right;
   width: 20px;
-  background: url(../images/rightarrow.png) center center no-repeat;
-  z-index: 999999;
+  min-height: 50px;
+  background: url(../images/rightarrow.png) right center no-repeat;
 }
 
 .palm-page-header.fixed {
