@@ -344,13 +344,13 @@ var ArticleAssistant = Class.create(BaseAssistant, {
       return
     }
 
-    if (Math.abs(this.dragLocation.last.x - this.dragLocation.start.x) > 120 && (this.dragLocation.last.timeStamp-2) < this.dragLocation.start.timeStamp) {
-      // if ((this.dragLocation.last.x - this.dragLocation.start.x) > 0) {
-      //  this.goToPreviousArticle()
-      // }
-      // else {
-      //  this.goToNextArticle()
-      // }
+    if (Math.abs(this.dragLocation.last.x - this.dragLocation.start.x) > 50 && (this.dragLocation.last.timeStamp-2) < this.dragLocation.start.timeStamp) {
+      if ((this.dragLocation.last.x - this.dragLocation.start.x) > 0) {
+       this.previousArticle()
+      }
+      else {
+       this.nextArticle()
+      }
     }
     else {
       this.dragLocation = false
