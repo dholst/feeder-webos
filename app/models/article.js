@@ -7,7 +7,7 @@ var Article = Class.create({
     this.title = data.title
     this.author = data.author
     this.origin = data.origin ? data.origin.title : null
-    var content = data.content || data.summary
+    var content = data.content || data.summary || {content: ""}
     this.summary = this.cleanUp(content.content)
     this.setStates(data.categories)
     this.setDates(parseInt(data.crawlTimeMsec))
