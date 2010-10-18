@@ -43,10 +43,6 @@ var ArticleAssistant = Class.create(BaseAssistant, {
       this.controller.get("starred").addClassName("on")
     }
 
-    if(this.article.isShared) {
-      this.controller.get("shared").addClassName("on")
-    }
-
     if(!this.article.isRead) {
       this.toggleState(this.controller.get("read"), "Read")
     }
