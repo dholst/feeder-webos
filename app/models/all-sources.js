@@ -41,5 +41,21 @@ var AllSources = Class.create({
     this.subscriptions.folders.items.each(function(folder) {
       folder.recalculateUnreadCounts()
     })
+  },
+
+  nukedEmAll: function() {
+    this.allArticles.clearUnreadCount()
+
+    this.subscriptions.items.each(function(subscription) {
+      subscription.clearUnreadCount()
+    })
+
+    this.subscriptions.folders.items.each(function(folder) {
+      folder.items.each(function(subscription) {
+        subscription.clearUnreadCount()
+      })
+
+      folder.recalculateUnreadCounts()
+    })
   }
 })

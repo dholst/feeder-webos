@@ -71,9 +71,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
   },
 
   showMarkAllRead: function() {
-    if(this.subscription.markAllRead) {
-      this.controller.get("mark-all-read").show()
-    }
+    this.controller.get("mark-all-read")[this.subscription.canMarkAllRead ? "show" : "hide"]()
   },
 
   articleTapped: function(event) {

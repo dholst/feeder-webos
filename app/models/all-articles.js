@@ -8,6 +8,7 @@ var AllArticles = Class.create(ArticleContainer, {
     this.divideBy = "Home"
     this.hideDivider = "hide-divider"
     this.showOrigin = true
+    this.canMarkAllRead = true
   },
 
   makeApiCall: function(continuation, success, failure) {
@@ -20,5 +21,13 @@ var AllArticles = Class.create(ArticleContainer, {
 
   articleNotRead: function(subscriptionId) {
     this.incrementUnreadCountBy(1)
+  },
+  
+  markAllRead: function(success) {
+    this.api.markAllRead(this.id, function() {
+      this.clearUnreadCount()
+      this.items.each(function(item) {item.isRead = true})
+      success()
+    }.bind(this))
   }
 })

@@ -86,6 +86,11 @@ var MainAssistant = Class.create(BaseAssistant, {
   },
 
   massMarkAsRead: function(event) {
-    this.sources.massMarkAsRead(event.count)
+    if(event.id == "user/-/state/com.google/reading-list") {
+      this.sources.nukedEmAll()
+    }
+    else {
+      this.sources.massMarkAsRead(event.count)
+    }
   }
 })
