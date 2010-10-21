@@ -18,6 +18,12 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     this.controller.setupWidget("articles", listAttributes, this.subscription)
     this.controller.listen("articles", Mojo.Event.listTap, this.articleTapped = this.articleTapped.bind(this))
     this.controller.listen("mark-all-read", Mojo.Event.tap, this.markAllRead = this.markAllRead.bind(this))
+
+    this.controller.listen("articles", Mojo.Event.dragStart, this.dragStart = this.dragStart.bind(this))
+		this.deleteTemplateNode = Mojo.View.convertToNode(
+		  Mojo.View.render({template: Mojo.Widget.getSystemTemplatePath("list/spacer-item")}),
+			this.controller.document
+		)
   },
 
   ready: function($super) {
@@ -52,6 +58,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
   cleanup: function($super) {
     $super()
     this.controller.stopListening("articles", Mojo.Event.listTap, this.articleTapped)
+    this.controller.stopListening("articles", Mojo.Event.dragStart, this.dragStart)
   },
 
   findArticles: function(scrollToTop) {
@@ -61,11 +68,11 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
 
   foundArticles: function(scrollToTop) {
     this.refreshList(this.controller.get("articles"), this.subscription.items)
-    
+
     if(scrollToTop) {
       this.controller.getSceneScroller().mojo.revealTop()
     }
-    
+
     this.smallSpinnerOff()
     this.showMarkAllRead()
   },
@@ -111,10 +118,59 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
       this.showMarkAllRead()
       this.refreshList(this.controller.get("articles"), this.subscription.items)
       Mojo.Event.send(document, "MassMarkAsRead", {id: this.subscription.id, count: count})
-      
+
       if(Preferences.goBackAfterMarkAsRead()) {
         this.controller.stageController.popScene()
       }
     }.bind(this))
-  }
+  },
+
+  dragStart: function(event) {
+    var node
+
+    console.log(event.filteredDistance.x)
+    console.log(event.filteredDistance.y)
+    
+    if(Math.abs(event.filteredDistance.x) > 2 * Math.abs(event.filteredDistance.y)) {
+      node = event.target
+
+    	if(node) {
+    	  Mojo.Drag.setupDropContainer(node, this)
+    	  Mojo.Drag.startDragging(this.controller, node, event.down, {
+          preventVertical: true,
+          draggingClass: "palm-delete-element",
+          preventDropReset: false,
+          maxHorizontalPixel: 100
+				})
+
+				event.stop();
+    	}
+		}
+  },
+
+  dragEnter: function(item) {
+		var itemHeight = item.getHeight();
+		this.dragHeight = itemHeight;
+		this.dragAdjNode = undefined;
+		this.insertDeleteSpacer(item);
+		item._mojoOrigOffsetLeft = item.offsetLeft;
+	},
+
+	insertDeleteSpacer: function(itemNode) {
+		var spacer = this.deleteTemplateNode.cloneNode(true)
+		var heightNodes, i, height
+		$$('.palm-list')[0].insertBefore(spacer, itemNode)
+		itemNode._mojoDeleteSpacer = spacer
+		itemNode._mojoOriginalHeight = itemNode._mojoOriginalHeight || Element.getHeight(itemNode)
+		height = itemNode._mojoOriginalHeight + 'px'
+		spacer.style.height = height
+
+		heightNodes = spacer.querySelectorAll("div[x-mojo-set-height]")
+
+		for(i = 0; i < heightNodes.length; i++) {
+			heightNodes[i].style.height = height
+		}
+
+    // this.copyListClasses(spacer, itemNode);
+	}
 })
