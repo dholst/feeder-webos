@@ -128,20 +128,24 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
   dragStart: function(event) {
     var node
 
-    console.log(event.filteredDistance.x)
-    console.log(event.filteredDistance.y)
-    
-    if(Math.abs(event.filteredDistance.x) > 2 * Math.abs(event.filteredDistance.y)) {
-      node = event.target
+    if(Math.abs(event.filteredDistance.x) > 2) {
+      node = event.target.up(".palm-row")
 
     	if(node) {
     	  Mojo.Drag.setupDropContainer(node, this)
-    	  Mojo.Drag.startDragging(this.controller, node, event.down, {
-          preventVertical: true,
-          draggingClass: "palm-delete-element",
-          preventDropReset: false,
-          maxHorizontalPixel: 100
-				})
+
+    	  node._mojoSwipeDeleteDragger = true;
+    	  node._mojoSwipeDeleteDragger = Mojo.Drag.startDragging(
+    	    this.controller,
+    	    node,
+    	    event.down,
+    	    {
+            preventVertical: true,
+            draggingClass: "palm-delete-element",
+            preventDropReset: false
+            // maxHorizontalPixel: 100
+				  }
+				)
 
 				event.stop();
     	}
@@ -156,10 +160,19 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
 		item._mojoOrigOffsetLeft = item.offsetLeft;
 	},
 
+	dragDrop: function(element, newItem) {
+    element._mojoSwipeDeleteDragger.resetElement()
+    delete element._mojoSwipeDeleteDragger
+    
+    element._mojoDeleteSpacer.remove()
+    delete element._mojoDeleteSpacer
+  },
+
 	insertDeleteSpacer: function(itemNode) {
 		var spacer = this.deleteTemplateNode.cloneNode(true)
 		var heightNodes, i, height
-		$$('.palm-list')[0].insertBefore(spacer, itemNode)
+		console.log(itemNode.innerHTML)
+		itemNode.insert({before: spacer})
 		itemNode._mojoDeleteSpacer = spacer
 		itemNode._mojoOriginalHeight = itemNode._mojoOriginalHeight || Element.getHeight(itemNode)
 		height = itemNode._mojoOriginalHeight + 'px'
