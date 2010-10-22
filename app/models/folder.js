@@ -1,10 +1,10 @@
-var Folder = Class.create(Countable, {
+var Folder = Class.create(ArticleContainer, {
   initialize: function(title, id) {
     this.id = id
     this.title = title
     this.icon = "folder"
     this.divideBy = "Folders"
-    this.items = []
+    this.items = [this]
     this.setUnreadCount(0)
   },
 
