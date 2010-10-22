@@ -127,7 +127,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
   },
 
   dragStart: function(event) {
-    if(Math.abs(event.filteredDistance.x) > 5) {
+		if(Math.abs(event.filteredDistance.x) > 2 * Math.abs(event.filteredDistance.y)) {
       var node = this._getNodeFrom(event)
 
   	  Mojo.Drag.setupDropContainer(node, this)
