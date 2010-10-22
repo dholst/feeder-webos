@@ -65,6 +65,15 @@ var Article = Class.create({
     return s.substr(s.length - 2)
   },
 
+  toggleRead: function() {
+    if(this.isRead) {
+      this.turnReadOff(function() {})
+    }
+    else {
+      this.turnReadOn(function() {})
+    }
+  },
+  
   turnReadOn: function(done) {
     this._setState("Read", "isRead", true, done)
   },
@@ -90,8 +99,9 @@ var Article = Class.create({
   },
 
   _setState: function(apiState, localProperty, localValue, done) {
+    this[localProperty] = localValue
+
     this.api["setArticle" + apiState](this.id, this.subscriptionId, function() {
-      this[localProperty] = localValue
       Mojo.Event.send(document, "Article" + apiState, {subscriptionId: this.subscriptionId})
       done()
     }.bind(this))

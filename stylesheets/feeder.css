@@ -1,3 +1,12 @@
+.palm-drag-spacer {
+  background-color: #aaa;
+}
+
+.palm-drag-spacer .release {
+  font-size: 14px;
+  padding-left: 10px;
+}
+
 .clear {
   clear: both;
 }

@@ -8,6 +8,8 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
   setup: function($super) {
     $super()
 
+		this.spacerTemplate = Mojo.View.convertToNode(Mojo.View.render({template: "articles/spacer"}), this.controller.document)
+
     var listAttributes = {
       itemTemplate: "articles/article",
       dividerTemplate: "articles/divider",
@@ -18,12 +20,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     this.controller.setupWidget("articles", listAttributes, this.subscription)
     this.controller.listen("articles", Mojo.Event.listTap, this.articleTapped = this.articleTapped.bind(this))
     this.controller.listen("mark-all-read", Mojo.Event.tap, this.markAllRead = this.markAllRead.bind(this))
-
     this.controller.listen("articles", Mojo.Event.dragStart, this.dragStart = this.dragStart.bind(this))
-		this.deleteTemplateNode = Mojo.View.convertToNode(
-		  Mojo.View.render({template: Mojo.Widget.getSystemTemplatePath("list/spacer-item")}),
-			this.controller.document
-		)
   },
 
   ready: function($super) {
@@ -125,65 +122,78 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     }.bind(this))
   },
 
+  _getNodeFrom: function(event) {
+    return event.target.up(".palm-row")
+  },
+
   dragStart: function(event) {
-    var node
+    if(Math.abs(event.filteredDistance.x) > 5) {
+      var node = this._getNodeFrom(event)
 
-    if(Math.abs(event.filteredDistance.x) > 2) {
-      node = event.target.up(".palm-row")
+  	  Mojo.Drag.setupDropContainer(node, this)
 
-    	if(node) {
-    	  Mojo.Drag.setupDropContainer(node, this)
+  	  node._dragger = Mojo.Drag.startDragging(
+  	    this.controller,
+  	    node,
+  	    event.down,
+  	    {
+          preventVertical: true,
+          draggingClass: "palm-delete-element",
+          preventDropReset: false
+  		  }
+  		)
 
-    	  node._mojoSwipeDeleteDragger = true;
-    	  node._mojoSwipeDeleteDragger = Mojo.Drag.startDragging(
-    	    this.controller,
-    	    node,
-    	    event.down,
-    	    {
-            preventVertical: true,
-            draggingClass: "palm-delete-element",
-            preventDropReset: false
-            // maxHorizontalPixel: 100
-				  }
-				)
-
-				event.stop();
-    	}
+  		event.stop()
 		}
   },
 
   dragEnter: function(item) {
-		var itemHeight = item.getHeight();
-		this.dragHeight = itemHeight;
-		this.dragAdjNode = undefined;
-		this.insertDeleteSpacer(item);
-		item._mojoOrigOffsetLeft = item.offsetLeft;
+		var itemHeight = item.getHeight()
+		this.dragHeight = itemHeight
+		this.dragAdjNode = undefined
+		this.insertSpacer(item)
 	},
 
-	dragDrop: function(element, newItem) {
-    element._mojoSwipeDeleteDragger.resetElement()
-    delete element._mojoSwipeDeleteDragger
-    
-    element._mojoDeleteSpacer.remove()
-    delete element._mojoDeleteSpacer
+  dragHover: function(element) {
+    var releaseMessage = element._spacer.down(".release")
+
+    if(element.offsetLeft > 100) {
+      element._toggleIt = true
+      releaseMessage.show()
+    }
+    else {
+      element._toggleIt = false
+      releaseMessage.hide()
+    }
   },
 
-	insertDeleteSpacer: function(itemNode) {
-		var spacer = this.deleteTemplateNode.cloneNode(true)
-		var heightNodes, i, height
-		console.log(itemNode.innerHTML)
+	dragDrop: function(element) {
+    element._dragger.resetElement()
+    delete element._dragger
+
+    element._spacer.remove()
+    delete element._spacer
+
+	  if(element._toggleIt) {
+	    element._mojoListItemModel.toggleRead()
+	    this.refreshList(this.controller.get("articles"), this.subscription.items)
+	  }
+  },
+
+	insertSpacer: function(itemNode) {
+		var spacer = this.spacerTemplate.cloneNode(true)
+		spacer.down(".read-or-unread").update(itemNode._mojoListItemModel.isRead ? "Unread" : "Read")
 		itemNode.insert({before: spacer})
-		itemNode._mojoDeleteSpacer = spacer
-		itemNode._mojoOriginalHeight = itemNode._mojoOriginalHeight || Element.getHeight(itemNode)
-		height = itemNode._mojoOriginalHeight + 'px'
+		itemNode._spacer = spacer
+
+		var height = Element.getHeight(itemNode) + 'px'
 		spacer.style.height = height
+		spacer.down(".release").style.lineHeight = height
 
-		heightNodes = spacer.querySelectorAll("div[x-mojo-set-height]")
+    var heightNodes = spacer.querySelectorAll("div[x-mojo-set-height]")
 
-		for(i = 0; i < heightNodes.length; i++) {
-			heightNodes[i].style.height = height
-		}
-
-    // this.copyListClasses(spacer, itemNode);
+    for(var i = 0; i < heightNodes.length; i++) {
+      heightNodes[i].style.height = height
+    }
 	}
 })
