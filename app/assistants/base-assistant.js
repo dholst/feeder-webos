@@ -120,19 +120,21 @@ var BaseAssistant = Class.create({
     }
   },
 
-  filterReadItems: function(list) {
-    if(Preferences.hideReadFeeds()) {
-      list.originalItems = []
-      list.originalItems.push.apply(list.originalItems, list.items)
+  filterReadItems: function(list, itemsProperty) {
+    itemsProperty = itemsProperty || "items"
 
-      var filtered = $A(list.items).select(function(item){return item.sticky || item.unreadCount})
-      list.items.clear()
-      list.items.push.apply(list.items, filtered)
+    if(Preferences.hideReadFeeds()) {
+      list["original" + itemsProperty] = []
+      list["original" + itemsProperty].push.apply(list["original" + itemsProperty], list[itemsProperty])
+
+      var filtered = $A(list[itemsProperty]).select(function(item){return item.sticky || item.unreadCount})
+      list[itemsProperty].clear()
+      list[itemsProperty].push.apply(list[itemsProperty], filtered)
     }
-    else if(list.originalItems) {
-      list.items.clear()
-      list.items.push.apply(list.items, list.originalItems)
-      list.originalItems = null
+    else if(list["original" + itemsProperty]) {
+      list[itemsProperty].clear()
+      list[itemsProperty].push.apply(list[itemsProperty], list["original" + itemsProperty])
+      list["original" + itemsProperty] = null
     }
   }
 })

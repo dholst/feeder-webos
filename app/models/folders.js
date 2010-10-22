@@ -12,11 +12,11 @@ var Folders = Class.create({
     var folder = this.items.find(function(f) {return f.id == id})
 
     if(!folder) {
-      folder = new Folder(label, id)
+      folder = new Folder(this.api, label, id)
       this.items.push(folder)
     }
 
-    folder.items.push(subscription)
+    folder.subscriptions.push(subscription)
   },
 
   addUnreadCounts: function(count) {

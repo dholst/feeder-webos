@@ -51,7 +51,7 @@ var AllSources = Class.create({
     })
 
     this.subscriptions.folders.items.each(function(folder) {
-      folder.items.each(function(subscription) {
+      folder.subscriptions.each(function(subscription) {
         subscription.clearUnreadCount()
       })
 

@@ -1,12 +1,12 @@
 var FolderAssistant = Class.create(BaseAssistant, {
-  initialize: function($super, folders) {
+  initialize: function($super, folder) {
     $super()
-    this.folders = folders
+    this.folder = folder
   },
 
   setup: function($super) {
     $super()
-    this.controller.setupWidget("folders", {itemTemplate: "folder/folder", onItemRendered: this.folderRendered}, this.folders)
+    this.controller.setupWidget("folders", {itemTemplate: "folder/folder", onItemRendered: this.folderRendered, itemsProperty: "subscriptions"}, this.folder)
     this.controller.listen("folders", Mojo.Event.listTap, this.folderTaped = this.folderTapped.bind(this))
   },
 
@@ -16,15 +16,15 @@ var FolderAssistant = Class.create(BaseAssistant, {
   },
 
   ready: function($super) {
-    this.controller.get("header").update(this.folders.title)
+    this.controller.get("header").update(this.folder.title)
   },
 
   activate: function($super) {
     $super()
-    this.filterReadItems(this.folders)
-    this.refreshList(this.controller.get("folders"), this.folders.items)
+    this.filterReadItems(this.folder, "subscriptions")
+    this.refreshList(this.controller.get("folders"), this.folder.subscriptions)
 
-    if(!this.folders.items.length) {
+    if(!this.folder.subscriptions.length) {
       this.controller.stageController.popScene()
     }
   },
