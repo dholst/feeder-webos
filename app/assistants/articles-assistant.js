@@ -155,15 +155,21 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
 	},
 
   dragHover: function(element) {
-    var releaseMessage = element._spacer.down(".release")
+    element._toggleRead = element.offsetLeft > 50
+    var spacer = element._spacer.down(".palm-drag-spacer")
 
-    if(element.offsetLeft > 100) {
-      element._toggleIt = true
-      releaseMessage.show()
+    if(element._mojoListItemModel.isRead) {
+      spacer.addClassName("swipe-read")
+      spacer.removeClassName("swipe-not-read")
     }
     else {
-      element._toggleIt = false
-      releaseMessage.hide()
+      spacer.addClassName("swipe-not-read")
+      spacer.removeClassName("swipe-read")
+    }
+
+    if(element._toggleRead) {
+      spacer.toggleClassName("swipe-read")
+      spacer.toggleClassName("swipe-not-read")
     }
   },
 
@@ -174,7 +180,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     element._spacer.remove()
     delete element._spacer
 
-	  if(element._toggleIt) {
+	  if(element._toggleRead) {
 	    element._mojoListItemModel.toggleRead()
 	    this.refreshList(this.controller.get("articles"), this.subscription.items)
 	  }
@@ -182,13 +188,11 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
 
 	insertSpacer: function(itemNode) {
 		var spacer = this.spacerTemplate.cloneNode(true)
-		spacer.down(".read-or-unread").update(itemNode._mojoListItemModel.isRead ? "Unread" : "Read")
 		itemNode.insert({before: spacer})
 		itemNode._spacer = spacer
 
 		var height = Element.getHeight(itemNode) + 'px'
 		spacer.style.height = height
-		spacer.down(".release").style.lineHeight = height
 
     var heightNodes = spacer.querySelectorAll("div[x-mojo-set-height]")
 

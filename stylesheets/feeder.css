@@ -1,7 +1,3 @@
-.palm-drag-spacer {
-  background-color: #aaa;
-}
-
 .palm-drag-spacer .release {
   font-size: 14px;
   padding-left: 10px;
@@ -261,4 +257,12 @@ body {
 #summary p {
   padding: 0 !important;
   padding-bottom: 15px !important;
+}
+
+.palm-drag-spacer.swipe-read {
+  background: #aaa url(../images/read-footer-on.png) no-repeat 15px center;
+}
+
+.palm-drag-spacer.swipe-not-read {
+  background: #aaa url(../images/read-footer.png) no-repeat 15px center;
 }
