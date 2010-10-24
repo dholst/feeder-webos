@@ -155,21 +155,24 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
 	},
 
   dragHover: function(element) {
-    element._toggleRead = element.offsetLeft > 50
-    var spacer = element._spacer.down(".palm-drag-spacer")
+    var spacer = element._spacer
+    spacer.setAttribute("class", "palm-swipe-container");
 
-    if(element._mojoListItemModel.isRead) {
-      spacer.addClassName("swipe-read")
-      spacer.removeClassName("swipe-not-read")
-    }
-    else {
-      spacer.addClassName("swipe-not-read")
-      spacer.removeClassName("swipe-read")
-    }
+    spacer.addClassName(element.offsetLeft > 0 ? "swipe-right" : "swipe-left")
+    spacer.addClassName(element._mojoListItemModel.isRead ? "swipe-read" : "swipe-not-read")
+    spacer.addClassName(element._mojoListItemModel.isStarred ? "swipe-starred" : "swipe-not-starred")
+
+    element._toggleRead = element.offsetLeft > 50
+    element._toggleStarred = element.offsetLeft < -50
 
     if(element._toggleRead) {
       spacer.toggleClassName("swipe-read")
       spacer.toggleClassName("swipe-not-read")
+    }
+
+    if(element._toggleStarred) {
+      spacer.toggleClassName("swipe-starred")
+      spacer.toggleClassName("swipe-not-starred")
     }
   },
 
@@ -183,6 +186,10 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
 	  if(element._toggleRead) {
 	    element._mojoListItemModel.toggleRead()
 	    this.refreshList(this.controller.get("articles"), this.subscription.items)
+	  }
+	  
+	  if(element._toggleStarred) {
+	    element._mojoListItemModel.toggleStarred()
 	  }
   },
 

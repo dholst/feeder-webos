@@ -259,10 +259,18 @@ body {
   padding-bottom: 15px !important;
 }
 
-.palm-drag-spacer.swipe-read {
-  background: #aaa url(../images/read-footer-on.png) no-repeat 15px center;
+.palm-swipe-container.swipe-right.swipe-read .palm-drag-spacer {
+  background: #aaa url(../images/read-footer-on.png) no-repeat 5% center;
 }
 
-.palm-drag-spacer.swipe-not-read {
-  background: #aaa url(../images/read-footer.png) no-repeat 15px center;
+.palm-swipe-container.swipe-right.swipe-not-read .palm-drag-spacer {
+  background: #aaa url(../images/read-footer.png) no-repeat 5% center;
+}
+
+.palm-swipe-container.swipe-left.swipe-starred .palm-drag-spacer {
+  background: #aaa url(../images/starred-footer-on.png) no-repeat 95% center;
+}
+
+.palm-swipe-container.swipe-left.swipe-not-starred .palm-drag-spacer {
+  background: #aaa url(../images/starred-footer.png) no-repeat 95% center;
 }

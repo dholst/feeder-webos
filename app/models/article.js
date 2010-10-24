@@ -73,6 +73,15 @@ var Article = Class.create({
       this.turnReadOn(function() {})
     }
   },
+
+  toggleStarred: function() {
+    if(this.isStarred) {
+      this.turnStarOff(function() {})
+    }
+    else {
+      this.turnStarOn(function() {})
+    }
+  },
   
   turnReadOn: function(done) {
     this._setState("Read", "isRead", true, done)
