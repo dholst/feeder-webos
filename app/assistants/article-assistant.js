@@ -26,6 +26,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("sendto", Mojo.Event.tap, this.sendTo)
     this.controller.stopListening("header", Mojo.Event.tap, this.openInBrowser)
     this.removeAnchorFix()
+    this.removeLoadImage()
   },
 
   ready: function($super) {
@@ -48,6 +49,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
     }
 
     this.addAnchorFix()
+    this.addLoadImage()
   },
 
   setStarred: function(event) {
@@ -271,6 +273,34 @@ var ArticleAssistant = Class.create(BaseAssistant, {
     }
   },
 
+  loadImage: function(event) {
+		var img = event.target || event.srcElement
+		
+    this.controller.serviceRequest("palm://com.palm.applicationManager", {
+      method: "open",
+      parameters: {
+        id: "com.palm.app.browser",
+        params: {
+          target: img.src
+        }
+      }
+    })
+  },
+  
+  addLoadImage: function() {
+    this.loadImage = this.loadImage.bind(this)
+    
+    $$("#summary img").each(function(img) {
+      img.observe(Mojo.Event.hold, this.loadImage)
+    }.bind(this))
+  },
+  
+  removeLoadImage: function() {
+    $$("#summary img").each(function(img) {
+      img.stopObserving(Mojo.Event.hold, this.loadImage)
+    }.bind(this))
+  },
+  
   //
   // Prevent tapping link while scrolling, from http://github.com/deliciousmorsel/Feeds/blob/master/app/assistants/view-article-assistant.js
   //
