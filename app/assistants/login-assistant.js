@@ -8,6 +8,26 @@ var LoginAssistant = Class.create(BaseAssistant, {
     this.hideLogout = true
   },
 
+  setup: function($super) {
+    $super()
+
+    this.controller.serviceRequest('palm://com.palm.systemservice/time', {
+      method: 'getSystemTime',
+      parameters: {},
+
+      onSuccess: function(response) {
+        if(Feeder.Metrix.isExpired(response.utc, 7)) {
+          this.controller.showAlertDialog({
+            title: $L("Beta Expired"),
+            message: $L("This beta version has expired."),
+            onChoose: function(value) {Mojo.Controller.getAppController().closeAllStages()},
+            choices:[{label:$L("OK"), value:""}]
+          })
+        }
+      }.bind(this)
+    })
+  },
+
   activate: function($super) {
     $super()
 
