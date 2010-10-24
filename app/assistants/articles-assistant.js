@@ -79,10 +79,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
   },
 
   articleTapped: function(event) {
-    if(event.item.load_more) {
-      this.findArticles()
-    }
-    else {
+    if(!event.item.load_more) {
       event.item.index = event.index
       this.tappedIndex = event.index
       this.controller.stageController.pushScene("article", event.item, 0)
@@ -94,14 +91,19 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
   },
 
   itemRendered: function(listWidget, itemModel, itemNode) {
-    if(!itemModel.isRead) {
-      $(itemNode).addClassName("unread")
+    if(itemModel.load_more) {
+      this.findArticles()
     }
+    else {
+      if(!itemModel.isRead) {
+        $(itemNode).addClassName("unread")
+      }
 
-    if(this.subscription.showOrigin) {
-      var origin = itemNode.down(".article-origin")
-      origin.update(itemModel.origin)
-      origin.show()
+      if(this.subscription.showOrigin) {
+        var origin = itemNode.down(".article-origin")
+        origin.update(itemModel.origin)
+        origin.show()
+      }
     }
   },
 
@@ -187,7 +189,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
 	    element._mojoListItemModel.toggleRead()
 	    this.refreshList(this.controller.get("articles"), this.subscription.items)
 	  }
-	  
+
 	  if(element._toggleStarred) {
 	    element._mojoListItemModel.toggleStarred()
 	  }
