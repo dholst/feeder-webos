@@ -254,6 +254,21 @@ body {
   padding: 5px;
 }
 
+#summary.small {
+  font-size: 15px !important;
+  line-height: 18px !important;
+}
+
+#summary.medium {
+  font-size: 17px !important;
+  line-height: 21px !important;
+}
+
+#summary.large {
+  font-size: 19px !important;
+  line-height: 24px !important;
+}
+
 #summary p {
   padding: 0 !important;
   padding-bottom: 15px !important;

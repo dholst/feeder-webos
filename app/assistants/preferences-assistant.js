@@ -16,6 +16,9 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.originalHideReadArticles = Preferences.hideReadArticles()
 
     this.backAfterMarkRead = {value: Preferences.goBackAfterMarkAsRead()}
+
+    this.fontSize = {value: Preferences.fontSize()}
+    this.originalFontSize = Preferences.fontSize()
   },
 
   setup: function($super) {
@@ -26,11 +29,20 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
       {label: $L("Sort oldest first"), value: "oldest"}
     ]}
 
+    var fontSizeChoices = {choices: [
+      {label: $L("Small Font"), value: "small"},
+      {label: $L("Medium Font"), value: "medium"},
+      {label: $L("Large Font"), value: "large"}
+    ]}
+
     this.controller.setupWidget("allow-landscape", {}, this.allowLandscape)
     this.controller.listen("allow-landscape", Mojo.Event.propertyChange, this.setAllowLandscape = this.setAllowLandscape.bind(this))
 
     this.controller.setupWidget("article-sort", sortChoices, this.sortOrder)
     this.controller.listen("article-sort", Mojo.Event.propertyChange, this.setSortOrder = this.setSortOrder.bind(this))
+
+    this.controller.setupWidget("font-size", fontSizeChoices, this.fontSize)
+    this.controller.listen("font-size", Mojo.Event.propertyChange, this.setFontSize = this.setFontSize.bind(this))
 
     this.controller.setupWidget("hide-read-feeds", {}, this.hideReadFeeds)
     this.controller.listen("hide-read-feeds", Mojo.Event.propertyChange, this.setHideReadFeeds = this.setHideReadFeeds.bind(this))
@@ -57,6 +69,10 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
 
   setSortOrder: function() {
     Preferences.setOldestFirst(this.sortOrder.value == "oldest")
+  },
+
+  setFontSize: function() {
+    Preferences.setFontSize(this.fontSize.value)
   },
 
   setHideReadFeeds: function() {
@@ -91,6 +107,10 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
 
       if(this.originalHideReadArticles != Preferences.hideReadArticles()) {
         changes.hideReadArticlesChanged = true
+      }
+
+      if(this.originalFontSize != Preferences.fontSize()) {
+        changes.fontSizeChanged = true
       }
 
       this.controller.stageController.popScene(changes)

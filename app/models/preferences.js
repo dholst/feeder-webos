@@ -4,6 +4,7 @@ Preferences = {
   HIDE_READ_ARTICLES: "hide-read-articles",
   BACK_AFTER_MARK_AS_READ: "back-after-mark-as-read",
   ALLOW_LANDSCAPE: "allow-landscape",
+  FONT_SIZE: "font-size",
 
   isOldestFirst: function() {
     return this.getCookie(this.OLDEST_FIRST, false)
@@ -43,6 +44,14 @@ Preferences = {
 
   setAllowLandscape: function(allowLandscape) {
     this.setCookie(this.ALLOW_LANDSCAPE, allowLandscape)
+  },
+
+  fontSize: function() {
+    return this.getCookie(this.FONT_SIZE, "medium")
+  },
+
+  setFontSize: function(fontSize) {
+    this.setCookie(this.FONT_SIZE, fontSize)
   },
 
   getCookie: function(name, defaultValue) {

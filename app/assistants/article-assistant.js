@@ -29,12 +29,21 @@ var ArticleAssistant = Class.create(BaseAssistant, {
     this.removeLoadImage()
   },
 
+  activate: function($super, changes) {
+    $super()
+
+    if(changes && changes.fontSizeChanged) {
+      this.setFontSize()
+    }
+  },
+
   ready: function($super) {
     $super()
     this.controller.get("title").update(this.article.title)
     this.controller.get("subscription").update(this.article.origin)
     this.controller.get("author").update(this.article.author ? $L("by ") + this.article.author : "")
     this.controller.get("summary").update(this.article.summary)
+    this.setFontSize()
 
     if(this.article.isRead) {
       this.controller.get("read").addClassName("on")
@@ -50,6 +59,14 @@ var ArticleAssistant = Class.create(BaseAssistant, {
 
     this.addAnchorFix()
     this.addLoadImage()
+  },
+
+  setFontSize: function() {
+    var summary = this.controller.get("summary")
+    summary.removeClassName("small")
+    summary.removeClassName("medium")
+    summary.removeClassName("large")
+    summary.addClassName(Preferences.fontSize())
   },
 
   setStarred: function(event) {
@@ -275,7 +292,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
 
   loadImage: function(event) {
 		var img = event.target || event.srcElement
-		
+
     this.controller.serviceRequest("palm://com.palm.applicationManager", {
       method: "open",
       parameters: {
@@ -286,21 +303,21 @@ var ArticleAssistant = Class.create(BaseAssistant, {
       }
     })
   },
-  
+
   addLoadImage: function() {
     this.loadImage = this.loadImage.bind(this)
-    
+
     $$("#summary img").each(function(img) {
       img.observe(Mojo.Event.hold, this.loadImage)
     }.bind(this))
   },
-  
+
   removeLoadImage: function() {
     $$("#summary img").each(function(img) {
       img.stopObserving(Mojo.Event.hold, this.loadImage)
     }.bind(this))
   },
-  
+
   //
   // Prevent tapping link while scrolling, from http://github.com/deliciousmorsel/Feeds/blob/master/app/assistants/view-article-assistant.js
   //
