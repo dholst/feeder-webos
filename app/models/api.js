@@ -69,7 +69,7 @@ var Api = Class.create({
   _getArticles: function(id, exclude, continuation, success, failure) {
     var parameters = {output: "json", n: 40}
 
-    if(Preferences.isOldestFirst()) {
+    if(id != "user/-/state/com.google/starred" && Preferences.isOldestFirst()) {
       parameters.r = "o"
     }
 
