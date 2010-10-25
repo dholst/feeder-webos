@@ -96,7 +96,14 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     }
     else {
       if(!itemModel.isRead) {
-        $(itemNode).addClassName("unread")
+        itemNode.addClassName("unread")
+      }
+
+      if(itemModel.isStarred) {
+        itemNode.addClassName("starred")
+        var origin = itemNode.down(".article-origin")
+        origin.update("&nbsp;")
+        origin.show()
       }
 
       if(this.subscription.showOrigin) {
@@ -192,6 +199,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
 
 	  if(element._toggleStarred) {
 	    element._mojoListItemModel.toggleStarred()
+	    this.refreshList(this.controller.get("articles"), this.subscription.items)
 	  }
   },
 
