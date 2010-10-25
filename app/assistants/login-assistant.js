@@ -8,7 +8,7 @@ var LoginAssistant = Class.create(BaseAssistant, {
     this.hideLogout = true
   },
 
-  setup: function($super) {
+  activate: function($super) {
     $super()
 
     this.controller.serviceRequest('palm://com.palm.systemservice/time', {
@@ -17,35 +17,27 @@ var LoginAssistant = Class.create(BaseAssistant, {
 
       onSuccess: function(response) {
         if(Feeder.Metrix.isExpired(response.utc, 7)) {
-          this.controller.showAlertDialog({
-            title: $L("Beta Expired"),
-            message: $L("This beta version has expired."),
-            onChoose: function(value) {Mojo.Controller.getAppController().closeAllStages()},
-            choices:[{label:$L("OK"), value:""}]
-          })
+          this.controller.stageController.pushScene("expired")
+        }
+        else {
+          if(this.credentials.email && this.credentials.password) {
+            if(this.triedLogin) {
+              Log.debug("ALREADY TRIED LOGGING IN, WHAT MAKES YOU THINK ITS GOING TO WORK NOW")
+            }
+            else {
+              this.triedLogin = true
+              Log.debug("logging in as " + this.credentials.email)
+              this.spinnerOn($L("logging in..."))
+              this.api.login(this.credentials, this.loginSuccess.bind(this), this.loginFailure.bind(this))
+            }
+          }
+          else {
+            Log.debug("no credentials found")
+            this.controller.stageController.swapScene("credentials", this.credentials)
+          }
         }
       }.bind(this)
     })
-  },
-
-  activate: function($super) {
-    $super()
-
-    if(this.credentials.email && this.credentials.password) {
-      if(this.triedLogin) {
-        Log.debug("ALREADY TRIED LOGGING IN, WHAT MAKES YOU THINK ITS GOING TO WORK NOW")
-      }
-      else {
-        this.triedLogin = true
-        Log.debug("logging in as " + this.credentials.email)
-        this.spinnerOn($L("logging in..."))
-        this.api.login(this.credentials, this.loginSuccess.bind(this), this.loginFailure.bind(this))
-      }
-    }
-    else {
-      Log.debug("no credentials found")
-      this.controller.stageController.swapScene("credentials", this.credentials)
-    }
   },
 
   loginSuccess: function() {
