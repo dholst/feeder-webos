@@ -196,21 +196,17 @@ var Api = Class.create({
   },
 
   _getEditToken: function(success) {
-    if(this.editToken) {
+    if(this.editToken && (new Date().getTime() - this.editTokenTime < 120000)) {
       Log.debug("using last edit token - " + this.editToken)
       success(this.editToken)
     }
     else {
-      var parameters = {
-
-      }
-
       new Ajax.Request(Api.BASE_URL + "token", {
         method: "get",
-        parameters: parameters,
         requestHeaders: {Authorization:"GoogleLogin auth=" + this.auth},
         onSuccess: function(response) {
           this.editToken = response.responseText
+          this.editTokenTime = new Date().getTime()
           Log.debug("retrieved edit token - " + this.editToken)
           success(this.editToken)
         }.bind(this)
