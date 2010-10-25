@@ -69,7 +69,7 @@ var Api = Class.create({
   _getArticles: function(id, exclude, continuation, success, failure) {
     var parameters = {output: "json", n: 40}
 
-    if(Preferences.isOldestFirst()) {
+    if(id != "user/-/state/com.google/starred" && Preferences.isOldestFirst()) {
       parameters.r = "o"
     }
 
@@ -196,21 +196,17 @@ var Api = Class.create({
   },
 
   _getEditToken: function(success) {
-    if(this.editToken) {
+    if(this.editToken && (new Date().getTime() - this.editTokenTime < 120000)) {
       Log.debug("using last edit token - " + this.editToken)
       success(this.editToken)
     }
     else {
-      var parameters = {
-
-      }
-
       new Ajax.Request(Api.BASE_URL + "token", {
         method: "get",
-        parameters: parameters,
         requestHeaders: {Authorization:"GoogleLogin auth=" + this.auth},
         onSuccess: function(response) {
           this.editToken = response.responseText
+          this.editTokenTime = new Date().getTime()
           Log.debug("retrieved edit token - " + this.editToken)
           success(this.editToken)
         }.bind(this)
