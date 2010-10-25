@@ -19,6 +19,8 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
 
     this.fontSize = {value: Preferences.fontSize()}
     this.originalFontSize = Preferences.fontSize()
+    
+    this.combineFolders = {value: Preferences.combineFolders()}
   },
 
   setup: function($super) {
@@ -52,6 +54,9 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
 
     this.controller.setupWidget("back-after-mark-read", {}, this.backAfterMarkRead)
     this.controller.listen("back-after-mark-read", Mojo.Event.propertyChange, this.setBackAfterMarkRead = this.setBackAfterMarkRead.bind(this))
+
+    this.controller.setupWidget("combine-folders", {}, this.combineFolders)
+    this.controller.listen("combine-folders", Mojo.Event.propertyChange, this.setCombineFolders = this.setCombineFolders.bind(this))
   },
 
   cleanup: function($super) {
@@ -61,6 +66,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("hide-read-feeds", Mojo.Event.propertyChange, this.setHideReadFeeds)
     this.controller.stopListening("hide-read-articles", Mojo.Event.propertyChange, this.setHideReadArticles)
     this.controller.stopListening("back-after-mark-read", Mojo.Event.propertyChange, this.setBackAfterMarkRead)
+    this.controller.stopListening("combine-folders", Mojo.Event.propertyChange, this.setCombineFolders)
   },
 
   setAllowLandscape: function() {
@@ -87,6 +93,10 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     Preferences.setBackAfterMarkAsRead(this.backAfterMarkRead.value)
   },
 
+  setCombineFolders: function() {
+    Preferences.setCombineFolders(this.combineFolders.value)
+  },
+  
   handleCommand: function($super) {
     if(Mojo.Event.back) {
       event.stop();

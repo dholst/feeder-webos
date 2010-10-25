@@ -5,6 +5,7 @@ Preferences = {
   BACK_AFTER_MARK_AS_READ: "back-after-mark-as-read",
   ALLOW_LANDSCAPE: "allow-landscape",
   FONT_SIZE: "font-size",
+  COMBINE_FOLDERS: "combine-folders",
 
   isOldestFirst: function() {
     return this.getCookie(this.OLDEST_FIRST, false)
@@ -52,6 +53,14 @@ Preferences = {
 
   setFontSize: function(fontSize) {
     this.setCookie(this.FONT_SIZE, fontSize)
+  },
+  
+  combineFolders: function() {
+    return this.getCookie(this.COMBINE_FOLDERS, false)
+  },
+  
+  setCombineFolders: function(combineFolders) {
+    this.setCookie(this.COMBINE_FOLDERS, combineFolders)
   },
 
   getCookie: function(name, defaultValue) {
