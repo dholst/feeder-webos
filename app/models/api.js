@@ -56,6 +56,16 @@ var Api = Class.create({
     )
   },
 
+  getAllShared: function(continuation, success, failure) {
+    this._getArticles(
+      "user/-/state/com.google/broadcast",
+      null,
+      continuation,
+      success,
+      failure
+    )
+  },
+
   getAllArticlesFor: function(id, continuation, success, failure) {
     this._getArticles(
       id,
@@ -69,7 +79,9 @@ var Api = Class.create({
   _getArticles: function(id, exclude, continuation, success, failure) {
     var parameters = {output: "json", n: 40}
 
-    if(id != "user/-/state/com.google/starred" && Preferences.isOldestFirst()) {
+    if(id != "user/-/state/com.google/starred" && 
+       id != "user/-/state/com.google/broadcast" && 
+       Preferences.isOldestFirst()) {
       parameters.r = "o"
     }
 

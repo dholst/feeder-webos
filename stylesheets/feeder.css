@@ -121,6 +121,12 @@ body {
   background: url(../images/starred-grey.png) center center no-repeat;
 }
 
+.palm-row .shared {
+  height: 50px;
+  width: 30px;
+  background: url(../images/shared-grey.png) center center no-repeat;
+}
+
 .palm-row .list {
   height: 50px;
   width: 30px;

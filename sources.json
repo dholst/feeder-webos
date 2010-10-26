@@ -13,6 +13,7 @@
   {"source": "app/models/all-sources.js"},
   {"source": "app/models/all-articles.js"},
   {"source": "app/models/starred.js"},
+  {"source": "app/models/shared.js"},
   {"source": "app/models/folders.js"},
   {"source": "app/models/folder.js"},
   {"source": "app/models/preferences.js"},
