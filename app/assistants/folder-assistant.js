@@ -6,14 +6,8 @@ var FolderAssistant = Class.create(BaseAssistant, {
 
   setup: function($super) {
     $super()
-
-    if(Preferences.combineFolders()) {
-      this.controller.stageController.swapScene("articles", this.folder.subscriptions[0])
-    }
-    else {
-      this.controller.setupWidget("folders", {itemTemplate: "folder/folder", onItemRendered: this.folderRendered, itemsProperty: "subscriptions"}, this.folder)
-      this.controller.listen("folders", Mojo.Event.listTap, this.folderTaped = this.folderTapped.bind(this))
-    }
+    this.controller.setupWidget("folders", {itemTemplate: "folder/folder", onItemRendered: this.folderRendered, itemsProperty: "subscriptions"}, this.folder)
+    this.controller.listen("folders", Mojo.Event.listTap, this.folderTaped = this.folderTapped.bind(this))
   },
 
   cleanup: function($super) {
