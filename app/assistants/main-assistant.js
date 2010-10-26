@@ -60,7 +60,7 @@ var MainAssistant = Class.create(BaseAssistant, {
   },
 
   sourceTapped: function(event) {
-    if(event.item.constructor == Folder) {
+    if(event.item.constructor == Folder && !Preferences.combineFolders()) {
       this.controller.stageController.pushScene("folder", event.item)
     }
     else {
