@@ -52,7 +52,7 @@ var Article = Class.create({
   },
 
   setArticleLink: function(alternates) {
-    alternates.each(function(alternate) {
+    (alternates || []).each(function(alternate) {
       if(alternate.type.include("html")) {
         this.url = alternate.href
         return
@@ -82,7 +82,7 @@ var Article = Class.create({
       this.turnStarOn(function() {})
     }
   },
-  
+
   turnReadOn: function(done) {
     this._setState("Read", "isRead", true, done)
   },

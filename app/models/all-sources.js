@@ -3,6 +3,7 @@ var AllSources = Class.create({
     this.items = []
     this.allArticles = new AllArticles(api)
     this.starred = new Starred(api)
+    this.shared = new Shared(api)
     this.subscriptions = new Subscriptions(api)
     this.resetItems()
   },
@@ -11,6 +12,7 @@ var AllSources = Class.create({
     this.items.clear()
     this.items.push(this.allArticles)
     this.items.push(this.starred)
+    this.items.push(this.shared)
   },
 
   findAll: function(success, failure) {

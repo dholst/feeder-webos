@@ -267,7 +267,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
 
   gotAnotherArticle: function(article) {
     if(article) {
-      this.controller.stageController.swapScene("article", article, this.scrollingIndex)
+      this.controller.stageController.swapScene({name: "article", transition: Mojo.Transition.crossFade}, article, this.scrollingIndex)
     }
     else {
       this.controller.stageController.popScene(this.scrollingIndex < 0 ? "top" : "bottom")
