@@ -80,10 +80,13 @@ var ArticleAssistant = Class.create(BaseAssistant, {
   toggleState: function(target, state) {
     if(!target.hasClassName("working")) {
       target.addClassName("working")
-      target.toggleClassName("on")
 
-      this.article["turn" + state + (target.hasClassName("on") ? "On" : "Off")](function() {
+      this.article["turn" + state + (target.hasClassName("on") ? "On" : "Off")](function(success) {
         target.removeClassName("working")
+
+        if(success) {
+          target.toggleClassName("on")
+        }
       })
     }
   },

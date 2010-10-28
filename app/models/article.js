@@ -9,6 +9,7 @@ var Article = Class.create({
     this.origin = data.origin ? data.origin.title : null
     var content = data.content || data.summary || {content: ""}
     this.summary = this.cleanUp(content.content)
+    this.readLocked = data.isReadStateLocked
     this.setStates(data.categories)
     this.setDates(parseInt(data.crawlTimeMsec))
     this.setArticleLink(data.alternate)
@@ -113,12 +114,18 @@ var Article = Class.create({
   },
 
   _setState: function(apiState, localProperty, localValue, done) {
-    this[localProperty] = localValue
+    if(apiState.match(/Read/) && this.readLocked) {
+      Feeder.notify("Read state has been locked by Google")
+      done(false)
+    }
+    else {
+      this[localProperty] = localValue
 
-    this.api["setArticle" + apiState](this.id, this.subscriptionId, function() {
-      Mojo.Event.send(document, "Article" + apiState, {subscriptionId: this.subscriptionId})
-      done()
-    }.bind(this))
+      this.api["setArticle" + apiState](this.id, this.subscriptionId, function() {
+        Mojo.Event.send(document, "Article" + apiState, {subscriptionId: this.subscriptionId})
+        done(true)
+      }.bind(this))
+    }
   },
 
   getPrevious: function(callback) {
