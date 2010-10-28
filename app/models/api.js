@@ -79,8 +79,8 @@ var Api = Class.create({
   _getArticles: function(id, exclude, continuation, success, failure) {
     var parameters = {output: "json", n: 40}
 
-    if(id != "user/-/state/com.google/starred" && 
-       id != "user/-/state/com.google/broadcast" && 
+    if(id != "user/-/state/com.google/starred" &&
+       id != "user/-/state/com.google/broadcast" &&
        Preferences.isOldestFirst()) {
       parameters.r = "o"
     }
@@ -193,6 +193,8 @@ var Api = Class.create({
 
       if(addTag) parameters.a = addTag
       if(removeTag) parameters.r = removeTag
+
+      console.log(Object.toJSON(parameters))
 
       new Ajax.Request(Api.BASE_URL + "edit-tag", {
         method: "post",

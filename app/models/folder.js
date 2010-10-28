@@ -48,7 +48,12 @@ var Folder = Class.create(ArticleContainer, {
   },
 
   articleNotRead: function(subscriptionId) {
-    this.subscriptions.each(function(subscription){subscription.articleNotRead(subscriptionId)})
+    this.subscriptions.each(function(subscription){
+      if(subscription.constructor != Folder) {
+        subscription.articleNotRead(subscriptionId)
+      }
+    })
+
     this.recalculateUnreadCounts()
   },
 
