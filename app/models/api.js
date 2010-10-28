@@ -126,7 +126,7 @@ var Api = Class.create({
       articleId,
       subscriptionId,
       "user/-/state/com.google/read",
-      null,
+      "user/-/state/com.google/kept-unread",
       success
     )
   },

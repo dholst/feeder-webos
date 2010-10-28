@@ -28,7 +28,12 @@ var Article = Class.create({
 
     categories.each(function(category) {
       if(category.endsWith("/state/com.google/read")) {
+        this.readCategory = category
         this.isRead = true
+      }
+
+      if(category.endsWith("/state/com.google/kept-unread")) {
+        this.unreadCategory = category
       }
 
       if(category.endsWith("/state/com.google/starred")) {
