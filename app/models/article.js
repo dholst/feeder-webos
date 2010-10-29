@@ -29,12 +29,7 @@ var Article = Class.create({
 
     categories.each(function(category) {
       if(category.endsWith("/state/com.google/read")) {
-        this.readCategory = category
         this.isRead = true
-      }
-
-      if(category.endsWith("/state/com.google/kept-unread")) {
-        this.unreadCategory = category
       }
 
       if(category.endsWith("/state/com.google/starred")) {
@@ -114,6 +109,7 @@ var Article = Class.create({
   },
 
   _setState: function(apiState, localProperty, localValue, done) {
+    Log.debug("setting article state - " + apiState)
     if(apiState.match(/Read/) && this.readLocked) {
       Feeder.notify("Read state has been locked by Google")
       done(false)

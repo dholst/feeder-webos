@@ -81,7 +81,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
     if(!target.hasClassName("working")) {
       target.addClassName("working")
 
-      this.article["turn" + state + (target.hasClassName("on") ? "On" : "Off")](function(success) {
+      this.article["turn" + state + (target.hasClassName("on") ? "Off" : "On")](function(success) {
         target.removeClassName("working")
 
         if(success) {
