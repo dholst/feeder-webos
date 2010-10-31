@@ -27,6 +27,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("header", Mojo.Event.tap, this.openInBrowser)
     this.removeAnchorFix()
     this.removeLoadImage()
+    this.removeVideoClick()
   },
 
   activate: function($super, changes) {
@@ -59,6 +60,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
 
     this.addAnchorFix()
     this.addLoadImage()
+    this.addVideoClick()
   },
 
   setFontSize: function() {
@@ -323,6 +325,34 @@ var ArticleAssistant = Class.create(BaseAssistant, {
     }.bind(this))
   },
 
+  addVideoClick: function() {
+    this.videoClick = this.videoClick.bind(this)
+    
+    $$("div.video").each(function(div) {
+      div.observe('click' , this.videoClick)
+    }.bind(this))
+  },
+  
+  removeVideoClick: function() {
+    $$("div.video").each(function(div) {
+      div.stopObserving('click' , this.videoClick)
+    }.bind(this))    
+  },
+  
+  videoClick: function(event) {
+		var div = event.target || event.srcElement
+
+    this.controller.serviceRequest("palm://com.palm.applicationManager", {
+      method: "open",
+      parameters: {
+        id: "com.palm.app.browser",
+        params: {
+          target: div.readAttribute("data-url")
+        }
+      }
+    })  
+  },
+  
   //
   // Prevent tapping link while scrolling, from http://github.com/deliciousmorsel/Feeds/blob/master/app/assistants/view-article-assistant.js
   //

@@ -16,10 +16,22 @@ var Article = Class.create({
   },
 
   cleanUp: function(content) {
-    var cleaned = content.replace(/<script.*?<\/script.*?>/g , "")
+    var cleaned = this.replaceYouTubeLinks(content)
+    cleaned = cleaned.replace(/<script.*?<\/script.*?>/g , "")
     cleaned = cleaned.replace(/<iframe.*?<\/iframe.*?>/g , "")
     cleaned = cleaned.replace(/<object.*?<\/object.*?>/g , "")
     return cleaned
+  },
+
+  replaceYouTubeLinks: function(content) {
+    var embed = /<embed.*src="(.*)".*<\/embed>/
+    var match = embed.exec(content)
+
+    if(match) {
+      content = content.replace(embed, '<div class="video" data-url="' + match[1] + '"></div>')
+    }
+
+    return content
   },
 
   setStates: function(categories) {

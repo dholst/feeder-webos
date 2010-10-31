@@ -307,3 +307,9 @@ body {
 .palm-swipe-container.swipe-left.swipe-not-starred .palm-drag-spacer {
   background: #aaa url(../images/starred-footer.png) no-repeat 95% center;
 }
+
+div.video {
+  height: 128px;
+  width: 100%;
+  background: url(../images/video.png) no-repeat center center;
+}
