@@ -42,7 +42,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
     $super()
     this.controller.get("title").update(this.article.title)
     this.controller.get("subscription").update(this.article.origin)
-    this.controller.get("author").update(this.article.author ? $L("by ") + this.article.author : "")
+    this.controller.get("author").update(this.article.author ? $L("by #{author}").interpolate(this.article) : "")
     this.controller.get("summary").update(this.article.summary)
     this.setFontSize()
 
@@ -156,13 +156,13 @@ var ArticleAssistant = Class.create(BaseAssistant, {
 
   shareWithGoogle: function() {
     this.article.turnShareOn(function() {
-      Feeder.notify($L("Article shared."))
+      Feeder.notify($L("Article shared"))
     })
   },
 
   unshareWithGoogle: function() {
     this.article.turnShareOff(function() {
-      Feeder.notify($L("Article unshared."))
+      Feeder.notify($L("Article unshared"))
     })
   },
 
@@ -229,8 +229,8 @@ var ArticleAssistant = Class.create(BaseAssistant, {
 
   offerToInstallApp: function(name, id) {
     this.controller.showAlertDialog({
-      title: name + $L(" is not installed"),
-      message: name + $L(" is not installed. Would you like to install it?"),
+      title:$L("#{app} is not installed").interpolate({app: name}),
+      message: $L("#{app} is not installed. Would you like to install it?").interpolate({app: name}),
 
       choices:[
         {label:$L("Yes"), value:"yes", type:"affirmative"},

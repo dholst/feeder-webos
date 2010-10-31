@@ -59,6 +59,20 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.controller.listen("combine-folders", Mojo.Event.propertyChange, this.setCombineFolders = this.setCombineFolders.bind(this))
   },
 
+  ready: function($super) {
+    $super()
+    $("header").update($L("Preferences"))
+    $("general-label").update($L("General"))
+    $("landscape-label").update($L("Allow landscape"))
+    $("feeds-label").update($L("Feeds"))
+    $("hide-read-feeds-label").update($L("Hide read feeds"))
+    $("back-after-mark-read-label").update($L("Go back after mark all read"))
+    $("articles-label").update($L("Articles"))
+    $("hide-read-articles-label").update($L("Hide read articles"))
+    $("folders-label").update($L("Folders"))
+    $("combine-articles-label").update($L("Combine articles"))
+  },
+  
   cleanup: function($super) {
     $super()
     this.controller.stopListening("allow-landscape", Mojo.Event.propertyChange, this.setAllowLandscape)
