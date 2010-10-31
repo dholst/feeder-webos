@@ -53,7 +53,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
       this.controller.get("starred").addClassName("on")
     }
 
-    if(!this.article.isRead) {
+    if(!this.article.isRead && !this.article.keepUnread) {
       this.toggleState(this.controller.get("read"), "Read")
     }
 
@@ -74,20 +74,22 @@ var ArticleAssistant = Class.create(BaseAssistant, {
   },
 
   setRead: function(event) {
-    this.toggleState(event.target, "Read")
+    this.toggleState(event.target, "Read", true)
   },
 
-  toggleState: function(target, state) {
+  toggleState: function(target, state, sticky) {
     if(!target.hasClassName("working")) {
       target.addClassName("working")
 
-      this.article["turn" + state + (target.hasClassName("on") ? "Off" : "On")](function(success) {
+      var onComplete = function(success) {
         target.removeClassName("working")
 
         if(success) {
           target.toggleClassName("on")
         }
-      })
+      }
+
+      this.article["turn" + state + (target.hasClassName("on") ? "Off" : "On")](onComplete, sticky)
     }
   },
 

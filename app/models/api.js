@@ -131,11 +131,11 @@ var Api = Class.create({
     )
   },
 
-  setArticleNotRead: function(articleId, subscriptionId, success) {
+  setArticleNotRead: function(articleId, subscriptionId, success, sticky) {
     this._editTag(
       articleId,
       subscriptionId,
-      "user/-/state/com.google/kept-unread",
+      sticky ? "user/-/state/com.google/kept-unread" : null,
       "user/-/state/com.google/read",
       success
     )

@@ -32,6 +32,10 @@ var Article = Class.create({
         this.isRead = true
       }
 
+      if(category.endsWith("/state/com.google/kept-unread")) {
+        this.keepUnread = true
+      }
+
       if(category.endsWith("/state/com.google/starred")) {
         this.isStarred = true
       }
@@ -68,7 +72,7 @@ var Article = Class.create({
 
   toggleRead: function() {
     if(this.isRead) {
-      this.turnReadOff(function() {})
+      this.turnReadOff(function() {}, true)
     }
     else {
       this.turnReadOn(function() {})
@@ -88,8 +92,9 @@ var Article = Class.create({
     this._setState("Read", "isRead", true, done)
   },
 
-  turnReadOff: function(done) {
-    this._setState("NotRead", "isRead", false, done)
+  turnReadOff: function(done, sticky) {
+    this.keepUnread = sticky
+    this._setState("NotRead", "isRead", false, done, sticky)
   },
 
   turnShareOn: function(done) {
@@ -108,8 +113,9 @@ var Article = Class.create({
     this._setState("NotStarred", "isStarred", false, done)
   },
 
-  _setState: function(apiState, localProperty, localValue, done) {
+  _setState: function(apiState, localProperty, localValue, done, sticky) {
     Log.debug("setting article state - " + apiState)
+
     if(apiState.match(/Read/) && this.readLocked) {
       Feeder.notify("Read state has been locked by Google")
       done(false)
@@ -117,10 +123,12 @@ var Article = Class.create({
     else {
       this[localProperty] = localValue
 
-      this.api["setArticle" + apiState](this.id, this.subscriptionId, function() {
+      var onComplete = function() {
         Mojo.Event.send(document, "Article" + apiState, {subscriptionId: this.subscriptionId})
         done(true)
-      }.bind(this))
+      }.bind(this)
+
+      this.api["setArticle" + apiState](this.id, this.subscriptionId, onComplete, sticky)
     }
   },
 
