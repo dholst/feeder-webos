@@ -14,6 +14,13 @@ var CredentialsAssistant = Class.create(BaseAssistant, {
     this.setupListeners()
   },
 
+  ready: function($super) {
+    $super()
+    $("email-label").update($L("Email"))
+    $("password-label").update($L("Password"))
+    $("error-message").update($L("Login failed. Try again."))
+  },
+  
   activate: function($super) {
     $super()
     this.controller.get("password").mojo.setConsumesEnterKey(false)
