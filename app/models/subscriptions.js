@@ -53,9 +53,43 @@ var Subscriptions = Class.create(Countable, {
         }
       }.bind(this))
 
-      success()
+      this.sort(success, failure)
     }.bind(this)
 
     this.api.getUnreadCounts(onSuccess, failure)
+  },
+
+  sort: function(success, failure) {
+    var manualSort = function(sortOrder) {
+      var sortedKeys = []
+
+      sortOrder.toArray().eachSlice(8, function(key) {
+        sortedKeys.push(key.join(""))
+      })
+
+      console.log(sortedKeys.length)
+      for(var i = 0; i < sortedKeys.length; i++) {
+        for(var j = 0; j < this.items.length; j++) {
+          if(this.items[j].sortId == sortedKeys[i]) {
+            this.items[j].sortId = i
+            break
+          }
+        }
+      }
+
+      this.items = this.items.sortBy(function(s){return s.sortId})
+
+      success()
+    }.bind(this)
+
+    if(Preferences.isManualFeedSort()) {
+      this.items.push.apply(this.items, this.folders.items)
+      this.folders.items.clear()
+      this.items.each(function(item){item.divideBy = "Subscriptions"})
+      this.api.getSortOrder(manualSort, failure)
+    }
+    else {
+      success()
+    }
   }
 })

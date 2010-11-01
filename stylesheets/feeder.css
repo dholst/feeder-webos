@@ -1,3 +1,15 @@
+.preferences .left {
+  float: left;
+}
+
+.preferences .right {
+  float: right;
+}
+
+.preferences .title {
+  font-size: 18px !important;
+}
+
 .palm-drag-spacer .release {
   font-size: 14px;
   padding-left: 10px;

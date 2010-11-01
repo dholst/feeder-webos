@@ -6,6 +6,7 @@ Preferences = {
   ALLOW_LANDSCAPE: "allow-landscape",
   FONT_SIZE: "font-size",
   COMBINE_FOLDERS: "combine-folders",
+  MANUAL_FEED_SORT: "manual-feed-sort",
 
   isOldestFirst: function() {
     return this.getCookie(this.OLDEST_FIRST, false)
@@ -54,13 +55,21 @@ Preferences = {
   setFontSize: function(fontSize) {
     this.setCookie(this.FONT_SIZE, fontSize)
   },
-  
+
   combineFolders: function() {
     return this.getCookie(this.COMBINE_FOLDERS, false)
   },
-  
+
   setCombineFolders: function(combineFolders) {
     this.setCookie(this.COMBINE_FOLDERS, combineFolders)
+  },
+
+  isManualFeedSort: function() {
+    return this.getCookie(this.MANUAL_FEED_SORT, true)
+  },
+
+  setManualFeedSort: function(isManual) {
+    this.setCookie(this.MANUAL_FEED_SORT, isManual)
   },
 
   getCookie: function(name, defaultValue) {

@@ -14,6 +14,33 @@ var Api = Class.create({
     })
   },
 
+  getSortOrder: function(success, failure) {
+    new Ajax.Request(Api.BASE_URL + "preference/stream/list?output=json", {
+      method: "get",
+      parameters: {output: "json"},
+      requestHeaders: this._requestHeaders(),
+      onFailure: failure,
+      onSuccess: function(response) {
+        var prefs = response.responseText.evalJSON()
+        var sortOrder = false
+
+        if(prefs && prefs.streamprefs) {
+          for(key in prefs.streamprefs) {
+            if(key.match(/user\/.*\/state\/com\.google\/root/)) {
+              $A(prefs.streamprefs[key]).each(function(pref) {
+                if("subscription-ordering" == pref.id) {
+                  sortOrder = pref.value
+                }
+              })
+            }
+          }
+        }
+
+        success(sortOrder)
+      }
+    })
+  },
+
   getAllSubscriptions: function(success, failure) {
     // success(STATIC_SUBSCRIPTIONS.subscriptions)
     new Ajax.Request(Api.BASE_URL + "subscription/list", {
