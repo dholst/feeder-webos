@@ -4,12 +4,11 @@ var Folder = Class.create(ArticleContainer, {
     this.id = id
     this.title = title
     this.icon = "folder"
-    this.divideBy = "Folders"
+    this.divideBy = "Subscriptions"
     this.subscriptions = [this]
     this.setUnreadCount(0)
     this.showOrigin = true
     this.canMarkAllRead = true
-    // this.sortId = 
   },
 
   makeApiCall: function(continuation, success, failure) {

@@ -47,28 +47,32 @@ var MainAssistant = Class.create(BaseAssistant, {
     this.refresh()
   },
 
-  activate: function($super, command) {
+  activate: function($super, commandOrChanges) {
     $super()
 
-    if("logout" == command) {
+    if("logout" == commandOrChanges) {
       var creds = new Credentials()
       creds.password = false
       creds.save()
       this.controller.stageController.swapScene("credentials", creds)
     }
+    else if(commandOrChanges && commandOrChanges.feedSortOrderChanged) {
+      this.refresh()
+    }
     else {
-      this.filterReadItems(this.sources.stickySources)
-      this.filterReadItems(this.sources.subscriptionSources)
-      this.refreshList(this.controller.get("sticky-sources"), this.sources.stickySources.items)
-      this.refreshList(this.controller.get("subscription-sources"), this.sources.subscriptionSources.items)
+      this.filterAndRefresh()
     }
   },
 
-  foundEm: function(feeds) {
+  filterAndRefresh: function() {
     this.filterReadItems(this.sources.stickySources)
     this.filterReadItems(this.sources.subscriptionSources)
     this.refreshList(this.controller.get("sticky-sources"), this.sources.stickySources.items)
     this.refreshList(this.controller.get("subscription-sources"), this.sources.subscriptionSources.items)
+  },
+
+  foundEm: function(feeds) {
+    this.filterAndRefresh()
     this.smallSpinnerOff()
   },
 

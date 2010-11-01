@@ -61,15 +61,15 @@ var Subscriptions = Class.create(Countable, {
 
   sort: function(success, failure) {
     if(Preferences.isManualFeedSort()) {
-      this.addSortIdsToFolders(success, failure)
+      this.sortManually(success, failure)
     }
     else {
-      success()
+      this.sortAlphabetically(success, failure)
     }
   },
 
-  addSortIdsToFolders: function(success, failure) {
-    var addEm = function(tags) {
+  sortManually: function(success, failure) {
+    var addSortIdsToFolders = function(tags) {
       for(var i = 0; i < this.folders.items.length; i++) {
         for(var j = 0; j < tags.length; j++) {
           if(tags[j].id == this.folders.items[i].id) {
@@ -85,7 +85,13 @@ var Subscriptions = Class.create(Countable, {
       this.api.getSortOrder(this.manuallySort.bind(this, success, failure))
     }.bind(this)
 
-    this.api.getTags(addEm, failure)
+    this.api.getTags(addSortIdsToFolders, failure)
+  },
+
+  sortAlphabetically: function(success, failure) {
+    this.items = this.items.sortBy(function(item){return item.title.toUpperCase()})
+    this.folders.items = this.folders.items.sortBy(function(item){return item.title.toUpperCase()})
+    success()
   },
 
   manuallySort: function(success, failure, sortOrder) {
