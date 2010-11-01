@@ -9,6 +9,7 @@ var Folder = Class.create(ArticleContainer, {
     this.setUnreadCount(0)
     this.showOrigin = true
     this.canMarkAllRead = true
+    // this.sortId = 
   },
 
   makeApiCall: function(continuation, success, failure) {

@@ -1,6 +1,7 @@
 var AllSources = Class.create({
   initialize: function(api) {
-    this.items = []
+    this.stickySources = {items: []}
+    this.subscriptionSources = {items: []}
     this.allArticles = new AllArticles(api)
     this.starred = new Starred(api)
     this.shared = new Shared(api)
@@ -9,10 +10,8 @@ var AllSources = Class.create({
   },
 
   resetItems: function() {
-    this.items.clear()
-    this.items.push(this.allArticles)
-    this.items.push(this.starred)
-    this.items.push(this.shared)
+    this.stickySources.items = [this.allArticles, this.starred, this.shared]
+    this.subscriptionSources.items.clear()
   },
 
   findAll: function(success, failure) {
@@ -23,7 +22,7 @@ var AllSources = Class.create({
   },
 
   foundSubscriptions: function() {
-    var items = this.items
+    var items = this.subscriptionSources.items
     this.subscriptions.folders.items.each(function(folder) {items.push(folder)})
     this.subscriptions.items.each(function(subscription) {items.push(subscription)})
     this.allArticles.setUnreadCount(this.subscriptions.getUnreadCount())
@@ -31,15 +30,18 @@ var AllSources = Class.create({
   },
 
   articleReadIn: function(subscriptionId) {
-    this.items.each(function(source){source.articleRead(subscriptionId)})
+    this.stickySources.items.each(function(source){source.articleRead(subscriptionId)})
+    this.subscriptionSources.items.each(function(source){source.articleRead(subscriptionId)})
   },
 
   articleNotReadIn: function(subscriptionId) {
-    this.items.each(function(source){source.articleNotRead(subscriptionId)})
+    this.stickySources.items.each(function(source){source.articleNotRead(subscriptionId)})
+    this.subscriptionSources.items.each(function(source){source.articleNotRead(subscriptionId)})
   },
 
   massMarkAsRead: function(count) {
     this.allArticles.decrementUnreadCountBy(count)
+    
     this.subscriptions.folders.items.each(function(folder) {
       folder.recalculateUnreadCounts()
     })

@@ -14,8 +14,18 @@ var Api = Class.create({
     })
   },
 
+  getTags: function(success, failure) {
+    new Ajax.Request(Api.BASE_URL + "tag/list", {
+      method: "get",
+      parameters: {output: "json"},
+      requestHeaders: this._requestHeaders(),
+      onFailure: failure,
+      onSuccess: function(response) {success(response.responseText.evalJSON().tags)}
+    })
+  },
+
   getSortOrder: function(success, failure) {
-    new Ajax.Request(Api.BASE_URL + "preference/stream/list?output=json", {
+    new Ajax.Request(Api.BASE_URL + "preference/stream/list", {
       method: "get",
       parameters: {output: "json"},
       requestHeaders: this._requestHeaders(),

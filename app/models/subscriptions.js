@@ -60,36 +60,52 @@ var Subscriptions = Class.create(Countable, {
   },
 
   sort: function(success, failure) {
-    var manualSort = function(sortOrder) {
-      var sortedKeys = []
+    if(Preferences.isManualFeedSort()) {
+      this.addSortIdsToFolders(success, failure)
+    }
+    else {
+      success()
+    }
+  },
 
-      sortOrder.toArray().eachSlice(8, function(key) {
-        sortedKeys.push(key.join(""))
-      })
-
-      console.log(sortedKeys.length)
-      for(var i = 0; i < sortedKeys.length; i++) {
-        for(var j = 0; j < this.items.length; j++) {
-          if(this.items[j].sortId == sortedKeys[i]) {
-            this.items[j].sortId = i
+  addSortIdsToFolders: function(success, failure) {
+    var addEm = function(tags) {
+      for(var i = 0; i < this.folders.items.length; i++) {
+        for(var j = 0; j < tags.length; j++) {
+          if(tags[j].id == this.folders.items[i].id) {
+            this.folders.items[i].sortId = tags[j].sortid
             break
           }
         }
       }
 
-      this.items = this.items.sortBy(function(s){return s.sortId})
-
-      success()
-    }.bind(this)
-
-    if(Preferences.isManualFeedSort()) {
       this.items.push.apply(this.items, this.folders.items)
       this.folders.items.clear()
       this.items.each(function(item){item.divideBy = "Subscriptions"})
-      this.api.getSortOrder(manualSort, failure)
+      this.api.getSortOrder(this.manuallySort.bind(this, success, failure))
+    }.bind(this)
+
+    this.api.getTags(addEm, failure)
+  },
+
+  manuallySort: function(success, failure, sortOrder) {
+    var sortedKeys = []
+
+    sortOrder.toArray().eachSlice(8, function(key) {
+      sortedKeys.push(key.join(""))
+    })
+
+    for(var i = 0; i < sortedKeys.length; i++) {
+      for(var j = 0; j < this.items.length; j++) {
+        if(this.items[j].sortId == sortedKeys[i]) {
+          this.items[j].sortNumber = i
+          break
+        }
+      }
     }
-    else {
-      success()
-    }
+
+    this.items = this.items.sortBy(function(s){return s.sortNumber})
+
+    success()
   }
 })
