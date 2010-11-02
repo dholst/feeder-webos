@@ -27,10 +27,11 @@ var ArticleAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("header", Mojo.Event.tap, this.openInBrowser)
     this.removeAnchorFix()
     this.removeLoadImage()
+    this.removeVideoClick()
   },
 
   activate: function($super, changes) {
-    $super()
+    $super(changes)
 
     if(changes && changes.fontSizeChanged) {
       this.setFontSize()
@@ -41,7 +42,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
     $super()
     this.controller.get("title").update(this.article.title)
     this.controller.get("subscription").update(this.article.origin)
-    this.controller.get("author").update(this.article.author ? $L("by ") + this.article.author : "")
+    this.controller.get("author").update(this.article.author ? $L("by #{author}").interpolate(this.article) : "")
     this.controller.get("summary").update(this.article.summary)
     this.setFontSize()
 
@@ -53,12 +54,13 @@ var ArticleAssistant = Class.create(BaseAssistant, {
       this.controller.get("starred").addClassName("on")
     }
 
-    if(!this.article.isRead) {
+    if(!this.article.isRead && !this.article.keepUnread) {
       this.toggleState(this.controller.get("read"), "Read")
     }
 
     this.addAnchorFix()
     this.addLoadImage()
+    this.addVideoClick()
   },
 
   setFontSize: function() {
@@ -74,17 +76,22 @@ var ArticleAssistant = Class.create(BaseAssistant, {
   },
 
   setRead: function(event) {
-    this.toggleState(event.target, "Read")
+    this.toggleState(event.target, "Read", true)
   },
 
-  toggleState: function(target, state) {
+  toggleState: function(target, state, sticky) {
     if(!target.hasClassName("working")) {
       target.addClassName("working")
-      target.toggleClassName("on")
 
-      this.article["turn" + state + (target.hasClassName("on") ? "On" : "Off")](function() {
+      var onComplete = function(success) {
         target.removeClassName("working")
-      })
+
+        if(success) {
+          target.toggleClassName("on")
+        }
+      }
+
+      this.article["turn" + state + (target.hasClassName("on") ? "Off" : "On")](onComplete, sticky)
     }
   },
 
@@ -149,13 +156,13 @@ var ArticleAssistant = Class.create(BaseAssistant, {
 
   shareWithGoogle: function() {
     this.article.turnShareOn(function() {
-      Feeder.notify($L("Article shared."))
+      Feeder.notify($L("Article shared"))
     })
   },
 
   unshareWithGoogle: function() {
     this.article.turnShareOff(function() {
-      Feeder.notify($L("Article unshared."))
+      Feeder.notify($L("Article unshared"))
     })
   },
 
@@ -222,8 +229,8 @@ var ArticleAssistant = Class.create(BaseAssistant, {
 
   offerToInstallApp: function(name, id) {
     this.controller.showAlertDialog({
-      title: name + $L(" is not installed"),
-      message: name + $L(" is not installed. Would you like to install it?"),
+      title:$L("#{app} is not installed").interpolate({app: name}),
+      message: $L("#{app} is not installed. Would you like to install it?").interpolate({app: name}),
 
       choices:[
         {label:$L("Yes"), value:"yes", type:"affirmative"},
@@ -318,6 +325,34 @@ var ArticleAssistant = Class.create(BaseAssistant, {
     }.bind(this))
   },
 
+  addVideoClick: function() {
+    this.videoClick = this.videoClick.bind(this)
+    
+    $$("div.video").each(function(div) {
+      div.observe('click' , this.videoClick)
+    }.bind(this))
+  },
+  
+  removeVideoClick: function() {
+    $$("div.video").each(function(div) {
+      div.stopObserving('click' , this.videoClick)
+    }.bind(this))    
+  },
+  
+  videoClick: function(event) {
+		var div = event.target || event.srcElement
+
+    this.controller.serviceRequest("palm://com.palm.applicationManager", {
+      method: "open",
+      parameters: {
+        id: "com.palm.app.browser",
+        params: {
+          target: div.readAttribute("data-url")
+        }
+      }
+    })  
+  },
+  
   //
   // Prevent tapping link while scrolling, from http://github.com/deliciousmorsel/Feeds/blob/master/app/assistants/view-article-assistant.js
   //

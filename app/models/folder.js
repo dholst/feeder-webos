@@ -4,7 +4,7 @@ var Folder = Class.create(ArticleContainer, {
     this.id = id
     this.title = title
     this.icon = "folder"
-    this.divideBy = "Folders"
+    this.divideBy = "Subscriptions"
     this.subscriptions = [this]
     this.setUnreadCount(0)
     this.showOrigin = true
@@ -48,7 +48,12 @@ var Folder = Class.create(ArticleContainer, {
   },
 
   articleNotRead: function(subscriptionId) {
-    this.subscriptions.each(function(subscription){subscription.articleNotRead(subscriptionId)})
+    this.subscriptions.each(function(subscription){
+      if(subscription.constructor != Folder) {
+        subscription.articleNotRead(subscriptionId)
+      }
+    })
+
     this.recalculateUnreadCounts()
   },
 

@@ -8,15 +8,15 @@ var LoginAssistant = Class.create(BaseAssistant, {
     this.hideLogout = true
   },
 
-  activate: function($super) {
-    $super()
+  activate: function($super, changes) {
+    $super(changes)
 
     this.controller.serviceRequest('palm://com.palm.systemservice/time', {
       method: 'getSystemTime',
       parameters: {},
 
       onSuccess: function(response) {
-        if(Feeder.Metrix.isExpired(response.utc, 7)) {
+        if(Feeder.Metrix.isExpired(response.utc, 14)) {
           this.controller.stageController.pushScene("expired")
         }
         else {

@@ -14,6 +14,43 @@ var Api = Class.create({
     })
   },
 
+  getTags: function(success, failure) {
+    new Ajax.Request(Api.BASE_URL + "tag/list", {
+      method: "get",
+      parameters: {output: "json"},
+      requestHeaders: this._requestHeaders(),
+      onFailure: failure,
+      onSuccess: function(response) {success(response.responseText.evalJSON().tags)}
+    })
+  },
+
+  getSortOrder: function(success, failure) {
+    new Ajax.Request(Api.BASE_URL + "preference/stream/list", {
+      method: "get",
+      parameters: {output: "json"},
+      requestHeaders: this._requestHeaders(),
+      onFailure: failure,
+      onSuccess: function(response) {
+        var prefs = response.responseText.evalJSON()
+        var sortOrder = false
+
+        if(prefs && prefs.streamprefs) {
+          for(key in prefs.streamprefs) {
+            if(key.match(/user\/.*\/state\/com\.google\/root/)) {
+              $A(prefs.streamprefs[key]).each(function(pref) {
+                if("subscription-ordering" == pref.id) {
+                  sortOrder = pref.value
+                }
+              })
+            }
+          }
+        }
+
+        success(sortOrder)
+      }
+    })
+  },
+
   getAllSubscriptions: function(success, failure) {
     // success(STATIC_SUBSCRIPTIONS.subscriptions)
     new Ajax.Request(Api.BASE_URL + "subscription/list", {
@@ -79,8 +116,8 @@ var Api = Class.create({
   _getArticles: function(id, exclude, continuation, success, failure) {
     var parameters = {output: "json", n: 40}
 
-    if(id != "user/-/state/com.google/starred" && 
-       id != "user/-/state/com.google/broadcast" && 
+    if(id != "user/-/state/com.google/starred" &&
+       id != "user/-/state/com.google/broadcast" &&
        Preferences.isOldestFirst()) {
       parameters.r = "o"
     }
@@ -126,16 +163,16 @@ var Api = Class.create({
       articleId,
       subscriptionId,
       "user/-/state/com.google/read",
-      null,
+      "user/-/state/com.google/kept-unread",
       success
     )
   },
 
-  setArticleNotRead: function(articleId, subscriptionId, success) {
+  setArticleNotRead: function(articleId, subscriptionId, success, sticky) {
     this._editTag(
       articleId,
       subscriptionId,
-      "user/-/state/com.google/kept-unread",
+      sticky ? "user/-/state/com.google/kept-unread" : null,
       "user/-/state/com.google/read",
       success
     )
@@ -193,6 +230,8 @@ var Api = Class.create({
 
       if(addTag) parameters.a = addTag
       if(removeTag) parameters.r = removeTag
+
+      console.log(Object.toJSON(parameters))
 
       new Ajax.Request(Api.BASE_URL + "edit-tag", {
         method: "post",

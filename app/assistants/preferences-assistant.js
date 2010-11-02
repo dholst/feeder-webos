@@ -19,8 +19,14 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
 
     this.fontSize = {value: Preferences.fontSize()}
     this.originalFontSize = Preferences.fontSize()
-    
+
     this.combineFolders = {value: Preferences.combineFolders()}
+
+    this.feedSortOrder = {value: (Preferences.isManualFeedSort() ? "manual" : "alphabetical")}
+    this.originalFeedSortOrder = Preferences.isManualFeedSort()
+
+    this.theme = {value: Preferences.getTheme()}
+    this.originalTheme = Preferences.getTheme()
   },
 
   setup: function($super) {
@@ -35,6 +41,16 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
       {label: $L("Small Font"), value: "small"},
       {label: $L("Medium Font"), value: "medium"},
       {label: $L("Large Font"), value: "large"}
+    ]}
+
+    var feedSortChoices = {choices: [
+      {label: $L("Sort alphabetically"), value: "alphabetical"},
+      {label: $L("Sort manually"), value: "manual"}
+    ]}
+
+    var themeChoices = {choices: [
+      {label: $L("Grey Theme"), value: "grey"},
+      {label: $L("Light Theme"), value: "light"}
     ]}
 
     this.controller.setupWidget("allow-landscape", {}, this.allowLandscape)
@@ -57,6 +73,26 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
 
     this.controller.setupWidget("combine-folders", {}, this.combineFolders)
     this.controller.listen("combine-folders", Mojo.Event.propertyChange, this.setCombineFolders = this.setCombineFolders.bind(this))
+
+    this.controller.setupWidget("feed-sort", feedSortChoices, this.feedSortOrder)
+    this.controller.listen("feed-sort", Mojo.Event.propertyChange, this.setFeedSortOrder = this.setFeedSortOrder.bind(this))
+
+    this.controller.setupWidget("theme", themeChoices, this.theme)
+    this.controller.listen("theme", Mojo.Event.propertyChange, this.setTheme = this.setTheme.bind(this))
+  },
+
+  ready: function($super) {
+    $super()
+    $("header").update($L("Preferences"))
+    $("general-label").update($L("General"))
+    $("landscape-label").update($L("Allow landscape"))
+    $("feeds-label").update($L("Feeds"))
+    $("hide-read-feeds-label").update($L("Hide read feeds"))
+    $("back-after-mark-read-label").update($L("Go back after mark all read"))
+    $("articles-label").update($L("Articles"))
+    $("hide-read-articles-label").update($L("Hide read articles"))
+    $("folders-label").update($L("Folders"))
+    $("combine-articles-label").update($L("Combine articles"))
   },
 
   cleanup: function($super) {
@@ -67,6 +103,8 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("hide-read-articles", Mojo.Event.propertyChange, this.setHideReadArticles)
     this.controller.stopListening("back-after-mark-read", Mojo.Event.propertyChange, this.setBackAfterMarkRead)
     this.controller.stopListening("combine-folders", Mojo.Event.propertyChange, this.setCombineFolders)
+    this.controller.stopListening("feed-sort", Mojo.Event.propertyChange, this.setFeedSortOrder)
+    this.controller.stopListening("theme", Mojo.Event.propertyChange, this.setTheme)
   },
 
   setAllowLandscape: function() {
@@ -96,7 +134,23 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
   setCombineFolders: function() {
     Preferences.setCombineFolders(this.combineFolders.value)
   },
-  
+
+  setFeedSortOrder: function() {
+    Preferences.setManualFeedSort(this.feedSortOrder.value == "manual")
+  },
+
+  setTheme: function() {
+    Preferences.setTheme(this.theme.value)
+
+    $w(document.body.className).each(function(className) {
+      if(className.startsWith("theme-")) {
+        $(document.body).removeClassName(className)
+      }
+    })
+
+    $(document.body).addClassName("theme-" + Preferences.getTheme())
+  },
+
   handleCommand: function($super) {
     if(Mojo.Event.back) {
       event.stop();
@@ -121,6 +175,14 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
 
       if(this.originalFontSize != Preferences.fontSize()) {
         changes.fontSizeChanged = true
+      }
+
+      if(this.originalFeedSortOrder != Preferences.isManualFeedSort()) {
+        changes.feedSortOrderChanged = true
+      }
+
+      if(this.originalTheme != Preferences.getTheme()) {
+        changes.themeChanged = true
       }
 
       this.controller.stageController.popScene(changes)

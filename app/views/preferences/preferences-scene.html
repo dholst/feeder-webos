@@ -1,70 +1,82 @@
 <div class="palm-page-header fixed">
   <div class="palm-page-header-wrapper">
-    <div id="header" class="center truncating-text">Preferences</div>
+    <div id="header" class="center truncating-text"></div>
   </div>
 </div>
 <div class="palm-menu-spacer"></div>
 
-<div class="palm-group">
-  <div class="palm-group-title" x-mojo-loc=''>General</div>
-  <div class="palm-list">
-    <div class="palm-row single" x-mojo-tap-highlight="momentary">
-    	<div class="palm-row-wrapper">
-        <div x-mojo-element="CheckBox" class="left" id="allow-landscape"></div>
-        <div class="title">Allow landscape</div>
-    	</div>
+<div class="preferences">
+  <div class="palm-group">
+    <div id="general-label" class="palm-group-title" x-mojo-loc=''></div>
+    <div class="palm-list">
+      <div class="palm-row" x-mojo-tap-highlight="momentary">
+      	<div class="palm-row-wrapper">
+          <div id="landscape-label" class="left title"></div>
+          <div x-mojo-element="CheckBox" class="right" id="allow-landscape"></div>
+      	</div>
+      </div>
+      <div class="palm-row" x-mojo-tap-highlight="momentary">
+      	<div class="palm-row-wrapper">
+      		<div id="theme" x-mojo-element="ListSelector"></div>
+      	</div>
+      </div>
     </div>
   </div>
-</div>
 
-<div class="palm-group">
-  <div class="palm-group-title" x-mojo-loc=''>Feeds</div>
-  <div class="palm-list">
-    <div class="palm-row" x-mojo-tap-highlight="momentary">
-    	<div class="palm-row-wrapper">
-        <div x-mojo-element="CheckBox" class="left" id="hide-read-feeds"></div>
-        <div class="title">Hide read feeds</div>
-    	</div>
-    </div>
-    <div class="palm-row" x-mojo-tap-highlight="momentary">
-    	<div class="palm-row-wrapper">
-        <div x-mojo-element="CheckBox" class="left" id="back-after-mark-read"></div>
-        <div class="title">Go back after mark all read</div>
-    	</div>
+  <div class="palm-group">
+    <div id="feeds-label" class="palm-group-title" x-mojo-loc=''></div>
+    <div class="palm-list">
+      <div class="palm-row" x-mojo-tap-highlight="momentary">
+      	<div class="palm-row-wrapper">
+          <div id="hide-read-feeds-label" class="left title"></div>
+          <div x-mojo-element="CheckBox" class="right" id="hide-read-feeds"></div>
+      	</div>
+      </div>
+      <div class="palm-row" x-mojo-tap-highlight="momentary">
+      	<div class="palm-row-wrapper">
+          <div id="back-after-mark-read-label" class="left title"></div>
+          <div x-mojo-element="CheckBox" class="right" id="back-after-mark-read"></div>
+      	</div>
+      </div>
+      <div class="palm-row" x-mojo-tap-highlight="momentary">
+      	<div class="palm-row-wrapper">
+      		<div id="feed-sort" x-mojo-element="ListSelector"></div>
+      	</div>
+      </div>
     </div>
   </div>
-</div>
 
-<div class="palm-group">
-  <div class="palm-group-title" x-mojo-loc=''>Articles</div>
-  <div class="palm-list">
-    <div class="palm-row" x-mojo-tap-highlight="momentary">
-    	<div class="palm-row-wrapper">
-    		<div id="article-sort" x-mojo-element="ListSelector"></div>
-    	</div>
-    </div>
-    <div class="palm-row" x-mojo-tap-highlight="momentary">
-    	<div class="palm-row-wrapper">
-    		<div id="font-size" x-mojo-element="ListSelector"></div>
-    	</div>
-    </div>
-    <div class="palm-row" x-mojo-tap-highlight="momentary">
-    	<div class="palm-row-wrapper">
-        <div x-mojo-element="CheckBox" class="left" id="hide-read-articles"></div>
-        <div class="title">Hide read articles</div>
-    	</div>
+  <div class="palm-group">
+    <div id="articles-label" class="palm-group-title" x-mojo-loc=''></div>
+    <div class="palm-list">
+      <div class="palm-row" x-mojo-tap-highlight="momentary">
+      	<div class="palm-row-wrapper">
+      		<div id="article-sort" x-mojo-element="ListSelector"></div>
+      	</div>
+      </div>
+      <div class="palm-row" x-mojo-tap-highlight="momentary">
+      	<div class="palm-row-wrapper">
+      		<div id="font-size" x-mojo-element="ListSelector"></div>
+      	</div>
+      </div>
+      <div class="palm-row" x-mojo-tap-highlight="momentary">
+      	<div class="palm-row-wrapper">
+          <div id="hide-read-articles-label" class="left title"></div>
+          <div x-mojo-element="CheckBox" class="right" id="hide-read-articles"></div>
+      	</div>
+      </div>
     </div>
   </div>
-</div>
 
-<div class="palm-group">
-  <div class="palm-group-title" x-mojo-loc=''>Folders</div>
-  <div class="palm-list">
-    <div class="palm-row single" x-mojo-tap-highlight="momentary">
-    	<div class="palm-row-wrapper">
-        <div x-mojo-element="CheckBox" class="left" id="combine-folders"></div>
-        <div class="title">Combine articles</div>
-    	</div>
+  <div class="palm-group">
+    <div id="folders-label" class="palm-group-title" x-mojo-loc=''>Folders</div>
+    <div class="palm-list">
+      <div class="palm-row single" x-mojo-tap-highlight="momentary">
+      	<div class="palm-row-wrapper">
+          <div id="combine-articles-label" class="left title"></div>
+          <div x-mojo-element="CheckBox" class="right" id="combine-folders"></div>
+      	</div>
+      </div>
     </div>
   </div>
 </div>

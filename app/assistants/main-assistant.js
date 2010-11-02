@@ -9,15 +9,23 @@ var MainAssistant = Class.create(BaseAssistant, {
 
     Feeder.Metrix.checkBulletinBoard(this.controller, 20);
 
-    var listAttributes = {
+    var stickySourceAttributes = {
       itemTemplate: "main/source",
-      dividerTemplate: "main/divider",
-  		dividerFunction: this.divide,
   		onItemRendered: this.sourceRendered
     }
 
-    this.controller.setupWidget("sources", listAttributes, this.sources)
-    this.controller.listen("sources", Mojo.Event.listTap, this.sourceTapped = this.sourceTapped.bind(this))
+    var subscriptionAttributes = {
+      itemTemplate: "main/source",
+      dividerTemplate: "main/divider",
+  		dividerFunction: this.divide,
+  		onItemRendered: this.sourceRendered,
+  		reorderable: true
+    }
+
+    this.controller.setupWidget("sticky-sources", stickySourceAttributes, this.sources.stickySources)
+    this.controller.setupWidget("subscription-sources", subscriptionAttributes, this.sources.subscriptionSources)
+    this.controller.listen("sticky-sources", Mojo.Event.listTap, this.sourceTapped = this.sourceTapped.bind(this))
+    this.controller.listen("subscription-sources", Mojo.Event.listTap, this.sourceTapped)
     this.controller.listen("refresh", Mojo.Event.tap, this.refresh = this.refresh.bind(this))
     this.controller.listen(document, "ArticleRead", this.articleRead = this.articleRead.bind(this))
     this.controller.listen(document, "ArticleNotRead", this.articleNotRead = this.articleNotRead.bind(this))
@@ -26,7 +34,8 @@ var MainAssistant = Class.create(BaseAssistant, {
 
   cleanup: function($super) {
     $super()
-    this.controller.stopListening("sources", Mojo.Event.listTap, this.sourceTapped)
+    this.controller.stopListening("sticky-sources", Mojo.Event.listTap, this.sourceTapped)
+    this.controller.stopListening("subscription-sources", Mojo.Event.listTap, this.sourceTapped)
     this.controller.stopListening("refresh", Mojo.Event.tap, this.refresh)
     this.controller.stopListening(document, "ArticleRead", this.articleRead)
     this.controller.stopListening(document, "ArticleNotRead", this.articleNotRead)
@@ -38,24 +47,32 @@ var MainAssistant = Class.create(BaseAssistant, {
     this.refresh()
   },
 
-  activate: function($super, command) {
-    $super()
+  activate: function($super, commandOrChanges) {
+    $super(commandOrChanges)
 
-    if("logout" == command) {
+    if("logout" == commandOrChanges) {
       var creds = new Credentials()
       creds.password = false
       creds.save()
       this.controller.stageController.swapScene("credentials", creds)
     }
+    else if(commandOrChanges && commandOrChanges.feedSortOrderChanged) {
+      this.refresh()
+    }
     else {
-      this.filterReadItems(this.sources)
-      this.refreshList(this.controller.get("sources"), this.sources.items)
+      this.filterAndRefresh()
     }
   },
 
+  filterAndRefresh: function() {
+    this.filterReadItems(this.sources.stickySources)
+    this.filterReadItems(this.sources.subscriptionSources)
+    this.refreshList(this.controller.get("sticky-sources"), this.sources.stickySources.items)
+    this.refreshList(this.controller.get("subscription-sources"), this.sources.subscriptionSources.items)
+  },
+
   foundEm: function(feeds) {
-    this.filterReadItems(this.sources)
-    this.refreshList(this.controller.get("sources"), this.sources.items)
+    this.filterAndRefresh()
     this.smallSpinnerOff()
   },
 
