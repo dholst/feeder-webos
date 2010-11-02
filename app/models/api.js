@@ -51,6 +51,87 @@ var Api = Class.create({
     })
   },
 
+  setSortOrder: function(sortOrder) {
+    this._getEditToken(function(token) {
+      var parameters = {
+        T: token,
+        s: "user/-/state/com.google/root",
+        k: "subscription-ordering",
+        v: sortOrder
+      }
+
+      new Ajax.Request(Api.BASE_URL + "preference/stream/set", {
+        method: "post",
+        parameters: parameters,
+        requestHeaders: this._requestHeaders()
+      })
+    }.bind(this))
+  },
+
+  unsubscribe: function(feed) {
+    if(feed.constructor == Folder) {
+      this.removeLabel(feed)
+    }
+    else {
+      this._getEditToken(function(token) {
+        var parameters = {
+          T: token,
+          s: feed.id,
+          ac: "unsubscribe",
+          t: feed.title
+        }
+
+        new Ajax.Request(Api.BASE_URL + "subscription/edit", {
+          method: "post",
+          parameters: parameters,
+          requestHeaders: this._requestHeaders()
+        })
+      }.bind(this))
+    }
+  },
+
+  removeLabel: function(folder) {
+    this._getEditToken(function(token) {
+      var parameters = {
+        T: token,
+        s: folder.id,
+        t: folder.title
+      }
+
+      new Ajax.Request(Api.BASE_URL + "disable-tag", {
+        method: "post",
+        parameters: parameters,
+        requestHeaders: this._requestHeaders()
+      })
+    }.bind(this))
+  },
+
+  addSubscription: function(url, success, failure) {
+    this._getEditToken(function(token) {
+      var parameters = {
+        T: token,
+        quickadd: url
+      }
+
+      new Ajax.Request(Api.BASE_URL + "subscription/quickadd", {
+        method: "post",
+        parameters: parameters,
+        requestHeaders: this._requestHeaders(),
+        onFailure: failure,
+        onSuccess: function(response) {
+          var json = response.responseText.evalJSON()
+
+          if(json.streamId) {
+            success()
+          }
+          else {
+            failure()
+          }
+        }
+      })
+    }.bind(this))
+  },
+
   getAllSubscriptions: function(success, failure) {
     // success(STATIC_SUBSCRIPTIONS.subscriptions)
     new Ajax.Request(Api.BASE_URL + "subscription/list", {

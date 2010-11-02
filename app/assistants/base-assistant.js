@@ -8,6 +8,10 @@ var BaseAssistant = Class.create({
     appMenuItems.push(Mojo.Menu.editItem)
 
     if(!this.hideAppMenu) {
+      if(this.showAddSubscription) {
+        appMenuItems.push({label: $L("Add Subscription"), command: "add-subscription"})
+      }
+
       if(!this.hidePreferences) {
         appMenuItems.push({label: $L("Preferences"), command: Mojo.Menu.prefsCmd})
       }
@@ -92,12 +96,6 @@ var BaseAssistant = Class.create({
     this.controller.stageController.pushScene("bail")
   },
 
-  sourceRendered: function(listWidget, itemModel, itemNode) {
-    if(itemModel.unreadCount) {
-      $(itemNode).addClassName("unread")
-    }
-  },
-
   refreshList: function(list, items) {
     list.mojo.noticeUpdatedItems(0, items)
     list.mojo.setLength(items.length)
@@ -108,6 +106,10 @@ var BaseAssistant = Class.create({
       if("logout" == event.command) {
         this.controller.stageController.popScenesTo("main", "logout")
       }
+      else if("add-subscription" == event.command) {
+        this.controller.stageController.pushScene("add", this.api)
+        event.stop()
+      }
       else if(Mojo.Menu.helpCmd == event.command) {
         this.controller.stageController.pushScene("help")
         event.stop()
@@ -117,24 +119,6 @@ var BaseAssistant = Class.create({
         event.stop()
       }
 
-    }
-  },
-
-  filterReadItems: function(list, itemsProperty) {
-    itemsProperty = itemsProperty || "items"
-
-    if(Preferences.hideReadFeeds()) {
-      list["original" + itemsProperty] = []
-      list["original" + itemsProperty].push.apply(list["original" + itemsProperty], list[itemsProperty])
-
-      var filtered = $A(list[itemsProperty]).select(function(item){return item.sticky || item.unreadCount})
-      list[itemsProperty].clear()
-      list[itemsProperty].push.apply(list[itemsProperty], filtered)
-    }
-    else if(list["original" + itemsProperty]) {
-      list[itemsProperty].clear()
-      list[itemsProperty].push.apply(list[itemsProperty], list["original" + itemsProperty])
-      list["original" + itemsProperty] = null
     }
   }
 })

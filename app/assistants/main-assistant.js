@@ -1,14 +1,19 @@
 var MainAssistant = Class.create(BaseAssistant, {
   initialize: function($super, api) {
     $super()
+    this.api = api
     this.sources = new AllSources(api)
+    this.showAddSubscription = true
   },
 
   setup: function($super) {
     $super()
-
     Feeder.Metrix.checkBulletinBoard(this.controller, 20);
+    this.setupLists()
+    this.setupListeners()
+  },
 
+  setupLists: function() {
     var stickySourceAttributes = {
       itemTemplate: "main/source",
   		onItemRendered: this.sourceRendered
@@ -19,13 +24,19 @@ var MainAssistant = Class.create(BaseAssistant, {
       dividerTemplate: "main/divider",
   		dividerFunction: this.divide,
   		onItemRendered: this.sourceRendered,
-  		reorderable: true
+  		reorderable: Preferences.isManualFeedSort(),
+  		swipeToDelete: true,
     }
 
     this.controller.setupWidget("sticky-sources", stickySourceAttributes, this.sources.stickySources)
     this.controller.setupWidget("subscription-sources", subscriptionAttributes, this.sources.subscriptionSources)
+  },
+
+  setupListeners: function() {
     this.controller.listen("sticky-sources", Mojo.Event.listTap, this.sourceTapped = this.sourceTapped.bind(this))
     this.controller.listen("subscription-sources", Mojo.Event.listTap, this.sourceTapped)
+    this.controller.listen("subscription-sources", Mojo.Event.listReorder, this.sourcesReordered = this.sourcesReordered.bind(this))
+    this.controller.listen("subscription-sources", Mojo.Event.listDelete, this.sourceDeleted = this.sourceDeleted.bind(this))
     this.controller.listen("refresh", Mojo.Event.tap, this.refresh = this.refresh.bind(this))
     this.controller.listen(document, "ArticleRead", this.articleRead = this.articleRead.bind(this))
     this.controller.listen(document, "ArticleNotRead", this.articleNotRead = this.articleNotRead.bind(this))
@@ -36,6 +47,8 @@ var MainAssistant = Class.create(BaseAssistant, {
     $super()
     this.controller.stopListening("sticky-sources", Mojo.Event.listTap, this.sourceTapped)
     this.controller.stopListening("subscription-sources", Mojo.Event.listTap, this.sourceTapped)
+    this.controller.stopListening("subscription-sources", Mojo.Event.listReorder, this.sourcesReordered)
+    this.controller.stopListening("subscription-sources", Mojo.Event.listDelete, this.sourceDeleted)
     this.controller.stopListening("refresh", Mojo.Event.tap, this.refresh)
     this.controller.stopListening(document, "ArticleRead", this.articleRead)
     this.controller.stopListening(document, "ArticleNotRead", this.articleNotRead)
@@ -56,7 +69,7 @@ var MainAssistant = Class.create(BaseAssistant, {
       creds.save()
       this.controller.stageController.swapScene("credentials", creds)
     }
-    else if(commandOrChanges && commandOrChanges.feedSortOrderChanged) {
+    else if(commandOrChanges && (commandOrChanges.feedSortOrderChanged || commandOrChanges.feedAdded)) {
       this.refresh()
     }
     else {
@@ -65,8 +78,6 @@ var MainAssistant = Class.create(BaseAssistant, {
   },
 
   filterAndRefresh: function() {
-    this.filterReadItems(this.sources.stickySources)
-    this.filterReadItems(this.sources.subscriptionSources)
     this.refreshList(this.controller.get("sticky-sources"), this.sources.stickySources.items)
     this.refreshList(this.controller.get("subscription-sources"), this.sources.subscriptionSources.items)
   },
@@ -83,6 +94,22 @@ var MainAssistant = Class.create(BaseAssistant, {
     else {
       this.controller.stageController.pushScene("articles", event.item)
     }
+  },
+
+  sourcesReordered: function(event) {
+    this.sources.subscriptionSources.items.splice(event.fromIndex, 1)
+    this.sources.subscriptionSources.items.splice(event.toIndex, 0, event.item)
+
+    var sortOrder = this.sources.subscriptionSources.items.map(function(subscription) {
+      return subscription.sortId
+    })
+
+    this.api.setSortOrder(sortOrder.join(""))
+  },
+
+  sourceDeleted: function(event) {
+    this.sources.subscriptionSources.items.splice(event.index, 1)
+    this.api.unsubscribe(event.item)
   },
 
   divide: function(source) {
@@ -108,6 +135,15 @@ var MainAssistant = Class.create(BaseAssistant, {
     }
     else {
       this.sources.massMarkAsRead(event.count)
+    }
+  },
+
+  sourceRendered: function(listWidget, itemModel, itemNode) {
+    if(itemModel.unreadCount) {
+      $(itemNode).addClassName("unread")
+    }
+    else if(Preferences.hideReadFeeds() && !itemModel.sticky) {
+      itemNode.hide()
     }
   }
 })
