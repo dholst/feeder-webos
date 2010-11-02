@@ -3,6 +3,7 @@ var MainAssistant = Class.create(BaseAssistant, {
     $super()
     this.api = api
     this.sources = new AllSources(api)
+    this.showAddSubscription = true
   },
 
   setup: function($super) {
@@ -68,7 +69,7 @@ var MainAssistant = Class.create(BaseAssistant, {
       creds.save()
       this.controller.stageController.swapScene("credentials", creds)
     }
-    else if(commandOrChanges && commandOrChanges.feedSortOrderChanged) {
+    else if(commandOrChanges && (commandOrChanges.feedSortOrderChanged || commandOrChanges.feedAdded)) {
       this.refresh()
     }
     else {

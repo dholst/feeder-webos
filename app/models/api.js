@@ -85,6 +85,32 @@ var Api = Class.create({
     }.bind(this))
   },
 
+  addSubscription: function(url, success, failure) {
+    this._getEditToken(function(token) {
+      var parameters = {
+        T: token,
+        quickadd: url
+      }
+
+      new Ajax.Request(Api.BASE_URL + "subscription/quickadd", {
+        method: "post",
+        parameters: parameters,
+        requestHeaders: this._requestHeaders(),
+        onFailure: failure,
+        onSuccess: function(response) {
+          var json = response.responseText.evalJSON()
+
+          if(json.streamId) {
+            success()
+          }
+          else {
+            failure()
+          }
+        }
+      })
+    }.bind(this))
+  },
+
   getAllSubscriptions: function(success, failure) {
     // success(STATIC_SUBSCRIPTIONS.subscriptions)
     new Ajax.Request(Api.BASE_URL + "subscription/list", {

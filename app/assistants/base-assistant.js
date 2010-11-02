@@ -8,6 +8,10 @@ var BaseAssistant = Class.create({
     appMenuItems.push(Mojo.Menu.editItem)
 
     if(!this.hideAppMenu) {
+      if(this.showAddSubscription) {
+        appMenuItems.push({label: $L("Add Subscription"), command: "add-subscription"})
+      }
+
       if(!this.hidePreferences) {
         appMenuItems.push({label: $L("Preferences"), command: Mojo.Menu.prefsCmd})
       }
@@ -101,6 +105,10 @@ var BaseAssistant = Class.create({
     if(Mojo.Event.command === event.type) {
       if("logout" == event.command) {
         this.controller.stageController.popScenesTo("main", "logout")
+      }
+      else if("add-subscription" == event.command) {
+        this.controller.stageController.pushScene("add", this.api)
+        event.stop()
       }
       else if(Mojo.Menu.helpCmd == event.command) {
         this.controller.stageController.pushScene("help")
