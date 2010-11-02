@@ -7,9 +7,12 @@ var MainAssistant = Class.create(BaseAssistant, {
 
   setup: function($super) {
     $super()
-
     Feeder.Metrix.checkBulletinBoard(this.controller, 20);
+    this.setupLists()
+    this.setupListeners()
+  },
 
+  setupLists: function() {
     var stickySourceAttributes = {
       itemTemplate: "main/source",
   		onItemRendered: this.sourceRendered
@@ -20,11 +23,14 @@ var MainAssistant = Class.create(BaseAssistant, {
       dividerTemplate: "main/divider",
   		dividerFunction: this.divide,
   		onItemRendered: this.sourceRendered,
-  		reorderable: true
+  		reorderable: Preferences.isManualFeedSort()
     }
 
     this.controller.setupWidget("sticky-sources", stickySourceAttributes, this.sources.stickySources)
     this.controller.setupWidget("subscription-sources", subscriptionAttributes, this.sources.subscriptionSources)
+  },
+
+  setupListeners: function() {
     this.controller.listen("sticky-sources", Mojo.Event.listTap, this.sourceTapped = this.sourceTapped.bind(this))
     this.controller.listen("subscription-sources", Mojo.Event.listTap, this.sourceTapped)
     this.controller.listen("subscription-sources", Mojo.Event.listReorder, this.sourcesReordered = this.sourcesReordered.bind(this))
