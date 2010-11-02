@@ -51,6 +51,23 @@ var Api = Class.create({
     })
   },
 
+  setSortOrder: function(sortOrder) {
+    this._getEditToken(function(token) {
+      var parameters = {
+        T: token,
+        s: "user/-/state/com.google/root",
+        k: "subscription-ordering",
+        v: sortOrder
+      }
+
+      new Ajax.Request(Api.BASE_URL + "preference/stream/set", {
+        method: "post",
+        parameters: parameters,
+        requestHeaders: this._requestHeaders()
+      })
+    }.bind(this))
+  },
+
   getAllSubscriptions: function(success, failure) {
     // success(STATIC_SUBSCRIPTIONS.subscriptions)
     new Ajax.Request(Api.BASE_URL + "subscription/list", {

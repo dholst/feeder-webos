@@ -21,7 +21,6 @@ var FolderAssistant = Class.create(BaseAssistant, {
 
   activate: function($super, changes) {
     $super(changes)
-    this.filterReadItems(this.folder, "subscriptions")
     this.refreshList(this.controller.get("folders"), this.folder.subscriptions)
 
     if(!this.folder.subscriptions.length) {
@@ -41,5 +40,8 @@ var FolderAssistant = Class.create(BaseAssistant, {
     if(itemModel.unreadCount) {
       $(itemNode).addClassName("unread")
     }
+    else if(Preferences.hideReadFeeds() && !itemModel.sticky) {
+      itemNode.hide()
+    }    
   }
 })

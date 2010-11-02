@@ -92,12 +92,6 @@ var BaseAssistant = Class.create({
     this.controller.stageController.pushScene("bail")
   },
 
-  sourceRendered: function(listWidget, itemModel, itemNode) {
-    if(itemModel.unreadCount) {
-      $(itemNode).addClassName("unread")
-    }
-  },
-
   refreshList: function(list, items) {
     list.mojo.noticeUpdatedItems(0, items)
     list.mojo.setLength(items.length)
@@ -117,24 +111,6 @@ var BaseAssistant = Class.create({
         event.stop()
       }
 
-    }
-  },
-
-  filterReadItems: function(list, itemsProperty) {
-    itemsProperty = itemsProperty || "items"
-
-    if(Preferences.hideReadFeeds()) {
-      list["original" + itemsProperty] = []
-      list["original" + itemsProperty].push.apply(list["original" + itemsProperty], list[itemsProperty])
-
-      var filtered = $A(list[itemsProperty]).select(function(item){return item.sticky || item.unreadCount})
-      list[itemsProperty].clear()
-      list[itemsProperty].push.apply(list[itemsProperty], filtered)
-    }
-    else if(list["original" + itemsProperty]) {
-      list[itemsProperty].clear()
-      list[itemsProperty].push.apply(list[itemsProperty], list["original" + itemsProperty])
-      list["original" + itemsProperty] = null
     }
   }
 })
