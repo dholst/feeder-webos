@@ -8,8 +8,8 @@ var LoginAssistant = Class.create(BaseAssistant, {
     this.hideLogout = true
   },
 
-  activate: function($super) {
-    $super()
+  activate: function($super, changes) {
+    $super(changes)
 
     if(this.credentials.email && this.credentials.password) {
       if(this.triedLogin) {

@@ -31,7 +31,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
   },
 
   activate: function($super, changes) {
-    $super()
+    $super(changes)
 
     if(changes && changes.fontSizeChanged) {
       this.setFontSize()

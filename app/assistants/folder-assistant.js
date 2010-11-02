@@ -19,8 +19,8 @@ var FolderAssistant = Class.create(BaseAssistant, {
     this.controller.get("header").update(this.folder.title)
   },
 
-  activate: function($super) {
-    $super()
+  activate: function($super, changes) {
+    $super(changes)
     this.filterReadItems(this.folder, "subscriptions")
     this.refreshList(this.controller.get("folders"), this.folder.subscriptions)
 

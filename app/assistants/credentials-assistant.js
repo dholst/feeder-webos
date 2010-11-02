@@ -21,8 +21,8 @@ var CredentialsAssistant = Class.create(BaseAssistant, {
     $("error-message").update($L("Login failed. Try again."))
   },
   
-  activate: function($super) {
-    $super()
+  activate: function($super, changes) {
+    $super(changes)
     this.controller.get("password").mojo.setConsumesEnterKey(false)
     this.controller.get("login-failure")[this.showMessage ? "show" : "hide"]()
   },

@@ -24,6 +24,9 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
 
     this.feedSortOrder = {value: (Preferences.isManualFeedSort() ? "manual" : "alphabetical")}
     this.originalFeedSortOrder = Preferences.isManualFeedSort()
+
+    this.theme = {value: Preferences.getTheme()}
+    this.originalTheme = Preferences.getTheme()
   },
 
   setup: function($super) {
@@ -43,6 +46,11 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     var feedSortChoices = {choices: [
       {label: $L("Sort alphabetically"), value: "alphabetical"},
       {label: $L("Sort manually"), value: "manual"}
+    ]}
+
+    var themeChoices = {choices: [
+      {label: $L("Grey Theme"), value: "grey"},
+      {label: $L("Light Theme"), value: "light"}
     ]}
 
     this.controller.setupWidget("allow-landscape", {}, this.allowLandscape)
@@ -68,6 +76,9 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
 
     this.controller.setupWidget("feed-sort", feedSortChoices, this.feedSortOrder)
     this.controller.listen("feed-sort", Mojo.Event.propertyChange, this.setFeedSortOrder = this.setFeedSortOrder.bind(this))
+
+    this.controller.setupWidget("theme", themeChoices, this.theme)
+    this.controller.listen("theme", Mojo.Event.propertyChange, this.setTheme = this.setTheme.bind(this))
   },
 
   ready: function($super) {
@@ -93,6 +104,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("back-after-mark-read", Mojo.Event.propertyChange, this.setBackAfterMarkRead)
     this.controller.stopListening("combine-folders", Mojo.Event.propertyChange, this.setCombineFolders)
     this.controller.stopListening("feed-sort", Mojo.Event.propertyChange, this.setFeedSortOrder)
+    this.controller.stopListening("theme", Mojo.Event.propertyChange, this.setTheme)
   },
 
   setAllowLandscape: function() {
@@ -127,6 +139,18 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     Preferences.setManualFeedSort(this.feedSortOrder.value == "manual")
   },
 
+  setTheme: function() {
+    Preferences.setTheme(this.theme.value)
+
+    $w(document.body.className).each(function(className) {
+      if(className.startsWith("theme-")) {
+        $(document.body).removeClassName(className)
+      }
+    })
+
+    $(document.body).addClassName("theme-" + Preferences.getTheme())
+  },
+
   handleCommand: function($super) {
     if(Mojo.Event.back) {
       event.stop();
@@ -155,6 +179,10 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
 
       if(this.originalFeedSortOrder != Preferences.isManualFeedSort()) {
         changes.feedSortOrderChanged = true
+      }
+
+      if(this.originalTheme != Preferences.getTheme()) {
+        changes.themeChanged = true
       }
 
       this.controller.stageController.popScene(changes)

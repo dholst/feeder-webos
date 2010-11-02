@@ -30,7 +30,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
   },
 
   activate: function($super, changes_or_scroll) {
-    $super()
+    $super(changes_or_scroll)
 
     if(changes_or_scroll && (changes_or_scroll.sortOrderChanged || changes_or_scroll.hideReadArticlesChanged)) {
       this.subscription.reset()

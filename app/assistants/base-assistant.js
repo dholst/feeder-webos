@@ -30,7 +30,7 @@ var BaseAssistant = Class.create({
   readytoactivat: function() {
   },
 
-  activate: function() {
+  activate: function(changes) {
     this.controller.stageController.setWindowOrientation(Preferences.allowLandscape() ? "free" : "up")
   },
 
