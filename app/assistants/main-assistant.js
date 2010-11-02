@@ -78,6 +78,7 @@ var MainAssistant = Class.create(BaseAssistant, {
   },
 
   filterAndRefresh: function() {
+    this.filterReadItems(this.sources.subscriptionSources)
     this.refreshList(this.controller.get("sticky-sources"), this.sources.stickySources.items)
     this.refreshList(this.controller.get("subscription-sources"), this.sources.subscriptionSources.items)
   },
@@ -142,8 +143,24 @@ var MainAssistant = Class.create(BaseAssistant, {
     if(itemModel.unreadCount) {
       $(itemNode).addClassName("unread")
     }
-    else if(Preferences.hideReadFeeds() && !itemModel.sticky) {
-      itemNode.hide()
+  },
+  
+  filterReadItems: function(list, itemsProperty) {
+    itemsProperty = itemsProperty || "items"
+    var originalItemsProperty = "original" + itemsProperty
+
+    if(Preferences.hideReadFeeds()) {
+      list[originalItemsProperty] = []
+      list[originalItemsProperty].push.apply(list[originalItemsProperty], list[itemsProperty])
+
+      var filtered = $A(list[itemsProperty]).select(function(item){return item.sticky || item.unreadCount})
+      list[itemsProperty].clear()
+      list[itemsProperty].push.apply(list[itemsProperty], filtered)
+    }
+    else if(list[originalItemsProperty]) {
+      list[itemsProperty].clear()
+      list[itemsProperty].push.apply(list[itemsProperty], list[originalItemsProperty])
+      list[originalItemsProperty] = null
     }
   }
 })
