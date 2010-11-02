@@ -69,15 +69,36 @@ var Api = Class.create({
   },
 
   unsubscribe: function(feed) {
+    if(feed.constructor == Folder) {
+      this.removeLabel(feed)
+    }
+    else {
+      this._getEditToken(function(token) {
+        var parameters = {
+          T: token,
+          s: feed.id,
+          ac: "unsubscribe",
+          t: feed.title
+        }
+
+        new Ajax.Request(Api.BASE_URL + "subscription/edit", {
+          method: "post",
+          parameters: parameters,
+          requestHeaders: this._requestHeaders()
+        })
+      }.bind(this))
+    }
+  },
+
+  removeLabel: function(folder) {
     this._getEditToken(function(token) {
       var parameters = {
         T: token,
-        s: feed.id,
-        ac: "unsubscribe",
-        t: feed.title
+        s: folder.id,
+        t: folder.title
       }
 
-      new Ajax.Request(Api.BASE_URL + "subscription/edit", {
+      new Ajax.Request(Api.BASE_URL + "disable-tag", {
         method: "post",
         parameters: parameters,
         requestHeaders: this._requestHeaders()
