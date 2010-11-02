@@ -23,7 +23,8 @@ var MainAssistant = Class.create(BaseAssistant, {
       dividerTemplate: "main/divider",
   		dividerFunction: this.divide,
   		onItemRendered: this.sourceRendered,
-  		reorderable: Preferences.isManualFeedSort()
+  		reorderable: Preferences.isManualFeedSort(),
+  		swipeToDelete: true,
     }
 
     this.controller.setupWidget("sticky-sources", stickySourceAttributes, this.sources.stickySources)
@@ -34,6 +35,7 @@ var MainAssistant = Class.create(BaseAssistant, {
     this.controller.listen("sticky-sources", Mojo.Event.listTap, this.sourceTapped = this.sourceTapped.bind(this))
     this.controller.listen("subscription-sources", Mojo.Event.listTap, this.sourceTapped)
     this.controller.listen("subscription-sources", Mojo.Event.listReorder, this.sourcesReordered = this.sourcesReordered.bind(this))
+    this.controller.listen("subscription-sources", Mojo.Event.listDelete, this.sourceDeleted = this.sourceDeleted.bind(this))
     this.controller.listen("refresh", Mojo.Event.tap, this.refresh = this.refresh.bind(this))
     this.controller.listen(document, "ArticleRead", this.articleRead = this.articleRead.bind(this))
     this.controller.listen(document, "ArticleNotRead", this.articleNotRead = this.articleNotRead.bind(this))
@@ -45,6 +47,7 @@ var MainAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("sticky-sources", Mojo.Event.listTap, this.sourceTapped)
     this.controller.stopListening("subscription-sources", Mojo.Event.listTap, this.sourceTapped)
     this.controller.stopListening("subscription-sources", Mojo.Event.listReorder, this.sourcesReordered)
+    this.controller.stopListening("subscription-sources", Mojo.Event.listDelete, this.sourceDeleted)
     this.controller.stopListening("refresh", Mojo.Event.tap, this.refresh)
     this.controller.stopListening(document, "ArticleRead", this.articleRead)
     this.controller.stopListening(document, "ArticleNotRead", this.articleNotRead)
@@ -101,6 +104,11 @@ var MainAssistant = Class.create(BaseAssistant, {
     })
 
     this.api.setSortOrder(sortOrder.join(""))
+  },
+
+  sourceDeleted: function(event) {
+    this.sources.subscriptionSources.items.splice(event.index, 1)
+    this.api.unsubscribe(event.item)
   },
 
   divide: function(source) {

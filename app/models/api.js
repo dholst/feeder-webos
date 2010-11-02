@@ -68,6 +68,23 @@ var Api = Class.create({
     }.bind(this))
   },
 
+  unsubscribe: function(feed) {
+    this._getEditToken(function(token) {
+      var parameters = {
+        T: token,
+        s: feed.id,
+        ac: "unsubscribe",
+        t: feed.title
+      }
+
+      new Ajax.Request(Api.BASE_URL + "subscription/edit", {
+        method: "post",
+        parameters: parameters,
+        requestHeaders: this._requestHeaders()
+      })
+    }.bind(this))
+  },
+
   getAllSubscriptions: function(success, failure) {
     // success(STATIC_SUBSCRIPTIONS.subscriptions)
     new Ajax.Request(Api.BASE_URL + "subscription/list", {
