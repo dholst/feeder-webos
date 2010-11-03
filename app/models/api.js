@@ -46,7 +46,7 @@ var Api = Class.create({
           }
         }
 
-        success(sortOrder)
+        success(sortOrder.toArray().inGroupsOf(8).map(function(key){return key.join("")}))
       }
     })
   },

@@ -2,51 +2,53 @@ var Subscriptions = Class.create(Countable, {
   initialize: function($super, api) {
     $super()
     this.api = api
-    this.originalItems = []
-    this.filteredItems = []
+    this.items = []
   },
 
-  findAll: function(success, failure) {
-    var onSuccess = function(subscriptions) {
-      this.clearUnreadCount()
-      this.originalItems.clear()
-      this.filteredItems.clear()
+  findAll: function(callback) {
+    var self = this
 
-      var folders = new Folders(this.api)
+    self.api.getAllSubscriptions(function(subscriptions) {
+      self.sorted = false
+      self.clearUnreadCount()
+      self.items.clear()
+
+      var folders = new Folders(self.api)
 
       subscriptions.each(function(subscriptionData) {
-        var subscription = new Subscription(this.api, subscriptionData)
+        var subscription = new Subscription(self.api, subscriptionData)
+        self.addSubscription(subscription, folders)
+      })
 
-        if(subscription.belongsToFolder()) {
-          this.addSubscriptionToFolders(folders, subscription)
-        }
-        else {
-          this.originalItems.push(subscription)
-        }
-      }.bind(this))
-
-      this.originalItems.push.apply(this.originalItems, folders.items)
-      this.addUnreadCounts(success, failure)
-    }.bind(this)
-
-    this.api.getAllSubscriptions(onSuccess, failure)
-  },
-
-  addSubscriptionToFolders: function(folders, subscription) {
-    subscription.categories.each(function(category) {
-      if(category.label) {
-        folders.addSubscription(category.id, category.label, subscription)
-      }
+      folders.addSortIds(function() {
+        self.items.push.apply(self.items, folders.items)
+        self.addUnreadCounts(callback)
+      })
     })
   },
 
-  addUnreadCounts: function(success, failure) {
-    var onSuccess = function(counts) {
+  addSubscription: function(subscription, folders) {
+    if(subscription.belongsToFolder()) {
+      subscription.categories.each(function(category) {
+        if(category.label) {
+          folders.addSubscription(category.id, category.label, subscription)
+        }
+      })
+    }
+    else {
+      this.items.push(subscription)
+    }
+  },
+
+  addUnreadCounts: function(callback) {
+    var self = this
+
+    self.api.getUnreadCounts(function(counts) {
       counts.each(function(count) {
         if(count.id.startsWith("feed")) {
-          this.incrementUnreadCountBy(count.count)
+          self.incrementUnreadCountBy(count.count)
 
-          this.originalItems.each(function(item) {
+          self.items.each(function(item) {
             if(item.id == count.id) {
               item.setUnreadCount(count.count)
             }
@@ -56,52 +58,90 @@ var Subscriptions = Class.create(Countable, {
             }
           })
         }
-      }.bind(this))
+      })
 
-      this.sort(success, failure)
-    }.bind(this)
-
-    this.api.getUnreadCounts(onSuccess, failure)
+      callback()
+    })
   },
 
-  sort: function(success, failure) {
+  sort: function(callback) {
     if(Preferences.isManualFeedSort()) {
-      this.sortManually(success, failure)
+      this.sortManually(callback)
     }
     else {
-      this.sortAlphabetically(success, failure)
+      this.sortAlphabetically(callback)
     }
   },
 
-  sortManually: function(success, failure) {
-    var addSortIdsToFolders = function(tags) {
-      tags.each(function(tag) {
-        var folder = this.originalItems.find(function(item) {return item.id == tag.id})
-        if(folder) folder.sortId = tag.sortid
-      }.bind(this))
+  sortAlphabetically: function(callback) {
+    var self = this
 
-      this.api.getSortOrder(this.manuallySort.bind(this, success, failure))
-    }.bind(this)
+    if(self.sorted == "alphabetic") {
+      callback()
+    }
+    else {
+      self.sortBy(function(item) {
+        return (item.isFolder ? "__FOLDER_" : "__SUBSCRIPTION_") + item.title.toUpperCase()
+      })
 
-    this.api.getTags(addSortIdsToFolders, failure)
+      self.sorted = "alphabetic"
+      callback()
+    }
   },
 
-  sortAlphabetically: function(success, failure) {
-    this.originalItems = this.originalItems.sortBy(function(item){return (item.isFolder ? "__FOLDER_" : "__SUBSCRIPTION_") + item.title.toUpperCase()})
-    success()
+  sortManually: function(callback) {
+    var self = this
+
+    if(self.sorted == "manual") {
+      callback()
+    }
+    else {
+      self.api.getSortOrder(function(sortOrder) {
+        sortOrder.each(function(key, index) {
+          var sortedItem = self.items.find(function(item) {return item.sortId == key})
+          if(sortedItem) sortedItem.sortNumber = index
+        })
+
+        self.sortBy(function(item) {
+          return item.sortNumber
+        })
+
+        self.sorted = "manual"
+        callback()
+      })
+    }
   },
 
-  manuallySort: function(success, failure, sortOrder) {
-    sortOrder.toArray().inGroupsOf(8).each(function(key, index) {
-      key = key.join("")
-      var sortedItem = this.originalItems.find(function(item) {return item.sortId == key})
-      if(sortedItem) sortedItem.sortNumber = index
-    }.bind(this))
+  sortBy: function(f) {
+    var sortedItems = this.items.sortBy(f)
+    this.items.clear()
+    this.items.push.apply(this.items, sortedItems)
+  },
 
-    var sortedItems = this.originalItems.sortBy(function(item){return item.sortNumber})
-    this.originalItems.clear()
-    this.originalItems.push.apply(this.originalItems, sortedItems)
+  remove: function(subscription) {
+    var self = this
 
-    success()
+    self.items.each(function(item, index) {
+      if(item.id == subscription.id) {
+        self.items.splice(index, 1)
+        self.api.unsubscribe(subscription)
+        Mojo.Event.send(document, "MassMarkAsRead", {id: subscription.id, count: subscription.unreadCount})
+        return
+      }
+    })
+  },
+
+  articleRead: function(subscriptionId) {
+    this.items.each(function(subscription) {subscription.articleRead(subscriptionId)})
+  },
+
+  articleNotRead: function(subscriptionId) {
+    this.items.each(function(subscription) {subscription.articleNotRead(subscriptionId)})
+  },
+
+  recalculateFolderCounts: function() {
+    this.items.each(function(subscription) {
+      if(subscription.isFolder) subscription.recalculateUnreadCounts()
+    })
   }
 })

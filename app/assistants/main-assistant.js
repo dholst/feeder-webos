@@ -29,7 +29,7 @@ var MainAssistant = Class.create(BaseAssistant, {
     }
 
     this.controller.setupWidget("sticky-sources", stickySourceAttributes, this.sources.stickySources)
-    this.controller.setupWidget("subscription-sources", subscriptionAttributes, this.sources.filteredSubscriptionSources)
+    this.controller.setupWidget("subscription-sources", subscriptionAttributes, this.sources.subscriptionSources)
   },
 
   setupListeners: function() {
@@ -40,7 +40,7 @@ var MainAssistant = Class.create(BaseAssistant, {
     this.controller.listen("refresh", Mojo.Event.tap, this.reload = this.reload.bind(this))
     this.controller.listen(document, "ArticleRead", this.articleRead = this.articleRead.bind(this))
     this.controller.listen(document, "ArticleNotRead", this.articleNotRead = this.articleNotRead.bind(this))
-    this.controller.listen(document, "MassMarkAsRead", this.massMarkAsRead = this.massMarkAsRead.bind(this))
+    this.controller.listen(document, "MassMarkAsRead", this.markedAllRead = this.markedAllRead.bind(this))
   },
 
   cleanup: function($super) {
@@ -52,7 +52,7 @@ var MainAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("refresh", Mojo.Event.tap, this.reload)
     this.controller.stopListening(document, "ArticleRead", this.articleRead)
     this.controller.stopListening(document, "ArticleNotRead", this.articleNotRead)
-    this.controller.stopListening(document, "MassMarkAsRead", this.massMarkAsRead)
+    this.controller.stopListening(document, "MassMarkAsRead", this.markedAllRead)
   },
 
   ready: function($super) {
@@ -60,17 +60,35 @@ var MainAssistant = Class.create(BaseAssistant, {
     this.reload()
   },
 
-  activate: function($super, commandOrChanges) {
-    $super(commandOrChanges)
+  reload: function() {
+    var self = this
 
-    if("logout" == commandOrChanges) {
+    if(!self.reloading) {
+      self.reloading = true
+      self.smallSpinnerOn()
+
+      self.sources.findAll(function() {
+        self.reloading = false
+        self.filterAndRefresh()
+        self.smallSpinnerOff()
+      })
+    }
+  },
+
+  activate: function($super, command) {
+    $super(command)
+
+    if("logout" == command) {
       var creds = new Credentials()
       creds.password = false
       creds.save()
       this.controller.stageController.swapScene("credentials", creds)
     }
-    else if(commandOrChanges && commandOrChanges.feedAdded) {
+    else if(command && command.feedAdded) {
       this.reload()
+    }
+    else if(command && command.feedSortOrderChanged) {
+      this.controller.stageController.swapScene("main", this.api)
     }
     else {
       this.filterAndRefresh()
@@ -78,23 +96,18 @@ var MainAssistant = Class.create(BaseAssistant, {
   },
 
   filterAndRefresh: function() {
-    this.sources.filter()
-    this.refreshList(this.controller.get("sticky-sources"), this.sources.stickySources.items)
-    this.refreshList(this.controller.get("subscription-sources"), this.sources.filteredSubscriptionSources.items)
-  },
+    var self = this
 
-  reload: function() {
-    this.smallSpinnerOn()
-    this.sources.findAll(this.foundEm.bind(this), this.bail.bind(this))
-  },
-
-  foundEm: function(feeds) {
-    this.filterAndRefresh()
-    this.smallSpinnerOff()
+    if(!self.reloading) {
+      self.sources.sortAndFilter(function() {
+        self.refreshList(self.controller.get("sticky-sources"), self.sources.stickySources.items)
+        self.refreshList(self.controller.get("subscription-sources"), self.sources.subscriptionSources.items)
+      })
+    }
   },
 
   sourceTapped: function(event) {
-    if(event.item.constructor == Folder && !Preferences.combineFolders()) {
+    if(event.item.isFolder && !Preferences.combineFolders()) {
       this.controller.stageController.pushScene("folder", event.item)
     }
     else {
@@ -103,19 +116,18 @@ var MainAssistant = Class.create(BaseAssistant, {
   },
 
   sourcesReordered: function(event) {
-    this.sources.subscriptionSources.items.splice(event.fromIndex, 1)
-    this.sources.subscriptionSources.items.splice(event.toIndex, 0, event.item)
-
-    var sortOrder = this.sources.subscriptionSources.items.map(function(subscription) {
-      return subscription.sortId
-    })
-
-    this.api.setSortOrder(sortOrder.join(""))
+    // this.sources.subscriptionSources.items.splice(event.fromIndex, 1)
+    // this.sources.subscriptionSources.items.splice(event.toIndex, 0, event.item)
+    //
+    // var sortOrder = this.sources.subscriptionSources.items.map(function(subscription) {
+    //   return subscription.sortId
+    // })
+    //
+    // this.api.setSortOrder(sortOrder.join(""))
   },
 
   sourceDeleted: function(event) {
-    this.sources.subscriptionSources.items.splice(event.index, 1)
-    this.api.unsubscribe(event.item)
+    this.sources.subscriptions.remove(event.item)
   },
 
   divide: function(source) {
@@ -123,20 +135,26 @@ var MainAssistant = Class.create(BaseAssistant, {
   },
 
   articleRead: function(event) {
-    this.sources.articleReadIn(event.subscriptionId)
+    Log.debug("1 item marked read in " + event.subscriptionId)
+    this.sources.articleRead(event.subscriptionId)
   },
 
   articleNotRead: function(event) {
-    this.sources.articleNotReadIn(event.subscriptionId)
+    Log.debug("1 item marked not read in " + event.subscriptionId)
+    this.sources.articleNotRead(event.subscriptionId)
   },
 
-  massMarkAsRead: function(event) {
+  markedAllRead: function(event) {
+    Log.debug(event.count + " items marked read in " + event.id)
+
     if(event.id == "user/-/state/com.google/reading-list") {
       this.sources.nukedEmAll()
     }
     else {
-      this.sources.massMarkAsRead(event.count)
+      this.sources.markedAllRead(event.count)
     }
+
+    this.filterAndRefresh()
   },
 
   sourceRendered: function(listWidget, itemModel, itemNode) {

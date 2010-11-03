@@ -17,15 +17,18 @@ var Folder = Class.create(ArticleContainer, {
   },
 
   markAllRead: function(success) {
-    this.api.markAllRead(this.id, function() {
-      for(var i = 1; i < this.subscriptions.length; i++) {
-        this.subscriptions[i].clearUnreadCount()
+    var self = this
+
+    self.api.markAllRead(self.id, function() {
+      for(var i = 1; i < self.subscriptions.length; i++) {
+        self.subscriptions[i].clearUnreadCount()
       }
-      this.clearUnreadCount()
-      this.items.each(function(item) {item.isRead = true})
-      this.recalculateUnreadCounts()
+
+      self.clearUnreadCount()
+      self.items.each(function(item) {item.isRead = true})
+      self.recalculateUnreadCounts()
       success()
-    }.bind(this))
+    })
   },
 
   addUnreadCount: function(count) {

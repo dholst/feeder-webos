@@ -1,72 +1,68 @@
 var AllSources = Class.create({
   initialize: function(api) {
-    this.allArticles = new AllArticles(api)
+    this.all = new AllArticles(api)
     this.starred = new Starred(api)
     this.shared = new Shared(api)
-    this.stickySources = {items: [this.allArticles, this.starred, this.shared]}
+    this.stickySources = {items: [this.all, this.starred, this.shared]}
 
     this.subscriptions = new Subscriptions(api)
     this.subscriptionSources = {items: []}
-    this.filteredSubscriptionSources = {items: []}
   },
 
-  findAll: function(success, failure) {
-    this.subscriptions.findAll(this.foundSubscriptions.bind(this, success), failure)
-  },
+  findAll: function(callback) {
+    var self = this
 
-  foundSubscriptions: function(success) {
-    this.subscriptionSources.items.push.apply(this.subscriptionSources.items, this.subscriptions.originalItems)
-    this.allArticles.setUnreadCount(this.subscriptions.getUnreadCount())
-    success()
-  },
-
-  filter: function() {
-    this.filteredSubscriptionSources.items.clear()
-    var hideReadFeeds = Preferences.hideReadFeeds()
-
-    this.subscriptionSources.items.each(function(subscription) {
-      if(!hideReadFeeds || (hideReadFeeds && subscription.unreadCount)) {
-        this.filteredSubscriptionSources.items.push(subscription)
-      }
-    }.bind(this))
-  },
-
-  articleReadIn: function(subscriptionId) {
-    this.stickySources.items.each(function(source){source.articleRead(subscriptionId)})
-    this.subscriptionSources.items.each(function(source){source.articleRead(subscriptionId)})
-  },
-
-  articleNotReadIn: function(subscriptionId) {
-    this.stickySources.items.each(function(source){source.articleNotRead(subscriptionId)})
-    this.subscriptionSources.items.each(function(source){source.articleNotRead(subscriptionId)})
-  },
-
-  massMarkAsRead: function(count) {
-
-    console.log("DOOOOOOOOOOOO SOOOOOOOOOOOOOOMETHING HEREEEEEEEEEEEEEEEE")
-
-
-
-    this.allArticles.decrementUnreadCountBy(count)
-
-    this.subscriptions.folders.items.each(function(folder) {
-      folder.recalculateUnreadCounts()
+    self.subscriptions.findAll(function() {
+      self.all.setUnreadCount(self.subscriptions.getUnreadCount())
+      callback()
     })
+  },
+
+  sortAndFilter: function(callback) {
+    var self = this
+    self.subscriptionSources.items.clear()
+
+    self.subscriptions.sort(function() {
+      var hideReadFeeds = Preferences.hideReadFeeds()
+
+      self.subscriptions.items.each(function(subscription) {
+        if(!hideReadFeeds || (hideReadFeeds && subscription.unreadCount)) {
+          self.subscriptionSources.items.push(subscription)
+        }
+      })
+
+      callback()
+    })
+  },
+
+  articleRead: function(subscriptionId) {
+    this.all.decrementUnreadCountBy(1)
+    this.subscriptions.articleRead(subscriptionId)
+  },
+
+  articleNotRead: function(subscriptionId) {
+    this.all.incrementUnreadCountBy(1)
+    this.subscriptions.articleNotRead(subscriptionId)
+  },
+
+  markedAllRead: function(count) {
+    this.all.decrementUnreadCountBy(count)
+    this.subscriptions.recalculateFolderCounts()
   },
 
   nukedEmAll: function() {
-    this.allArticles.clearUnreadCount()
+    this.all.clearUnreadCount()
 
-    this.subscriptions.items.each(function(subscription) {
-      subscription.clearUnreadCount()
-    })
-
-    this.subscriptions.folders.items.each(function(folder) {
-      folder.subscriptions.each(function(subscription) {
-        subscription.clearUnreadCount()
-      })
-
-      folder.recalculateUnreadCounts()
-    })
+    // this.subscriptions.items.each(function(subscription) {
+    //   subscription.clearUnreadCount()
+    // })
+    //
+    // this.subscriptions.folders.items.each(function(folder) {
+    //   folder.subscriptions.each(function(subscription) {
+    //     subscription.clearUnreadCount()
+    //   })
+    //
+    //   folder.recalculateUnreadCounts()
+    // })
   }
 })
