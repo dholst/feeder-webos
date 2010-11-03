@@ -1,32 +1,34 @@
 var AllSources = Class.create({
   initialize: function(api) {
-    this.stickySources = {items: []}
-    this.subscriptionSources = {items: []}
     this.allArticles = new AllArticles(api)
     this.starred = new Starred(api)
     this.shared = new Shared(api)
-    this.subscriptions = new Subscriptions(api)
-    this.resetItems()
-  },
+    this.stickySources = {items: [this.allArticles, this.starred, this.shared]}
 
-  resetItems: function() {
-    this.stickySources.items = [this.allArticles, this.starred, this.shared]
-    this.subscriptionSources.items.clear()
+    this.subscriptions = new Subscriptions(api)
+    this.subscriptionSources = {items: []}
+    this.filteredSubscriptionSources = {items: []}
   },
 
   findAll: function(success, failure) {
-    this.success = success
-    this.failure = failure
-    this.resetItems()
-    this.subscriptions.findAll(this.foundSubscriptions.bind(this), this.failure)
+    this.subscriptions.findAll(this.foundSubscriptions.bind(this, success), failure)
   },
 
-  foundSubscriptions: function() {
-    var items = this.subscriptionSources.items
-    this.subscriptions.folders.items.each(function(folder) {items.push(folder)})
-    this.subscriptions.items.each(function(subscription) {items.push(subscription)})
+  foundSubscriptions: function(success) {
+    this.subscriptionSources.items.push.apply(this.subscriptionSources.items, this.subscriptions.originalItems)
     this.allArticles.setUnreadCount(this.subscriptions.getUnreadCount())
-    this.success()
+    success()
+  },
+
+  filter: function() {
+    this.filteredSubscriptionSources.items.clear()
+    var hideReadFeeds = Preferences.hideReadFeeds()
+
+    this.subscriptionSources.items.each(function(subscription) {
+      if(!hideReadFeeds || (hideReadFeeds && subscription.unreadCount)) {
+        this.filteredSubscriptionSources.items.push(subscription)
+      }
+    }.bind(this))
   },
 
   articleReadIn: function(subscriptionId) {
@@ -40,8 +42,13 @@ var AllSources = Class.create({
   },
 
   massMarkAsRead: function(count) {
+
+    console.log("DOOOOOOOOOOOO SOOOOOOOOOOOOOOMETHING HEREEEEEEEEEEEEEEEE")
+
+
+
     this.allArticles.decrementUnreadCountBy(count)
-    
+
     this.subscriptions.folders.items.each(function(folder) {
       folder.recalculateUnreadCounts()
     })

@@ -29,7 +29,7 @@ var MainAssistant = Class.create(BaseAssistant, {
     }
 
     this.controller.setupWidget("sticky-sources", stickySourceAttributes, this.sources.stickySources)
-    this.controller.setupWidget("subscription-sources", subscriptionAttributes, this.sources.subscriptionSources)
+    this.controller.setupWidget("subscription-sources", subscriptionAttributes, this.sources.filteredSubscriptionSources)
   },
 
   setupListeners: function() {
@@ -37,7 +37,7 @@ var MainAssistant = Class.create(BaseAssistant, {
     this.controller.listen("subscription-sources", Mojo.Event.listTap, this.sourceTapped)
     this.controller.listen("subscription-sources", Mojo.Event.listReorder, this.sourcesReordered = this.sourcesReordered.bind(this))
     this.controller.listen("subscription-sources", Mojo.Event.listDelete, this.sourceDeleted = this.sourceDeleted.bind(this))
-    this.controller.listen("refresh", Mojo.Event.tap, this.refresh = this.refresh.bind(this))
+    this.controller.listen("refresh", Mojo.Event.tap, this.reload = this.reload.bind(this))
     this.controller.listen(document, "ArticleRead", this.articleRead = this.articleRead.bind(this))
     this.controller.listen(document, "ArticleNotRead", this.articleNotRead = this.articleNotRead.bind(this))
     this.controller.listen(document, "MassMarkAsRead", this.massMarkAsRead = this.massMarkAsRead.bind(this))
@@ -49,7 +49,7 @@ var MainAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("subscription-sources", Mojo.Event.listTap, this.sourceTapped)
     this.controller.stopListening("subscription-sources", Mojo.Event.listReorder, this.sourcesReordered)
     this.controller.stopListening("subscription-sources", Mojo.Event.listDelete, this.sourceDeleted)
-    this.controller.stopListening("refresh", Mojo.Event.tap, this.refresh)
+    this.controller.stopListening("refresh", Mojo.Event.tap, this.reload)
     this.controller.stopListening(document, "ArticleRead", this.articleRead)
     this.controller.stopListening(document, "ArticleNotRead", this.articleNotRead)
     this.controller.stopListening(document, "MassMarkAsRead", this.massMarkAsRead)
@@ -57,7 +57,7 @@ var MainAssistant = Class.create(BaseAssistant, {
 
   ready: function($super) {
     $super()
-    this.refresh()
+    this.reload()
   },
 
   activate: function($super, commandOrChanges) {
@@ -69,8 +69,8 @@ var MainAssistant = Class.create(BaseAssistant, {
       creds.save()
       this.controller.stageController.swapScene("credentials", creds)
     }
-    else if(commandOrChanges && (commandOrChanges.feedSortOrderChanged || commandOrChanges.feedAdded)) {
-      this.refresh()
+    else if(commandOrChanges && commandOrChanges.feedAdded) {
+      this.reload()
     }
     else {
       this.filterAndRefresh()
@@ -78,9 +78,14 @@ var MainAssistant = Class.create(BaseAssistant, {
   },
 
   filterAndRefresh: function() {
-    this.filterReadItems(this.sources.subscriptionSources)
+    this.sources.filter()
     this.refreshList(this.controller.get("sticky-sources"), this.sources.stickySources.items)
-    this.refreshList(this.controller.get("subscription-sources"), this.sources.subscriptionSources.items)
+    this.refreshList(this.controller.get("subscription-sources"), this.sources.filteredSubscriptionSources.items)
+  },
+
+  reload: function() {
+    this.smallSpinnerOn()
+    this.sources.findAll(this.foundEm.bind(this), this.bail.bind(this))
   },
 
   foundEm: function(feeds) {
@@ -117,11 +122,6 @@ var MainAssistant = Class.create(BaseAssistant, {
     return source.divideBy
   },
 
-  refresh: function() {
-    this.smallSpinnerOn()
-    this.sources.findAll(this.foundEm.bind(this), this.bail.bind(this))
-  },
-
   articleRead: function(event) {
     this.sources.articleReadIn(event.subscriptionId)
   },
@@ -142,25 +142,6 @@ var MainAssistant = Class.create(BaseAssistant, {
   sourceRendered: function(listWidget, itemModel, itemNode) {
     if(itemModel.unreadCount) {
       $(itemNode).addClassName("unread")
-    }
-  },
-  
-  filterReadItems: function(list, itemsProperty) {
-    itemsProperty = itemsProperty || "items"
-    var originalItemsProperty = "original" + itemsProperty
-
-    if(Preferences.hideReadFeeds()) {
-      list[originalItemsProperty] = []
-      list[originalItemsProperty].push.apply(list[originalItemsProperty], list[itemsProperty])
-
-      var filtered = $A(list[itemsProperty]).select(function(item){return item.sticky || item.unreadCount})
-      list[itemsProperty].clear()
-      list[itemsProperty].push.apply(list[itemsProperty], filtered)
-    }
-    else if(list[originalItemsProperty]) {
-      list[itemsProperty].clear()
-      list[itemsProperty].push.apply(list[itemsProperty], list[originalItemsProperty])
-      list[originalItemsProperty] = null
     }
   }
 })

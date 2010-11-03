@@ -17,11 +17,5 @@ var Folders = Class.create({
     }
 
     folder.subscriptions.push(subscription)
-  },
-
-  addUnreadCounts: function(count) {
-    this.items.each(function(folder) {
-      folder.addUnreadCounts(count)
-    })
   }
 })

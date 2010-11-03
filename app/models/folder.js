@@ -9,6 +9,7 @@ var Folder = Class.create(ArticleContainer, {
     this.setUnreadCount(0)
     this.showOrigin = true
     this.canMarkAllRead = true
+    this.isFolder = true
   },
 
   makeApiCall: function(continuation, success, failure) {
@@ -27,7 +28,7 @@ var Folder = Class.create(ArticleContainer, {
     }.bind(this))
   },
 
-  addUnreadCounts: function(count) {
+  addUnreadCount: function(count) {
     this.subscriptions.each(function(subscription) {
       if(subscription.id == count.id) {
         subscription.setUnreadCount(count.count)

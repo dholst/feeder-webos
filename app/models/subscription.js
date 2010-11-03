@@ -7,6 +7,11 @@ var Subscription = Class.create(ArticleContainer, {
     this.divideBy = "Subscriptions"
     this.canMarkAllRead = true
     this.sortId = data.sortid
+    this.categories = data.categories
+  },
+
+  belongsToFolder: function() {
+    return this.categories && this.categories.length
   },
 
   makeApiCall: function(continuation, success, failure) {
