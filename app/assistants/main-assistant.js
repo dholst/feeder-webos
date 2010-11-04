@@ -97,7 +97,7 @@ var MainAssistant = Class.create(BaseAssistant, {
       this.reload()
     }
     else if(command && command.feedSortOrderChanged) {
-      this.controller.stageController.swapScene("main", this.api, this.sources, true)
+      this.controller.stageController.swapScene({name: "main", transition: Mojo.Transition.none}, this.api, this.sources, true)
     }
     else {
       this.filterAndRefresh()
@@ -178,6 +178,15 @@ var MainAssistant = Class.create(BaseAssistant, {
   sourceRendered: function(listWidget, itemModel, itemNode) {
     if(itemModel.unreadCount) {
       $(itemNode).addClassName("unread")
+    }
+  },
+
+  handleCommand: function($super, event) {
+    if(Mojo.Event.forward == event.type) {
+      this.reload()
+    }
+    else {
+      $super(event)
     }
   }
 })

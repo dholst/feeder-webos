@@ -162,8 +162,8 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     Preferences.setDebugging(this.debug.value)
   },
 
-  handleCommand: function($super) {
-    if(Mojo.Event.back) {
+  handleCommand: function($super, event) {
+    if(Mojo.Event.back == event.type) {
       event.stop();
 
       changes = {}
@@ -199,7 +199,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
       this.controller.stageController.popScene(changes)
     }
     else {
-      $super()
+      $super(event)
     }
   }
 })
