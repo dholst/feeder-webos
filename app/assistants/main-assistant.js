@@ -1,8 +1,9 @@
 var MainAssistant = Class.create(BaseAssistant, {
-  initialize: function($super, api) {
+  initialize: function($super, api, sources, loaded) {
     $super()
     this.api = api
-    this.sources = new AllSources(api)
+    this.sources = sources || new AllSources(api)
+    this.loaded = loaded
     this.showAddSubscription = true
   },
 
@@ -61,7 +62,10 @@ var MainAssistant = Class.create(BaseAssistant, {
 
   ready: function($super) {
     $super()
-    this.reload()
+
+    if(!this.loaded) {
+      this.reload()
+    }
   },
 
   reload: function() {
@@ -73,6 +77,7 @@ var MainAssistant = Class.create(BaseAssistant, {
 
       self.sources.findAll(function() {
         self.reloading = false
+        self.loaded = true
         self.filterAndRefresh()
         self.smallSpinnerOff()
       })
@@ -92,7 +97,7 @@ var MainAssistant = Class.create(BaseAssistant, {
       this.reload()
     }
     else if(command && command.feedSortOrderChanged) {
-      this.controller.stageController.swapScene("main", this.api)
+      this.controller.stageController.swapScene("main", this.api, this.sources, true)
     }
     else {
       this.filterAndRefresh()
