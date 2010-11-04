@@ -41,6 +41,8 @@ var MainAssistant = Class.create(BaseAssistant, {
     this.controller.listen(document, "ArticleRead", this.articleRead = this.articleRead.bind(this))
     this.controller.listen(document, "ArticleNotRead", this.articleNotRead = this.articleNotRead.bind(this))
     this.controller.listen(document, "MassMarkAsRead", this.markedAllRead = this.markedAllRead.bind(this))
+    this.controller.listen(document, "SubscriptionDeleted", this.markedAllRead)
+    this.controller.listen(document, "FolderDeleted", this.folderDeleted = this.folderDeleted.bind(this))
   },
 
   cleanup: function($super) {
@@ -53,6 +55,8 @@ var MainAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening(document, "ArticleRead", this.articleRead)
     this.controller.stopListening(document, "ArticleNotRead", this.articleNotRead)
     this.controller.stopListening(document, "MassMarkAsRead", this.markedAllRead)
+    this.controller.stopListening(document, "SubscriptionDeleted", this.markedAllRead)
+    this.controller.stopListening(document, "FolderDeleted", this.folderDeleted)
   },
 
   ready: function($super) {
@@ -116,14 +120,19 @@ var MainAssistant = Class.create(BaseAssistant, {
   },
 
   sourcesReordered: function(event) {
-    // this.sources.subscriptionSources.items.splice(event.fromIndex, 1)
-    // this.sources.subscriptionSources.items.splice(event.toIndex, 0, event.item)
-    //
-    // var sortOrder = this.sources.subscriptionSources.items.map(function(subscription) {
-    //   return subscription.sortId
-    // })
-    //
-    // this.api.setSortOrder(sortOrder.join(""))
+    var beforeSubscription = null
+
+    if(event.toIndex < this.sources.subscriptionSources.items.length - 1) {
+      var beforeIndex = event.toIndex
+
+      if(event.fromIndex < event.toIndex) {
+        beforeIndex += 1
+      }
+
+      beforeSubscription = this.sources.subscriptionSources.items[beforeIndex]
+    }
+
+    this.sources.subscriptions.move(event.item, beforeSubscription)
   },
 
   sourceDeleted: function(event) {
@@ -155,6 +164,10 @@ var MainAssistant = Class.create(BaseAssistant, {
     }
 
     this.filterAndRefresh()
+  },
+
+  folderDeleted: function() {
+    this.reload()
   },
 
   sourceRendered: function(listWidget, itemModel, itemNode) {

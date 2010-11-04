@@ -8,6 +8,7 @@ Preferences = {
   COMBINE_FOLDERS: "combine-folders",
   MANUAL_FEED_SORT: "manual-feed-sort",
   THEME: "theme",
+  DEBUG: "debug",
 
   isOldestFirst: function() {
     return this.getCookie(this.OLDEST_FIRST, false)
@@ -79,6 +80,14 @@ Preferences = {
 
   setTheme: function(theme) {
     this.setCookie(this.THEME, theme)
+  },
+  
+  isDebugging: function() {
+    return this.getCookie(this.DEBUG, false)
+  },
+  
+  setDebugging: function(debugging) {
+    this.setCookie(this.DEBUG, debugging)
   },
 
   getCookie: function(name, defaultValue) {

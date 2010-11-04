@@ -84,7 +84,8 @@ var Api = Class.create({
         new Ajax.Request(Api.BASE_URL + "subscription/edit", {
           method: "post",
           parameters: parameters,
-          requestHeaders: this._requestHeaders()
+          requestHeaders: this._requestHeaders(),
+          onSuccess: function() {Mojo.Event.send(document, "SubscriptionDeleted", {id: feed.id, count: feed.unreadCount})}
         })
       }.bind(this))
     }
@@ -101,7 +102,8 @@ var Api = Class.create({
       new Ajax.Request(Api.BASE_URL + "disable-tag", {
         method: "post",
         parameters: parameters,
-        requestHeaders: this._requestHeaders()
+        requestHeaders: this._requestHeaders(),
+        onSuccess: function() {Mojo.Event.send(document, "FolderDeleted", {id: folder.id})}
       })
     }.bind(this))
   },
@@ -311,8 +313,6 @@ var Api = Class.create({
 
       if(addTag) parameters.a = addTag
       if(removeTag) parameters.r = removeTag
-
-      console.log(Object.toJSON(parameters))
 
       new Ajax.Request(Api.BASE_URL + "edit-tag", {
         method: "post",

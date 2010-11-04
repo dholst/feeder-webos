@@ -53,16 +53,17 @@ var AllSources = Class.create({
   nukedEmAll: function() {
     this.all.clearUnreadCount()
 
-    // this.subscriptions.items.each(function(subscription) {
-    //   subscription.clearUnreadCount()
-    // })
-    //
-    // this.subscriptions.folders.items.each(function(folder) {
-    //   folder.subscriptions.each(function(subscription) {
-    //     subscription.clearUnreadCount()
-    //   })
-    //
-    //   folder.recalculateUnreadCounts()
-    // })
+    this.subscriptions.items.each(function(item) {
+      if(item.isFolder) {
+        item.subscriptions.each(function(subscription) {
+          subscription.clearUnreadCount()
+        })
+        
+        item.recalculateUnreadCounts()
+      }
+      else {
+        item.clearUnreadCount()
+      }
+    })
   }
 })

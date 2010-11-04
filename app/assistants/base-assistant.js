@@ -21,6 +21,10 @@ var BaseAssistant = Class.create({
       }
 
       appMenuItems.push({label: $L("Help"), command: Mojo.Menu.helpCmd})
+
+      if(Preferences.isDebugging()) {
+        appMenuItems.push({label: $L("Debug Log"), command: "debug"})
+      }
     }
 
     this.controller.setupWidget(Mojo.Menu.appMenu, {omitDefaultItems: true}, {visible: true, items: appMenuItems})
@@ -118,7 +122,10 @@ var BaseAssistant = Class.create({
         this.controller.stageController.pushScene("preferences")
         event.stop()
       }
-
+      else if("debug" == event.command) {
+        this.controller.stageController.pushScene("debug")
+        event.stop()
+      }
     }
   }
 })
