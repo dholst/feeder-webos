@@ -208,7 +208,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
 
       parameters: {
         id: "com.funkatron.app.spaz",
-        params: {action: "post", msg: this.article.title + "\n\n" + this.article.url}
+        params: {action: "prepPost", msg: this.article.title + "\n\n" + this.article.url}
       },
 
       onFailure: this.offerToInstallApp.bind(this, $L("Spaz"), "com.funkatron.app.spaz")
