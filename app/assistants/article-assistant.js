@@ -102,10 +102,12 @@ var ArticleAssistant = Class.create(BaseAssistant, {
       ]},
 
       {label: $L("Twitter"), items: [
-        {label: $L("Bad Kitty"), command: "send-to-bad-kitty"}
+        {label: $L("Bad Kitty"), command: "send-to-bad-kitty"},
+        {label: $L("Spaz"), command: "send-to-spaz"}
       ]},
 
       {label: $L("Share"), items: [
+        {label: $L("Facebook"), command: "send-to-facebook"},
         {label: $L("Email"), command: "send-to-email"},
         {label: $L("SMS"), command: "send-to-sms"}
       ]},
@@ -142,12 +144,20 @@ var ArticleAssistant = Class.create(BaseAssistant, {
             this.sendToBadKitty()
             break
 
+          case "send-to-spaz":
+            this.sendToSpaz()
+            break
+
           case "send-to-email":
             this.sendToEmail()
             break
 
           case "send-to-sms":
             this.sendToSms()
+            break
+
+          case "send-to-facebook":
+            this.sendToFacebook()
             break
         }
       }.bind(this)
@@ -166,6 +176,19 @@ var ArticleAssistant = Class.create(BaseAssistant, {
     })
   },
 
+  sendToFacebook: function() {
+    this.controller.serviceRequest("palm://com.palm.applicationManager", {
+      method: "open",
+
+      parameters: {
+        id: "com.palm.app.facebook",
+        params: {status: this.article.title + "\n\n" + this.article.url}
+      },
+
+      onFailure: this.offerToInstallApp.bind(this, $L("Facebook"), "com.palm.app.facebook")
+    })
+  },
+
   sendToBadKitty: function() {
     this.controller.serviceRequest("palm://com.palm.applicationManager", {
       method: "open",
@@ -176,6 +199,19 @@ var ArticleAssistant = Class.create(BaseAssistant, {
       },
 
       onFailure: this.offerToInstallApp.bind(this, $L("Bad Kitty"), "com.superinhuman.badkitty")
+    })
+  },
+
+  sendToSpaz: function() {
+    this.controller.serviceRequest("palm://com.palm.applicationManager", {
+      method: "open",
+
+      parameters: {
+        id: "com.funkatron.app.spaz",
+        params: {action: "post", msg: this.article.title + "\n\n" + this.article.url}
+      },
+
+      onFailure: this.offerToInstallApp.bind(this, $L("Spaz"), "com.funkatron.app.spaz")
     })
   },
 
@@ -327,18 +363,18 @@ var ArticleAssistant = Class.create(BaseAssistant, {
 
   addVideoClick: function() {
     this.videoClick = this.videoClick.bind(this)
-    
+
     $$("div.video").each(function(div) {
       div.observe('click' , this.videoClick)
     }.bind(this))
   },
-  
+
   removeVideoClick: function() {
     $$("div.video").each(function(div) {
       div.stopObserving('click' , this.videoClick)
-    }.bind(this))    
+    }.bind(this))
   },
-  
+
   videoClick: function(event) {
 		var div = event.target || event.srcElement
 
@@ -350,9 +386,9 @@ var ArticleAssistant = Class.create(BaseAssistant, {
           target: div.readAttribute("data-url")
         }
       }
-    })  
+    })
   },
-  
+
   //
   // Prevent tapping link while scrolling, from http://github.com/deliciousmorsel/Feeds/blob/master/app/assistants/view-article-assistant.js
   //

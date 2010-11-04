@@ -9,6 +9,7 @@ var Folder = Class.create(ArticleContainer, {
     this.setUnreadCount(0)
     this.showOrigin = true
     this.canMarkAllRead = true
+    this.isFolder = true
   },
 
   makeApiCall: function(continuation, success, failure) {
@@ -16,18 +17,21 @@ var Folder = Class.create(ArticleContainer, {
   },
 
   markAllRead: function(success) {
-    this.api.markAllRead(this.id, function() {
-      for(var i = 1; i < this.subscriptions.length; i++) {
-        this.subscriptions[i].clearUnreadCount()
+    var self = this
+
+    self.api.markAllRead(self.id, function() {
+      for(var i = 1; i < self.subscriptions.length; i++) {
+        self.subscriptions[i].clearUnreadCount()
       }
-      this.clearUnreadCount()
-      this.items.each(function(item) {item.isRead = true})
-      this.recalculateUnreadCounts()
+
+      self.clearUnreadCount()
+      self.items.each(function(item) {item.isRead = true})
+      self.recalculateUnreadCounts()
       success()
-    }.bind(this))
+    })
   },
 
-  addUnreadCounts: function(count) {
+  addUnreadCount: function(count) {
     this.subscriptions.each(function(subscription) {
       if(subscription.id == count.id) {
         subscription.setUnreadCount(count.count)

@@ -27,6 +27,8 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
 
     this.theme = {value: Preferences.getTheme()}
     this.originalTheme = Preferences.getTheme()
+
+    this.debug = {value: Preferences.isDebugging()}
   },
 
   setup: function($super) {
@@ -79,6 +81,9 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
 
     this.controller.setupWidget("theme", themeChoices, this.theme)
     this.controller.listen("theme", Mojo.Event.propertyChange, this.setTheme = this.setTheme.bind(this))
+
+    this.controller.setupWidget("debug", {}, this.debug)
+    this.controller.listen("debug", Mojo.Event.propertyChange, this.setDebugging = this.setDebugging.bind(this))
   },
 
   ready: function($super) {
@@ -93,6 +98,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     $("hide-read-articles-label").update($L("Hide read articles"))
     $("folders-label").update($L("Folders"))
     $("combine-articles-label").update($L("Combine articles"))
+    $("debug-label").update($L("Debug Log"))
   },
 
   cleanup: function($super) {
@@ -105,6 +111,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("combine-folders", Mojo.Event.propertyChange, this.setCombineFolders)
     this.controller.stopListening("feed-sort", Mojo.Event.propertyChange, this.setFeedSortOrder)
     this.controller.stopListening("theme", Mojo.Event.propertyChange, this.setTheme)
+    this.controller.stopListening("debug", Mojo.Event.propertyChange, this.setDebugging)
   },
 
   setAllowLandscape: function() {
@@ -151,8 +158,12 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     $(document.body).addClassName("theme-" + Preferences.getTheme())
   },
 
-  handleCommand: function($super) {
-    if(Mojo.Event.back) {
+  setDebugging: function() {
+    Preferences.setDebugging(this.debug.value)
+  },
+
+  handleCommand: function($super, event) {
+    if(Mojo.Event.back == event.type) {
       event.stop();
 
       changes = {}
@@ -188,7 +199,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
       this.controller.stageController.popScene(changes)
     }
     else {
-      $super()
+      $super(event)
     }
   }
 })

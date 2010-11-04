@@ -1,8 +1,9 @@
 var MainAssistant = Class.create(BaseAssistant, {
-  initialize: function($super, api) {
+  initialize: function($super, api, sources, loaded) {
     $super()
     this.api = api
-    this.sources = new AllSources(api)
+    this.sources = sources || new AllSources(api)
+    this.loaded = loaded
     this.showAddSubscription = true
   },
 
@@ -37,10 +38,12 @@ var MainAssistant = Class.create(BaseAssistant, {
     this.controller.listen("subscription-sources", Mojo.Event.listTap, this.sourceTapped)
     this.controller.listen("subscription-sources", Mojo.Event.listReorder, this.sourcesReordered = this.sourcesReordered.bind(this))
     this.controller.listen("subscription-sources", Mojo.Event.listDelete, this.sourceDeleted = this.sourceDeleted.bind(this))
-    this.controller.listen("refresh", Mojo.Event.tap, this.refresh = this.refresh.bind(this))
+    this.controller.listen("refresh", Mojo.Event.tap, this.reload = this.reload.bind(this))
     this.controller.listen(document, "ArticleRead", this.articleRead = this.articleRead.bind(this))
     this.controller.listen(document, "ArticleNotRead", this.articleNotRead = this.articleNotRead.bind(this))
-    this.controller.listen(document, "MassMarkAsRead", this.massMarkAsRead = this.massMarkAsRead.bind(this))
+    this.controller.listen(document, "MassMarkAsRead", this.markedAllRead = this.markedAllRead.bind(this))
+    this.controller.listen(document, "SubscriptionDeleted", this.markedAllRead)
+    this.controller.listen(document, "FolderDeleted", this.folderDeleted = this.folderDeleted.bind(this))
   },
 
   cleanup: function($super) {
@@ -49,28 +52,52 @@ var MainAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("subscription-sources", Mojo.Event.listTap, this.sourceTapped)
     this.controller.stopListening("subscription-sources", Mojo.Event.listReorder, this.sourcesReordered)
     this.controller.stopListening("subscription-sources", Mojo.Event.listDelete, this.sourceDeleted)
-    this.controller.stopListening("refresh", Mojo.Event.tap, this.refresh)
+    this.controller.stopListening("refresh", Mojo.Event.tap, this.reload)
     this.controller.stopListening(document, "ArticleRead", this.articleRead)
     this.controller.stopListening(document, "ArticleNotRead", this.articleNotRead)
-    this.controller.stopListening(document, "MassMarkAsRead", this.massMarkAsRead)
+    this.controller.stopListening(document, "MassMarkAsRead", this.markedAllRead)
+    this.controller.stopListening(document, "SubscriptionDeleted", this.markedAllRead)
+    this.controller.stopListening(document, "FolderDeleted", this.folderDeleted)
   },
 
   ready: function($super) {
     $super()
-    this.refresh()
+
+    if(!this.loaded) {
+      this.reload()
+    }
   },
 
-  activate: function($super, commandOrChanges) {
-    $super(commandOrChanges)
+  reload: function() {
+    var self = this
 
-    if("logout" == commandOrChanges) {
+    if(!self.reloading) {
+      self.reloading = true
+      self.smallSpinnerOn()
+
+      self.sources.findAll(function() {
+        self.reloading = false
+        self.loaded = true
+        self.filterAndRefresh()
+        self.smallSpinnerOff()
+      })
+    }
+  },
+
+  activate: function($super, command) {
+    $super(command)
+
+    if("logout" == command) {
       var creds = new Credentials()
       creds.password = false
       creds.save()
       this.controller.stageController.swapScene("credentials", creds)
     }
-    else if(commandOrChanges && (commandOrChanges.feedSortOrderChanged || commandOrChanges.feedAdded)) {
-      this.refresh()
+    else if(command && command.feedAdded) {
+      this.reload()
+    }
+    else if(command && command.feedSortOrderChanged) {
+      this.controller.stageController.swapScene({name: "main", transition: Mojo.Transition.none}, this.api, this.sources, true)
     }
     else {
       this.filterAndRefresh()
@@ -78,17 +105,18 @@ var MainAssistant = Class.create(BaseAssistant, {
   },
 
   filterAndRefresh: function() {
-    this.refreshList(this.controller.get("sticky-sources"), this.sources.stickySources.items)
-    this.refreshList(this.controller.get("subscription-sources"), this.sources.subscriptionSources.items)
-  },
+    var self = this
 
-  foundEm: function(feeds) {
-    this.filterAndRefresh()
-    this.smallSpinnerOff()
+    if(!self.reloading) {
+      self.sources.sortAndFilter(function() {
+        self.refreshList(self.controller.get("sticky-sources"), self.sources.stickySources.items)
+        self.refreshList(self.controller.get("subscription-sources"), self.sources.subscriptionSources.items)
+      })
+    }
   },
 
   sourceTapped: function(event) {
-    if(event.item.constructor == Folder && !Preferences.combineFolders()) {
+    if(event.item.isFolder && !Preferences.combineFolders()) {
       this.controller.stageController.pushScene("folder", event.item)
     }
     else {
@@ -97,53 +125,68 @@ var MainAssistant = Class.create(BaseAssistant, {
   },
 
   sourcesReordered: function(event) {
-    this.sources.subscriptionSources.items.splice(event.fromIndex, 1)
-    this.sources.subscriptionSources.items.splice(event.toIndex, 0, event.item)
+    var beforeSubscription = null
 
-    var sortOrder = this.sources.subscriptionSources.items.map(function(subscription) {
-      return subscription.sortId
-    })
+    if(event.toIndex < this.sources.subscriptionSources.items.length - 1) {
+      var beforeIndex = event.toIndex
 
-    this.api.setSortOrder(sortOrder.join(""))
+      if(event.fromIndex < event.toIndex) {
+        beforeIndex += 1
+      }
+
+      beforeSubscription = this.sources.subscriptionSources.items[beforeIndex]
+    }
+
+    this.sources.subscriptions.move(event.item, beforeSubscription)
   },
 
   sourceDeleted: function(event) {
-    this.sources.subscriptionSources.items.splice(event.index, 1)
-    this.api.unsubscribe(event.item)
+    this.sources.subscriptions.remove(event.item)
   },
 
   divide: function(source) {
     return source.divideBy
   },
 
-  refresh: function() {
-    this.smallSpinnerOn()
-    this.sources.findAll(this.foundEm.bind(this), this.bail.bind(this))
-  },
-
   articleRead: function(event) {
-    this.sources.articleReadIn(event.subscriptionId)
+    Log.debug("1 item marked read in " + event.subscriptionId)
+    this.sources.articleRead(event.subscriptionId)
   },
 
   articleNotRead: function(event) {
-    this.sources.articleNotReadIn(event.subscriptionId)
+    Log.debug("1 item marked not read in " + event.subscriptionId)
+    this.sources.articleNotRead(event.subscriptionId)
   },
 
-  massMarkAsRead: function(event) {
+  markedAllRead: function(event) {
+    Log.debug(event.count + " items marked read in " + event.id)
+
     if(event.id == "user/-/state/com.google/reading-list") {
       this.sources.nukedEmAll()
     }
     else {
-      this.sources.massMarkAsRead(event.count)
+      this.sources.markedAllRead(event.count)
     }
+
+    this.filterAndRefresh()
+  },
+
+  folderDeleted: function() {
+    this.reload()
   },
 
   sourceRendered: function(listWidget, itemModel, itemNode) {
     if(itemModel.unreadCount) {
       $(itemNode).addClassName("unread")
     }
-    else if(Preferences.hideReadFeeds() && !itemModel.sticky) {
-      itemNode.hide()
+  },
+
+  handleCommand: function($super, event) {
+    if(Mojo.Event.forward == event.type) {
+      this.reload()
+    }
+    else {
+      $super(event)
     }
   }
 })

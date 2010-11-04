@@ -7,6 +7,11 @@ var Subscription = Class.create(ArticleContainer, {
     this.divideBy = "Subscriptions"
     this.canMarkAllRead = true
     this.sortId = data.sortid
+    this.categories = data.categories
+  },
+
+  belongsToFolder: function() {
+    return this.categories && this.categories.length
   },
 
   makeApiCall: function(continuation, success, failure) {
@@ -14,15 +19,11 @@ var Subscription = Class.create(ArticleContainer, {
   },
 
   articleRead: function(subscriptionId) {
-    if(this.id == subscriptionId) {
-      this.incrementUnreadCountBy(-1)
-    }
+    if(this.id == subscriptionId) this.decrementUnreadCountBy(1)
   },
 
   articleNotRead: function(subscriptionId) {
-    if(this.id == subscriptionId) {
-      this.incrementUnreadCountBy(1)
-    }
+    if(this.id == subscriptionId) this.incrementUnreadCountBy(1)
   },
 
   markAllRead: function(success) {

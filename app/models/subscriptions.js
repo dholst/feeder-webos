@@ -2,116 +2,173 @@ var Subscriptions = Class.create(Countable, {
   initialize: function($super, api) {
     $super()
     this.api = api
-    this.folders = new Folders(api)
     this.items = []
   },
 
-  findAll: function(success, failure) {
-    var onSuccess = function(subscriptions) {
-      this.clearUnreadCount()
-      this.items.clear()
-      this.folders.clear()
+  findAll: function(callback) {
+    var self = this
+
+    self.api.getAllSubscriptions(function(subscriptions) {
+      self.sorted = false
+      self.clearUnreadCount()
+      self.items.clear()
+
+      var folders = new Folders(self.api)
 
       subscriptions.each(function(subscriptionData) {
-        if(subscriptionData.categories && subscriptionData.categories.length) {
-          this.addSubscriptionToFolders(subscriptionData)
-        }
-        else {
-          this.items.push(new Subscription(this.api, subscriptionData))
-        }
-      }.bind(this))
+        var subscription = new Subscription(self.api, subscriptionData)
+        self.addSubscription(subscription, folders)
+      })
 
-      this.addUnreadCounts(success, failure)
-    }.bind(this)
-
-    this.api.getAllSubscriptions(onSuccess, failure)
+      folders.addSortIds(function() {
+        self.items.push.apply(self.items, folders.items)
+        self.addUnreadCounts(callback)
+      })
+    })
   },
 
-  addSubscriptionToFolders: function(subscriptionData) {
-    var subscription = new Subscription(this.api, subscriptionData)
-
-    subscriptionData.categories.each(function(category) {
-      if(category.label) {
-        this.folders.addSubscription(category.id, category.label, subscription)
-      }
-    }.bind(this))
+  addSubscription: function(subscription, folders) {
+    if(subscription.belongsToFolder()) {
+      subscription.categories.each(function(category) {
+        if(category.label) {
+          folders.addSubscription(category.id, category.label, subscription)
+        }
+      })
+    }
+    else {
+      this.items.push(subscription)
+    }
   },
 
-  addUnreadCounts: function(success, failure) {
-    var onSuccess = function(counts) {
+  addUnreadCounts: function(callback) {
+    var self = this
+
+    self.api.getUnreadCounts(function(counts) {
       counts.each(function(count) {
         if(count.id.startsWith("feed")) {
-          this.incrementUnreadCountBy(count.count)
+          self.incrementUnreadCountBy(count.count)
 
-          this.items.each(function(item) {
+          self.items.each(function(item) {
             if(item.id == count.id) {
               item.setUnreadCount(count.count)
             }
+
+            if(item.isFolder) {
+              item.addUnreadCount(count)
+            }
           })
-
-          this.folders.addUnreadCounts(count)
         }
-      }.bind(this))
+      })
 
-      this.sort(success, failure)
-    }.bind(this)
-
-    this.api.getUnreadCounts(onSuccess, failure)
+      callback()
+    })
   },
 
-  sort: function(success, failure) {
+  sort: function(callback) {
     if(Preferences.isManualFeedSort()) {
-      this.sortManually(success, failure)
+      this.sortManually(callback)
     }
     else {
-      this.sortAlphabetically(success, failure)
+      this.sortAlphabetically(callback)
     }
   },
 
-  sortManually: function(success, failure) {
-    var addSortIdsToFolders = function(tags) {
-      for(var i = 0; i < this.folders.items.length; i++) {
-        for(var j = 0; j < tags.length; j++) {
-          if(tags[j].id == this.folders.items[i].id) {
-            this.folders.items[i].sortId = tags[j].sortid
-            break
-          }
-        }
+  sortAlphabetically: function(callback) {
+    var self = this
+
+    if(self.sorted == "alphabetic") {
+      callback()
+    }
+    else {
+      self.sortBy(function(item) {
+        return (item.isFolder ? "__FOLDER_" : "__SUBSCRIPTION_") + item.title.toUpperCase()
+      })
+
+      self.sorted = "alphabetic"
+      callback()
+    }
+  },
+
+  sortManually: function(callback) {
+    var self = this
+
+    if(self.sorted == "manual") {
+      callback()
+    }
+    else {
+      self.api.getSortOrder(function(sortOrder) {
+        sortOrder.each(function(key, index) {
+          var sortedItem = self.items.find(function(item) {return item.sortId == key})
+          if(sortedItem) sortedItem.sortNumber = index
+        })
+
+        self.sortBy(function(item) {
+          return item.sortNumber
+        })
+
+        self.sorted = "manual"
+        callback()
+      })
+    }
+  },
+
+  sortBy: function(f) {
+    var sortedItems = this.items.sortBy(f)
+    this.items.clear()
+    this.items.push.apply(this.items, sortedItems)
+  },
+
+  remove: function(subscription) {
+    var self = this
+
+    self.items.each(function(item, index) {
+      if(item.id == subscription.id) {
+        self.items.splice(index, 1)
+        self.api.unsubscribe(subscription)
+        throw $break
       }
-
-      this.items.push.apply(this.items, this.folders.items)
-      this.folders.items.clear()
-      this.items.each(function(item){item.divideBy = "Subscriptions"})
-      this.api.getSortOrder(this.manuallySort.bind(this, success, failure))
-    }.bind(this)
-
-    this.api.getTags(addSortIdsToFolders, failure)
+    })
   },
 
-  sortAlphabetically: function(success, failure) {
-    this.items = this.items.sortBy(function(item){return item.title.toUpperCase()})
-    this.folders.items = this.folders.items.sortBy(function(item){return item.title.toUpperCase()})
-    success()
-  },
-
-  manuallySort: function(success, failure, sortOrder) {
-    var sortedKeys = []
-
-    sortOrder.toArray().eachSlice(8, function(key) {
-      sortedKeys.push(key.join(""))
+  move: function(subscription, beforeSubscription) {
+    var self = this
+    self.items.each(function(item, index) {
+      if(item.id == subscription.id) {
+        Log.debug("removing " + subscription.id + " at index " + index)
+        self.items.splice(index, 1)
+        throw $break
+      }
     })
 
-    for(var i = 0; i < sortedKeys.length; i++) {
-      for(var j = 0; j < this.items.length; j++) {
-        if(this.items[j].sortId == sortedKeys[i]) {
-          this.items[j].sortNumber = i
-          break
+    if(beforeSubscription) {
+      self.items.each(function(item, index) {
+        if(item.id == beforeSubscription.id) {
+          Log.debug("inserting " + subscription.id + " at index " + index)
+          self.items.splice(index, 0, subscription)
+          throw $break
         }
-      }
+      })
+    }
+    else {
+      self.items.push(subscription)
     }
 
-    this.items = this.items.sortBy(function(s){return s.sortNumber})
+    self.items.each(function(x) {console.log(x.title)})
+    var sortOrder = self.items.map(function(subscription) {return subscription.sortId}).join("")
+    this.api.setSortOrder(sortOrder)
+  },
 
-    success()
+  articleRead: function(subscriptionId) {
+    this.items.each(function(subscription) {subscription.articleRead(subscriptionId)})
+  },
+
+  articleNotRead: function(subscriptionId) {
+    this.items.each(function(subscription) {subscription.articleNotRead(subscriptionId)})
+  },
+
+  recalculateFolderCounts: function() {
+    this.items.each(function(subscription) {
+      if(subscription.isFolder) subscription.recalculateUnreadCounts()
+    })
   }
 })

@@ -3,6 +3,9 @@ var Log = {
 
   debug: function(message) {
     Mojo.Log.info(message)
-    this.items.push({message: message})
+
+    if(Preferences.isDebugging()) {
+      this.items.push({message: message})
+    }
   }
 }
