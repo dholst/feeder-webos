@@ -80,6 +80,10 @@ var Subscriptions = Class.create(Countable, {
       callback()
     }
     else {
+      self.items.each(function(item) {
+        if(item.isFolder) item.sortAlphabetically()
+      })
+
       self.sortBy(function(item) {
         return (item.isFolder ? "__FOLDER_" : "__SUBSCRIPTION_") + item.title.toUpperCase()
       })
@@ -96,10 +100,12 @@ var Subscriptions = Class.create(Countable, {
       callback()
     }
     else {
-      self.api.getSortOrder(function(sortOrder) {
-        sortOrder.each(function(key, index) {
-          var sortedItem = self.items.find(function(item) {return item.sortId == key})
-          if(sortedItem) sortedItem.sortNumber = index
+      self.api.getSortOrder(function(sortOrders) {
+        var rootSortOrder = sortOrders["user/-/state/com.google/root"] || new SortOrder("")
+
+        self.items.each(function(item) {
+          item.sortNumber = rootSortOrder.getSortNumberFor(item.sortId)
+          if(item.isFolder) item.sortManually(sortOrders[item.id.gsub(/user\/\d+\//, "user/-/")])
         })
 
         self.sortBy(function(item) {

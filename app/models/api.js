@@ -32,21 +32,21 @@ var Api = Class.create({
       onFailure: failure,
       onSuccess: function(response) {
         var prefs = response.responseText.evalJSON()
-        var sortOrder = false
+        var sortOrder = {}
 
         if(prefs && prefs.streamprefs) {
-          for(key in prefs.streamprefs) {
-            if(key.match(/user\/.*\/state\/com\.google\/root/)) {
-              $A(prefs.streamprefs[key]).each(function(pref) {
-                if("subscription-ordering" == pref.id) {
-                  sortOrder = pref.value
-                }
-              })
-            }
-          }
+          $H(prefs.streamprefs).each(function(pair) {
+            pair.key = pair.key.gsub(/user\/\d+\//, "user/-/")
+
+            $A(pair.value).each(function(pref) {
+              if("subscription-ordering" == pref.id) {
+                sortOrder[pair.key] = new SortOrder(pref.value)
+              }
+            })
+          })
         }
 
-        success(sortOrder.toArray().inGroupsOf(8).map(function(key){return key.join("")}))
+        success(sortOrder)
       }
     })
   },

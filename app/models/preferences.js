@@ -67,7 +67,7 @@ Preferences = {
   },
 
   isManualFeedSort: function() {
-    return this.getCookie(this.MANUAL_FEED_SORT, false)
+    return this.getCookie(this.MANUAL_FEED_SORT, true)
   },
 
   setManualFeedSort: function(isManual) {
@@ -81,11 +81,11 @@ Preferences = {
   setTheme: function(theme) {
     this.setCookie(this.THEME, theme)
   },
-  
+
   isDebugging: function() {
     return this.getCookie(this.DEBUG, false)
   },
-  
+
   setDebugging: function(debugging) {
     this.setCookie(this.DEBUG, debugging)
   },

@@ -67,5 +67,29 @@ var Folder = Class.create(ArticleContainer, {
     this.subscriptions.each(function(subscription) {
       this.incrementUnreadCountBy(subscription.getUnreadCount())
     }.bind(this))
+  },
+
+  sortAlphabetically: function() {
+    this.sortBy(function(subscription) {
+      return (subscription.isFolder ? "__FOLDER_" : "__SUBSCRIPTION") + subscription.title.toUpperCase()
+    })
+  },
+
+  sortManually: function(sortOrder) {
+    if(!sortOrder) return
+
+    this.subscriptions.each(function(subscription, index) {
+      if(index > 0) {
+        subscription.sortNumber = sortOrder.getSortNumberFor(subscription.sortId) + this.subscriptions[0].sortNumber + 1
+      }
+    }.bind(this))
+
+    this.sortBy(function(subscription) {return subscription.sortNumber})
+  },
+
+  sortBy: function(f) {
+    var sortedItems = this.subscriptions.sortBy(f)
+    this.subscriptions.clear()
+    this.subscriptions.push.apply(this.subscriptions, sortedItems)
   }
 })
