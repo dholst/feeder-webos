@@ -1,10 +1,4 @@
-var Subscriptions = Class.create(Countable, {
-  initialize: function($super, api) {
-    $super()
-    this.api = api
-    this.items = []
-  },
-
+var AllSubscriptions = Class.create(SubscriptionContainer, {
   findAll: function(callback) {
     var self = this
 
@@ -80,6 +74,10 @@ var Subscriptions = Class.create(Countable, {
       callback()
     }
     else {
+      self.items.each(function(item) {
+        if(item.isFolder) item.sortAlphabetically()
+      })
+
       self.sortBy(function(item) {
         return (item.isFolder ? "__FOLDER_" : "__SUBSCRIPTION_") + item.title.toUpperCase()
       })
@@ -96,10 +94,12 @@ var Subscriptions = Class.create(Countable, {
       callback()
     }
     else {
-      self.api.getSortOrder(function(sortOrder) {
-        sortOrder.each(function(key, index) {
-          var sortedItem = self.items.find(function(item) {return item.sortId == key})
-          if(sortedItem) sortedItem.sortNumber = index
+      self.api.getSortOrder(function(sortOrders) {
+        var rootSortOrder = sortOrders["user/-/state/com.google/root"] || new SortOrder("")
+
+        self.items.each(function(item) {
+          item.sortNumber = rootSortOrder.getSortNumberFor(item.sortId)
+          if(item.isFolder) item.sortManually(sortOrders[item.id.gsub(/user\/\d+\//, "user/-/")])
         })
 
         self.sortBy(function(item) {
@@ -116,46 +116,6 @@ var Subscriptions = Class.create(Countable, {
     var sortedItems = this.items.sortBy(f)
     this.items.clear()
     this.items.push.apply(this.items, sortedItems)
-  },
-
-  remove: function(subscription) {
-    var self = this
-
-    self.items.each(function(item, index) {
-      if(item.id == subscription.id) {
-        self.items.splice(index, 1)
-        self.api.unsubscribe(subscription)
-        throw $break
-      }
-    })
-  },
-
-  move: function(subscription, beforeSubscription) {
-    var self = this
-    self.items.each(function(item, index) {
-      if(item.id == subscription.id) {
-        Log.debug("removing " + subscription.id + " at index " + index)
-        self.items.splice(index, 1)
-        throw $break
-      }
-    })
-
-    if(beforeSubscription) {
-      self.items.each(function(item, index) {
-        if(item.id == beforeSubscription.id) {
-          Log.debug("inserting " + subscription.id + " at index " + index)
-          self.items.splice(index, 0, subscription)
-          throw $break
-        }
-      })
-    }
-    else {
-      self.items.push(subscription)
-    }
-
-    self.items.each(function(x) {console.log(x.title)})
-    var sortOrder = self.items.map(function(subscription) {return subscription.sortId}).join("")
-    this.api.setSortOrder(sortOrder)
   },
 
   articleRead: function(subscriptionId) {

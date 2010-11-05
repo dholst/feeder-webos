@@ -5,7 +5,8 @@ var Folder = Class.create(ArticleContainer, {
     this.title = title
     this.icon = "folder"
     this.divideBy = "Subscriptions"
-    this.subscriptions = [this]
+    this.stickySubscriptions = [this]
+    this.subscriptions = new FolderSubscriptions(api, this.id)
     this.setUnreadCount(0)
     this.showOrigin = true
     this.canMarkAllRead = true
@@ -20,9 +21,9 @@ var Folder = Class.create(ArticleContainer, {
     var self = this
 
     self.api.markAllRead(self.id, function() {
-      for(var i = 1; i < self.subscriptions.length; i++) {
-        self.subscriptions[i].clearUnreadCount()
-      }
+      self.subscriptions.items.each(function(subscription) {
+        subscription.clearUnreadCount()
+      })
 
       self.clearUnreadCount()
       self.items.each(function(item) {item.isRead = true})
@@ -32,7 +33,7 @@ var Folder = Class.create(ArticleContainer, {
   },
 
   addUnreadCount: function(count) {
-    this.subscriptions.each(function(subscription) {
+    this.subscriptions.items.each(function(subscription) {
       if(subscription.id == count.id) {
         subscription.setUnreadCount(count.count)
       }
@@ -42,20 +43,16 @@ var Folder = Class.create(ArticleContainer, {
   },
 
   articleRead: function(subscriptionId) {
-    this.subscriptions.each(function(subscription){
-      if(subscription.constructor != Folder) {
-        subscription.articleRead(subscriptionId)
-      }
+    this.subscriptions.items.each(function(subscription){
+      subscription.articleRead(subscriptionId)
     })
 
     this.recalculateUnreadCounts()
   },
 
   articleNotRead: function(subscriptionId) {
-    this.subscriptions.each(function(subscription){
-      if(subscription.constructor != Folder) {
-        subscription.articleNotRead(subscriptionId)
-      }
+    this.subscriptions.items.each(function(subscription){
+      subscription.articleNotRead(subscriptionId)
     })
 
     this.recalculateUnreadCounts()
@@ -64,8 +61,30 @@ var Folder = Class.create(ArticleContainer, {
   recalculateUnreadCounts: function() {
     this.setUnreadCount(0)
 
-    this.subscriptions.each(function(subscription) {
+    this.subscriptions.items.each(function(subscription) {
       this.incrementUnreadCountBy(subscription.getUnreadCount())
     }.bind(this))
+  },
+
+  sortAlphabetically: function() {
+    this.sortBy(function(subscription) {
+      return subscription.title.toUpperCase()
+    })
+  },
+
+  sortManually: function(sortOrder) {
+    if(!sortOrder) return
+
+    this.subscriptions.items.each(function(subscription, index) {
+      subscription.sortNumber = sortOrder.getSortNumberFor(subscription.sortId)
+    }.bind(this))
+
+    this.sortBy(function(subscription) {return subscription.sortNumber})
+  },
+
+  sortBy: function(f) {
+    var sortedItems = this.subscriptions.items.sortBy(f)
+    this.subscriptions.items.clear()
+    this.subscriptions.items.push.apply(this.subscriptions.items, sortedItems)
   }
 })

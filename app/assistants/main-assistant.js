@@ -26,7 +26,7 @@ var MainAssistant = Class.create(BaseAssistant, {
   		dividerFunction: this.divide,
   		onItemRendered: this.sourceRendered,
   		reorderable: Preferences.isManualFeedSort(),
-  		swipeToDelete: true,
+  		swipeToDelete: true
     }
 
     this.controller.setupWidget("sticky-sources", stickySourceAttributes, this.sources.stickySources)

@@ -81,11 +81,11 @@ Preferences = {
   setTheme: function(theme) {
     this.setCookie(this.THEME, theme)
   },
-  
+
   isDebugging: function() {
     return this.getCookie(this.DEBUG, false)
   },
-  
+
   setDebugging: function(debugging) {
     this.setCookie(this.DEBUG, debugging)
   },
