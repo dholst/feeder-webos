@@ -51,15 +51,17 @@ var Api = Class.create({
     })
   },
 
-  setSortOrder: function(sortOrder) {
+  setSortOrder: function(sortOrder, stream) {
     this._getEditToken(function(token) {
       var parameters = {
         T: token,
-        s: "user/-/state/com.google/root",
+        s: stream || "user/-/state/com.google/root",
         k: "subscription-ordering",
         v: sortOrder
       }
 
+      console.log(Object.toJSON(parameters))
+      
       new Ajax.Request(Api.BASE_URL + "preference/stream/set", {
         method: "post",
         parameters: parameters,

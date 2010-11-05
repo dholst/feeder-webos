@@ -67,7 +67,7 @@ Preferences = {
   },
 
   isManualFeedSort: function() {
-    return this.getCookie(this.MANUAL_FEED_SORT, true)
+    return this.getCookie(this.MANUAL_FEED_SORT, false)
   },
 
   setManualFeedSort: function(isManual) {

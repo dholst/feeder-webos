@@ -16,7 +16,7 @@ var Folders = Class.create({
       this.items.push(folder)
     }
 
-    folder.subscriptions.push(subscription)
+    folder.subscriptions.items.push(subscription)
   },
 
   addSortIds: function(callback) {

@@ -5,7 +5,7 @@ var AllSources = Class.create({
     this.shared = new Shared(api)
     this.stickySources = {items: [this.all, this.starred, this.shared]}
 
-    this.subscriptions = new Subscriptions(api)
+    this.subscriptions = new AllSubscriptions(api)
     this.subscriptionSources = {items: []}
   },
 
@@ -58,7 +58,7 @@ var AllSources = Class.create({
         item.subscriptions.each(function(subscription) {
           subscription.clearUnreadCount()
         })
-        
+
         item.recalculateUnreadCounts()
       }
       else {
