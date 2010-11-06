@@ -39,6 +39,7 @@ var MainAssistant = Class.create(BaseAssistant, {
     this.controller.listen("subscription-sources", Mojo.Event.listReorder, this.sourcesReordered = this.sourcesReordered.bind(this))
     this.controller.listen("subscription-sources", Mojo.Event.listDelete, this.sourceDeleted = this.sourceDeleted.bind(this))
     this.controller.listen("refresh", Mojo.Event.tap, this.reload = this.reload.bind(this))
+    this.controller.listen("error-header", Mojo.Event.tap, this.reload)
     this.controller.listen(document, "ArticleRead", this.articleRead = this.articleRead.bind(this))
     this.controller.listen(document, "ArticleNotRead", this.articleNotRead = this.articleNotRead.bind(this))
     this.controller.listen(document, "MassMarkAsRead", this.markedAllRead = this.markedAllRead.bind(this))
@@ -53,6 +54,7 @@ var MainAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("subscription-sources", Mojo.Event.listReorder, this.sourcesReordered)
     this.controller.stopListening("subscription-sources", Mojo.Event.listDelete, this.sourceDeleted)
     this.controller.stopListening("refresh", Mojo.Event.tap, this.reload)
+    this.controller.stopListening("error-header", Mojo.Event.tap, this.reload)
     this.controller.stopListening(document, "ArticleRead", this.articleRead)
     this.controller.stopListening(document, "ArticleNotRead", this.articleNotRead)
     this.controller.stopListening(document, "MassMarkAsRead", this.markedAllRead)
@@ -73,14 +75,21 @@ var MainAssistant = Class.create(BaseAssistant, {
 
     if(!self.reloading) {
       self.reloading = true
+      this.controller.get("refresh").hide()
+      this.controller.get("error-header").hide()
       self.smallSpinnerOn()
 
-      self.sources.findAll(function() {
-        self.reloading = false
-        self.loaded = true
-        self.filterAndRefresh()
-        self.smallSpinnerOff()
-      })
+      self.sources.findAll(
+        function() {
+          self.reloading = false
+          self.loaded = true
+          self.filterAndRefresh()
+        }.bind(this),
+
+        function() {
+          this.showError()
+        }.bind(this)
+      )
     }
   },
 
@@ -107,11 +116,16 @@ var MainAssistant = Class.create(BaseAssistant, {
   filterAndRefresh: function() {
     var self = this
 
-    if(!self.reloading) {
-      self.sources.sortAndFilter(function() {
-        self.refreshList(self.controller.get("sticky-sources"), self.sources.stickySources.items)
-        self.refreshList(self.controller.get("subscription-sources"), self.sources.subscriptionSources.items)
-      })
+    if(self.loaded) {
+      self.sources.sortAndFilter(
+        function() {
+          self.refreshList(self.controller.get("sticky-sources"), self.sources.stickySources.items)
+          self.refreshList(self.controller.get("subscription-sources"), self.sources.subscriptionSources.items)
+          self.smallSpinnerOff()
+        },
+
+        this.showError.bind(this)
+      )
     }
   },
 
@@ -188,5 +202,13 @@ var MainAssistant = Class.create(BaseAssistant, {
     else {
       $super(event)
     }
+  },
+
+  showError: function() {
+    this.reloading = false
+    this.loaded = false
+    this.controller.get("refresh").hide()
+    this.controller.get("error-header").show()
+    this.smallSpinnerOff()
   }
 })

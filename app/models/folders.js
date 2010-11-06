@@ -19,16 +19,20 @@ var Folders = Class.create({
     folder.subscriptions.items.push(subscription)
   },
 
-  addSortIds: function(callback) {
+  addSortIds: function(success, failure) {
     var self = this
 
-    self.api.getTags(function(tags) {
-      tags.each(function(tag) {
-        var folder = self.items.find(function(item) {return item.id == tag.id})
-        if(folder) folder.sortId = tag.sortid
-      })
+    self.api.getTags(
+      function(tags) {
+        tags.each(function(tag) {
+          var folder = self.items.find(function(item) {return item.id == tag.id})
+          if(folder) folder.sortId = tag.sortid
+        })
 
-      callback()
-    })
+        success()
+      },
+
+      failure
+    )
   }
 })

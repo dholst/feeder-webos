@@ -50,7 +50,6 @@ var BaseAssistant = Class.create({
   },
 
   smallSpinnerOn: function() {
-    this.hideRefreshButton()
     this.smallSpinner.spinning = true
     this.controller.modelChanged(this.smallSpinner)
   },
@@ -58,17 +57,6 @@ var BaseAssistant = Class.create({
   smallSpinnerOff: function() {
     this.smallSpinner.spinning = false
     this.controller.modelChanged(this.smallSpinner)
-    this.showRefreshButton()
-  },
-
-  hideRefreshButton: function() {
-    var button = this.controller.sceneElement.querySelector(".my-right-icon")
-    if(button) button.hide()
-  },
-
-  showRefreshButton: function() {
-    var button = this.controller.sceneElement.querySelector(".my-right-icon")
-    if(button) button.show()
   },
 
   spinnerOn: function(message) {
@@ -94,10 +82,6 @@ var BaseAssistant = Class.create({
       this.controller.sceneElement.querySelector(".spinner").mojo.stop()
       this.controller.get("spinner-scrim").hide()
     }
-  },
-
-  bail: function(message) {
-    this.controller.stageController.pushScene("bail")
   },
 
   refreshList: function(list, items) {

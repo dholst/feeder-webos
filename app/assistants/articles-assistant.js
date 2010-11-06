@@ -21,6 +21,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     this.controller.listen("articles", Mojo.Event.listTap, this.articleTapped = this.articleTapped.bind(this))
     this.controller.listen("mark-all-read", Mojo.Event.tap, this.markAllRead = this.markAllRead.bind(this))
     this.controller.listen("articles", Mojo.Event.dragStart, this.dragStart = this.dragStart.bind(this))
+    this.controller.listen("error-header", Mojo.Event.tap, this.reload = this.reload.bind(this))
 
     this.controller.get("header").update(this.subscription.title)
 
@@ -31,6 +32,10 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
 
   ready: function($super) {
     $super()
+    this.findArticles()
+  },
+  
+  reload: function() {
     this.findArticles()
   },
 
@@ -70,11 +75,16 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("articles", Mojo.Event.listTap, this.articleTapped)
     this.controller.stopListening("articles", Mojo.Event.dragStart, this.dragStart)
     this.scroller.stopObserving(Mojo.Event.dragging, this.scrolling)
+    this.controller.stopListening("mark-all-read", Mojo.Event.tap, this.markAllRead)
+    this.controller.stopListening("error-header", Mojo.Event.tap, this.reload)
+
   },
 
   findArticles: function(scrollToTop) {
+    this.controller.get("error-header").hide()
+    this.controller.get("mark-all-read").hide()
     this.smallSpinnerOn()
-    this.subscription.findArticles(this.foundArticles.bind(this, scrollToTop || false), this.bail.bind(this))
+    this.subscription.findArticles(this.foundArticles.bind(this, scrollToTop || false), this.showError.bind(this))
   },
 
   foundArticles: function(scrollToTop) {
@@ -149,16 +159,20 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     this.smallSpinnerOn()
     var count = this.subscription.getUnreadCount()
 
-    this.subscription.markAllRead(function() {
-      this.smallSpinnerOff()
-      this.showMarkAllRead()
-      this.refreshList(this.controller.get("articles"), this.subscription.items)
-      Mojo.Event.send(document, "MassMarkAsRead", {id: this.subscription.id, count: count})
+    this.subscription.markAllRead(
+      function() {
+        this.smallSpinnerOff()
+        this.showMarkAllRead()
+        this.refreshList(this.controller.get("articles"), this.subscription.items)
+        Mojo.Event.send(document, "MassMarkAsRead", {id: this.subscription.id, count: count})
 
-      if(Preferences.goBackAfterMarkAsRead()) {
-        this.controller.stageController.popScene()
-      }
-    }.bind(this))
+        if(Preferences.goBackAfterMarkAsRead()) {
+          this.controller.stageController.popScene()
+        }
+      }.bind(this),
+
+      this.showError.bind(this)
+    )
   },
 
   _getNodeFrom: function(event) {
@@ -246,5 +260,11 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     for(var i = 0; i < heightNodes.length; i++) {
       heightNodes[i].style.height = height
     }
+	},
+
+	showError: function() {
+    this.smallSpinnerOff()
+    this.controller.get("mark-all-read").hide()
+    this.controller.get("error-header").show()
 	}
 })

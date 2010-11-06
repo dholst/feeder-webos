@@ -9,30 +9,39 @@ var AllSources = Class.create({
     this.subscriptionSources = {items: []}
   },
 
-  findAll: function(callback) {
+  findAll: function(success, failure) {
     var self = this
 
-    self.subscriptions.findAll(function() {
-      self.all.setUnreadCount(self.subscriptions.getUnreadCount())
-      callback()
-    })
+    self.subscriptions.findAll(
+
+      function() {
+        self.all.setUnreadCount(self.subscriptions.getUnreadCount())
+        success()
+      },
+
+      failure
+    )
   },
 
-  sortAndFilter: function(callback) {
+  sortAndFilter: function(success, failure) {
     var self = this
     self.subscriptionSources.items.clear()
 
-    self.subscriptions.sort(function() {
-      var hideReadFeeds = Preferences.hideReadFeeds()
+    self.subscriptions.sort(
+      function() {
+        var hideReadFeeds = Preferences.hideReadFeeds()
 
-      self.subscriptions.items.each(function(subscription) {
-        if(!hideReadFeeds || (hideReadFeeds && subscription.unreadCount)) {
-          self.subscriptionSources.items.push(subscription)
-        }
-      })
+        self.subscriptions.items.each(function(subscription) {
+          if(!hideReadFeeds || (hideReadFeeds && subscription.unreadCount)) {
+            self.subscriptionSources.items.push(subscription)
+          }
+        })
 
-      callback()
-    })
+        success()
+      },
+
+      failure
+    )
   },
 
   articleRead: function(subscriptionId) {

@@ -313,6 +313,10 @@ body.theme-light {
   background: url(../images/mark-all-read.png) no-repeat center;
 }
 
+#error-header {
+  background: url(../images/error.png) no-repeat center;
+}
+
 #summary img {
   max-width: 290px !important;
   height: auto !important;
