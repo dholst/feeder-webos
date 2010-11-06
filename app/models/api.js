@@ -246,7 +246,7 @@ var Api = Class.create({
     )
   },
 
-  setArticleRead: function(articleId, subscriptionId, success, falure) {
+  setArticleRead: function(articleId, subscriptionId, success, failure) {
     this._editTag(
       articleId,
       subscriptionId,

@@ -88,7 +88,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
         }
       }
 
-      this.article["turn" + state + (target.hasClassName("on") ? "Off" : "On")](onComplete, sticky)
+      this.article["turn" + state + (target.hasClassName("on") ? "Off" : "On")](onComplete, function() {}, sticky)
     }
   },
 
