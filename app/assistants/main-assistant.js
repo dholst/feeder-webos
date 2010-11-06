@@ -122,6 +122,7 @@ var MainAssistant = Class.create(BaseAssistant, {
           self.refreshList(self.controller.get("sticky-sources"), self.sources.stickySources.items)
           self.refreshList(self.controller.get("subscription-sources"), self.sources.subscriptionSources.items)
           self.smallSpinnerOff()
+          self.controller.get("refresh").show()
         },
 
         this.showError.bind(this)

@@ -61,9 +61,11 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
       }
     }
 
-    if(Preferences.markReadAsScroll() && !this.markingReadAsScroll) {
-      this.scroller.observe(Mojo.Event.dragging, this.scrolling)
-      this.markingReadAsScroll = true
+    if(Preferences.markReadAsScroll()) {
+      if(!this.markingReadAsScroll) {
+        this.scroller.observe(Mojo.Event.dragging, this.scrolling)
+        this.markingReadAsScroll = true
+      }
     }
     else {
       this.scroller.stopObserving(Mojo.Event.dragging, this.scrolling)
