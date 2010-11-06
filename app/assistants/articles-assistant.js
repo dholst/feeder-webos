@@ -23,6 +23,10 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     this.controller.listen("articles", Mojo.Event.dragStart, this.dragStart = this.dragStart.bind(this))
 
     this.controller.get("header").update(this.subscription.title)
+
+    this.articlesTop = $("articles").offsetTop
+    this.scroller = this.controller.getSceneScroller()
+    this.scrolling = this.scrolling.bind(this)
   },
 
   ready: function($super) {
@@ -51,12 +55,21 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
         this.controller.get("articles").mojo.revealItem(this.tappedIndex, true)
       }
     }
+
+    if(Preferences.markReadAsScroll() && !this.markingReadAsScroll) {
+      this.scroller.observe(Mojo.Event.dragging, this.scrolling)
+      this.markingReadAsScroll = true
+    }
+    else {
+      this.scroller.stopObserving(Mojo.Event.dragging, this.scrolling)
+    }
   },
 
   cleanup: function($super) {
     $super()
     this.controller.stopListening("articles", Mojo.Event.listTap, this.articleTapped)
     this.controller.stopListening("articles", Mojo.Event.dragStart, this.dragStart)
+    this.scroller.stopObserving(Mojo.Event.dragging, this.scrolling)
   },
 
   findArticles: function(scrollToTop) {
@@ -92,6 +105,8 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
   },
 
   itemRendered: function(listWidget, itemModel, itemNode) {
+    itemModel._itemNode = itemNode
+
     if(itemModel.load_more) {
       this.findArticles()
     }
@@ -114,6 +129,20 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
       }
     }
   },
+
+	scrolling: function(event) {
+    var scrollPosition = this.scroller.mojo.getScrollPosition()
+    var theBottom = scrollPosition.top - this.scroller.offsetHeight
+
+	  for(var i = 0; i < this.subscription.items.length; i++) {
+	    var item = this.subscription.items[i]
+
+      if(item._itemNode && (this.scroller.offsetTop - item._itemNode.offsetTop - item._itemNode.offsetHeight) > theBottom && !item.isRead) {
+        item.turnReadOn(function() {})
+        item._itemNode.removeClassName("unread")
+      }
+	  }
+	},
 
   markAllRead: function(event) {
     this.controller.get("mark-all-read").hide()

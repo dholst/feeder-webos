@@ -29,6 +29,8 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.originalTheme = Preferences.getTheme()
 
     this.debug = {value: Preferences.isDebugging()}
+    
+    this.markReadScroll = {value: Preferences.markReadAsScroll()}
   },
 
   setup: function($super) {
@@ -85,6 +87,9 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.controller.setupWidget("debug", {}, this.debug)
     this.controller.listen("debug", Mojo.Event.propertyChange, this.setDebugging = this.setDebugging.bind(this))
 
+    this.controller.setupWidget("mark-read-scroll", {}, this.markReadScroll)
+    this.controller.listen("mark-read-scroll", Mojo.Event.propertyChange, this.setMarkReadScroll = this.setMarkReadScroll.bind(this))
+
     $("header").update($L("Preferences"))
     $("general-label").update($L("General"))
     $("landscape-label").update($L("Allow landscape"))
@@ -96,6 +101,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     $("folders-label").update($L("Folders"))
     $("combine-articles-label").update($L("Combine articles"))
     $("debug-label").update($L("Debug Log"))
+    $("mark-read-scroll-label").update($L("Mark read as you scroll"))
   },
 
   cleanup: function($super) {
@@ -109,6 +115,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("feed-sort", Mojo.Event.propertyChange, this.setFeedSortOrder)
     this.controller.stopListening("theme", Mojo.Event.propertyChange, this.setTheme)
     this.controller.stopListening("debug", Mojo.Event.propertyChange, this.setDebugging)
+    this.controller.stopListening("mark-read-scroll", Mojo.Event.propertyChange, this.setMarkReadScroll)
   },
 
   setAllowLandscape: function() {
@@ -157,6 +164,10 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
 
   setDebugging: function() {
     Preferences.setDebugging(this.debug.value)
+  },
+  
+  setMarkReadScroll: function() {
+    Preferences.setMarkReadAsScroll(this.markReadScroll.value)
   },
 
   handleCommand: function($super, event) {
