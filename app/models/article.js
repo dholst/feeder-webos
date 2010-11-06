@@ -84,63 +84,63 @@ var Article = Class.create({
 
   toggleRead: function() {
     if(this.isRead) {
-      this.turnReadOff(function() {}, true)
+      this.turnReadOff(function() {}, function() {}, true)
     }
     else {
-      this.turnReadOn(function() {})
+      this.turnReadOn(function() {}, function() {})
     }
   },
 
   toggleStarred: function() {
     if(this.isStarred) {
-      this.turnStarOff(function() {})
+      this.turnStarOff(function() {}, function() {})
     }
     else {
-      this.turnStarOn(function() {})
+      this.turnStarOn(function() {}, function() {})
     }
   },
 
-  turnReadOn: function(done) {
-    this._setState("Read", "isRead", true, done)
+  turnReadOn: function(success, failure) {
+    this._setState("Read", "isRead", true, success, failure)
   },
 
-  turnReadOff: function(done, sticky) {
+  turnReadOff: function(success, failure, sticky) {
     this.keepUnread = sticky
-    this._setState("NotRead", "isRead", false, done, sticky)
+    this._setState("NotRead", "isRead", false, success, failure, sticky)
   },
 
-  turnShareOn: function(done) {
-    this._setState("Shared", "isShared", true, done)
+  turnShareOn: function(success, failure) {
+    this._setState("Shared", "isShared", true, success, failure)
   },
 
-  turnShareOff: function(done) {
-    this._setState("NotShared", "isShared", false, done)
+  turnShareOff: function(success, failure) {
+    this._setState("NotShared", "isShared", false, success, failure)
   },
 
-  turnStarOn: function(done) {
-    this._setState("Starred", "isStarred", true, done)
+  turnStarOn: function(success, failure) {
+    this._setState("Starred", "isStarred", true, success, failure)
   },
 
-  turnStarOff: function(done) {
-    this._setState("NotStarred", "isStarred", false, done)
+  turnStarOff: function(success, failure) {
+    this._setState("NotStarred", "isStarred", false, success, failure)
   },
 
-  _setState: function(apiState, localProperty, localValue, done, sticky) {
+  _setState: function(apiState, localProperty, localValue, success, failure, sticky) {
     Log.debug("setting article state - " + apiState)
 
     if(apiState.match(/Read/) && this.readLocked) {
       Feeder.notify("Read state has been locked by Google")
-      done(false)
+      success(false)
     }
     else {
       this[localProperty] = localValue
 
       var onComplete = function() {
         Mojo.Event.send(document, "Article" + apiState, {subscriptionId: this.subscriptionId})
-        done(true)
+        success(true)
       }.bind(this)
 
-      this.api["setArticle" + apiState](this.id, this.subscriptionId, onComplete, sticky)
+      this.api["setArticle" + apiState](this.id, this.subscriptionId, onComplete, failure, sticky)
     }
   },
 

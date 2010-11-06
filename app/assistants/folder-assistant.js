@@ -23,6 +23,8 @@ var FolderAssistant = Class.create(BaseAssistant, {
     this.controller.listen("folders", Mojo.Event.listReorder, this.sourcesReordered = this.sourcesReordered.bind(this))
     this.controller.listen("folders", Mojo.Event.listDelete, this.sourceDeleted = this.sourceDeleted.bind(this))
     this.controller.listen(document, "SubscriptionDeleted", this.filterAndRefresh = this.filterAndRefresh.bind(this))
+
+    this.controller.get("header").update(this.folder.title)
   },
 
   cleanup: function($super) {
@@ -32,10 +34,6 @@ var FolderAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("folders", Mojo.Event.listReorder, this.sourcesReordered)
     this.controller.stopListening("folders", Mojo.Event.listDelete, this.sourceDeleted)
     this.controller.stopListening(document, "SubscriptionDeleted", this.filterAndRefresh)
-  },
-
-  ready: function($super) {
-    this.controller.get("header").update(this.folder.title)
   },
 
   activate: function($super, changes) {

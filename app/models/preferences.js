@@ -9,6 +9,7 @@ Preferences = {
   MANUAL_FEED_SORT: "manual-feed-sort",
   THEME: "theme",
   DEBUG: "debug",
+  MARK_READ_SCROLL: "mark-read-scroll",
 
   isOldestFirst: function() {
     return this.getCookie(this.OLDEST_FIRST, false)
@@ -88,6 +89,14 @@ Preferences = {
 
   setDebugging: function(debugging) {
     this.setCookie(this.DEBUG, debugging)
+  },
+
+  markReadAsScroll: function() {
+    return this.getCookie(this.MARK_READ_SCROLL, false)
+  },
+
+  setMarkReadAsScroll: function(markRead) {
+    this.setCookie(this.MARK_READ_SCROLL, markRead)
   },
 
   getCookie: function(name, defaultValue) {

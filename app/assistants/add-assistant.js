@@ -13,10 +13,7 @@ var AddAssistant = Class.create(BaseAssistant, {
 
 		this.controller.listen("url", Mojo.Event.propertyChange, this.propertyChanged = this.propertyChanged.bind(this))
     this.controller.listen("add", Mojo.Event.tap, this.add = this.add.bind(this))
-  },
 
-  ready: function($super) {
-    $super()
     $("header").update($L("Add Subscription"))
     $("url-label").update($L("URL"))
     $("error-message").update($L("Unable to add subscription"))

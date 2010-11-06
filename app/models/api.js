@@ -61,7 +61,7 @@ var Api = Class.create({
       }
 
       console.log(Object.toJSON(parameters))
-      
+
       new Ajax.Request(Api.BASE_URL + "preference/stream/set", {
         method: "post",
         parameters: parameters,
@@ -137,7 +137,6 @@ var Api = Class.create({
   },
 
   getAllSubscriptions: function(success, failure) {
-    // success(STATIC_SUBSCRIPTIONS.subscriptions)
     new Ajax.Request(Api.BASE_URL + "subscription/list", {
       method: "get",
       parameters: {output: "json"},
@@ -148,7 +147,6 @@ var Api = Class.create({
   },
 
   getUnreadCounts: function(success, failure) {
-    // success(STATIC_UNREAD_COUNTS.unreadcounts)
     new Ajax.Request(Api.BASE_URL + "unread-count", {
       method: "get",
       parameters: {output: "json"},
@@ -227,109 +225,125 @@ var Api = Class.create({
     })
   },
 
-  markAllRead: function(id, success) {
-    this._getEditToken(function(token) {
-      var parameters = {
-        T: token,
-        s: id
-      }
+  markAllRead: function(id, success, failure) {
+    this._getEditToken(
+      function(token) {
+        var parameters = {
+          T: token,
+          s: id
+        }
 
-      new Ajax.Request(Api.BASE_URL + "mark-all-as-read", {
-        method: "post",
-        parameters: parameters,
-        requestHeaders: this._requestHeaders(),
-        onSuccess: success
-      })
-    }.bind(this))
+        new Ajax.Request(Api.BASE_URL + "mark-all-as-read", {
+          method: "post",
+          parameters: parameters,
+          requestHeaders: this._requestHeaders(),
+          onSuccess: success,
+          onFailure: failure
+        })
+      }.bind(this),
+
+      failure
+    )
   },
 
-  setArticleRead: function(articleId, subscriptionId, success) {
+  setArticleRead: function(articleId, subscriptionId, success, falure) {
     this._editTag(
       articleId,
       subscriptionId,
       "user/-/state/com.google/read",
       "user/-/state/com.google/kept-unread",
-      success
+      success,
+      failure
     )
   },
 
-  setArticleNotRead: function(articleId, subscriptionId, success, sticky) {
+  setArticleNotRead: function(articleId, subscriptionId, success, failure, sticky) {
     this._editTag(
       articleId,
       subscriptionId,
       sticky ? "user/-/state/com.google/kept-unread" : null,
       "user/-/state/com.google/read",
-      success
+      success,
+      failure
     )
   },
 
-  setArticleShared: function(articleId, subscriptionId, success) {
+  setArticleShared: function(articleId, subscriptionId, success, failure) {
     this._editTag(
       articleId,
       subscriptionId,
       "user/-/state/com.google/broadcast",
       null,
-      success
+      success,
+      failure
     )
   },
 
-  setArticleNotShared: function(articleId, subscriptionId, success) {
+  setArticleNotShared: function(articleId, subscriptionId, success, failure) {
     this._editTag(
       articleId,
       subscriptionId,
       null,
       "user/-/state/com.google/broadcast",
-      success
+      success,
+      failure
     )
   },
 
-  setArticleStarred: function(articleId, subscriptionId, success) {
+  setArticleStarred: function(articleId, subscriptionId, success, failure) {
     this._editTag(
       articleId,
       subscriptionId,
       "user/-/state/com.google/starred",
       null,
-      success
+      success,
+      failure
     )
   },
 
-  setArticleNotStarred: function(articleId, subscriptionId, success) {
+  setArticleNotStarred: function(articleId, subscriptionId, success, failure) {
     this._editTag(
       articleId,
       subscriptionId,
       null,
       "user/-/state/com.google/starred",
-      success
+      success,
+      failure
     )
   },
 
-  _editTag: function(articleId, subscriptionId, addTag, removeTag, success) {
+  _editTag: function(articleId, subscriptionId, addTag, removeTag, success, failure) {
     Log.debug("editing tag for article id = " + articleId + " and subscription id = " + subscriptionId)
 
-    this._getEditToken(function(token) {
-      var parameters = {
-        T: token,
-        i: articleId,
-        s: subscriptionId
-      }
+    this._getEditToken(
+      function(token) {
+        var parameters = {
+          T: token,
+          i: articleId,
+          s: subscriptionId
+        }
 
-      if(addTag) parameters.a = addTag
-      if(removeTag) parameters.r = removeTag
+        if(addTag) parameters.a = addTag
+        if(removeTag) parameters.r = removeTag
 
-      new Ajax.Request(Api.BASE_URL + "edit-tag", {
-        method: "post",
-        parameters:  parameters,
-        requestHeaders: this._requestHeaders(),
-        onSuccess: success
-      })
-    }.bind(this))
+        new Ajax.Request(Api.BASE_URL + "edit-tag", {
+          method: "post",
+          parameters:  parameters,
+          requestHeaders: this._requestHeaders(),
+          onSuccess: success,
+          onFailure: failure
+        })
+      }.bind(this),
+
+      failure
+    )
   },
 
   _requestHeaders: function() {
     return {Authorization:"GoogleLogin auth=" + this.auth}
   },
 
-  _getEditToken: function(success) {
+  _getEditToken: function(success, failure) {
     if(this.editToken && (new Date().getTime() - this.editTokenTime < 120000)) {
       Log.debug("using last edit token - " + this.editToken)
       success(this.editToken)
@@ -338,13 +352,13 @@ var Api = Class.create({
       new Ajax.Request(Api.BASE_URL + "token", {
         method: "get",
         requestHeaders: {Authorization:"GoogleLogin auth=" + this.auth},
+        onFailure: failure,
         onSuccess: function(response) {
           this.editToken = response.responseText
           this.editTokenTime = new Date().getTime()
           Log.debug("retrieved edit token - " + this.editToken)
           success(this.editToken)
         }.bind(this)
-
       })
     }
   }

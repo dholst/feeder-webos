@@ -21,11 +21,21 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     this.controller.listen("articles", Mojo.Event.listTap, this.articleTapped = this.articleTapped.bind(this))
     this.controller.listen("mark-all-read", Mojo.Event.tap, this.markAllRead = this.markAllRead.bind(this))
     this.controller.listen("articles", Mojo.Event.dragStart, this.dragStart = this.dragStart.bind(this))
+    this.controller.listen("error-header", Mojo.Event.tap, this.reload = this.reload.bind(this))
+
+    this.controller.get("header").update(this.subscription.title)
+
+    this.articlesTop = $("articles").offsetTop
+    this.scroller = this.controller.getSceneScroller()
+    this.scrolling = this.scrolling.bind(this)
   },
 
   ready: function($super) {
     $super()
-    this.controller.get("header").update(this.subscription.title)
+    this.findArticles()
+  },
+  
+  reload: function() {
     this.findArticles()
   },
 
@@ -50,17 +60,31 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
         this.controller.get("articles").mojo.revealItem(this.tappedIndex, true)
       }
     }
+
+    if(Preferences.markReadAsScroll() && !this.markingReadAsScroll) {
+      this.scroller.observe(Mojo.Event.dragging, this.scrolling)
+      this.markingReadAsScroll = true
+    }
+    else {
+      this.scroller.stopObserving(Mojo.Event.dragging, this.scrolling)
+    }
   },
 
   cleanup: function($super) {
     $super()
     this.controller.stopListening("articles", Mojo.Event.listTap, this.articleTapped)
     this.controller.stopListening("articles", Mojo.Event.dragStart, this.dragStart)
+    this.scroller.stopObserving(Mojo.Event.dragging, this.scrolling)
+    this.controller.stopListening("mark-all-read", Mojo.Event.tap, this.markAllRead)
+    this.controller.stopListening("error-header", Mojo.Event.tap, this.reload)
+
   },
 
   findArticles: function(scrollToTop) {
+    this.controller.get("error-header").hide()
+    this.controller.get("mark-all-read").hide()
     this.smallSpinnerOn()
-    this.subscription.findArticles(this.foundArticles.bind(this, scrollToTop || false), this.bail.bind(this))
+    this.subscription.findArticles(this.foundArticles.bind(this, scrollToTop || false), this.showError.bind(this))
   },
 
   foundArticles: function(scrollToTop) {
@@ -91,6 +115,8 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
   },
 
   itemRendered: function(listWidget, itemModel, itemNode) {
+    itemModel._itemNode = itemNode
+
     if(itemModel.load_more) {
       this.findArticles()
     }
@@ -114,21 +140,39 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     }
   },
 
+	scrolling: function(event) {
+    var scrollPosition = this.scroller.mojo.getScrollPosition()
+    var theBottom = scrollPosition.top - this.scroller.offsetHeight
+
+	  for(var i = 0; i < this.subscription.items.length; i++) {
+	    var item = this.subscription.items[i]
+
+      if(item._itemNode && (this.scroller.offsetTop - item._itemNode.offsetTop - item._itemNode.offsetHeight) > theBottom && !item.isRead) {
+        item.turnReadOn(function() {})
+        item._itemNode.removeClassName("unread")
+      }
+	  }
+	},
+
   markAllRead: function(event) {
     this.controller.get("mark-all-read").hide()
     this.smallSpinnerOn()
     var count = this.subscription.getUnreadCount()
 
-    this.subscription.markAllRead(function() {
-      this.smallSpinnerOff()
-      this.showMarkAllRead()
-      this.refreshList(this.controller.get("articles"), this.subscription.items)
-      Mojo.Event.send(document, "MassMarkAsRead", {id: this.subscription.id, count: count})
+    this.subscription.markAllRead(
+      function() {
+        this.smallSpinnerOff()
+        this.showMarkAllRead()
+        this.refreshList(this.controller.get("articles"), this.subscription.items)
+        Mojo.Event.send(document, "MassMarkAsRead", {id: this.subscription.id, count: count})
 
-      if(Preferences.goBackAfterMarkAsRead()) {
-        this.controller.stageController.popScene()
-      }
-    }.bind(this))
+        if(Preferences.goBackAfterMarkAsRead()) {
+          this.controller.stageController.popScene()
+        }
+      }.bind(this),
+
+      this.showError.bind(this)
+    )
   },
 
   _getNodeFrom: function(event) {
@@ -216,5 +260,11 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     for(var i = 0; i < heightNodes.length; i++) {
       heightNodes[i].style.height = height
     }
+	},
+
+	showError: function() {
+    this.smallSpinnerOff()
+    this.controller.get("mark-all-read").hide()
+    this.controller.get("error-header").show()
 	}
 })

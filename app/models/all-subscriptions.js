@@ -1,24 +1,32 @@
 var AllSubscriptions = Class.create(SubscriptionContainer, {
-  findAll: function(callback) {
+  findAll: function(success, failure) {
     var self = this
 
-    self.api.getAllSubscriptions(function(subscriptions) {
-      self.sorted = false
-      self.clearUnreadCount()
-      self.items.clear()
+    self.api.getAllSubscriptions(
+      function(subscriptions) {
+        self.sorted = false
+        self.clearUnreadCount()
+        self.items.clear()
 
-      var folders = new Folders(self.api)
+        var folders = new Folders(self.api)
 
-      subscriptions.each(function(subscriptionData) {
-        var subscription = new Subscription(self.api, subscriptionData)
-        self.addSubscription(subscription, folders)
-      })
+        subscriptions.each(function(subscriptionData) {
+          var subscription = new Subscription(self.api, subscriptionData)
+          self.addSubscription(subscription, folders)
+        })
 
-      folders.addSortIds(function() {
-        self.items.push.apply(self.items, folders.items)
-        self.addUnreadCounts(callback)
-      })
-    })
+        folders.addSortIds(
+          function() {
+            self.items.push.apply(self.items, folders.items)
+            self.addUnreadCounts(success, failure)
+          },
+
+          failure
+        )
+      },
+
+      failure
+    )
   },
 
   addSubscription: function(subscription, folders) {
@@ -34,44 +42,48 @@ var AllSubscriptions = Class.create(SubscriptionContainer, {
     }
   },
 
-  addUnreadCounts: function(callback) {
+  addUnreadCounts: function(success, failure) {
     var self = this
 
-    self.api.getUnreadCounts(function(counts) {
-      counts.each(function(count) {
-        if(count.id.startsWith("feed")) {
-          self.incrementUnreadCountBy(count.count)
+    self.api.getUnreadCounts(
+      function(counts) {
+        counts.each(function(count) {
+          if(count.id.startsWith("feed")) {
+            self.incrementUnreadCountBy(count.count)
 
-          self.items.each(function(item) {
-            if(item.id == count.id) {
-              item.setUnreadCount(count.count)
-            }
+            self.items.each(function(item) {
+              if(item.id == count.id) {
+                item.setUnreadCount(count.count)
+              }
 
-            if(item.isFolder) {
-              item.addUnreadCount(count)
-            }
-          })
-        }
-      })
+              if(item.isFolder) {
+                item.addUnreadCount(count)
+              }
+            })
+          }
+        })
 
-      callback()
-    })
+        success()
+      },
+
+      failure
+    )
   },
 
-  sort: function(callback) {
+  sort: function(success, failure) {
     if(Preferences.isManualFeedSort()) {
-      this.sortManually(callback)
+      this.sortManually(success, failure)
     }
     else {
-      this.sortAlphabetically(callback)
+      this.sortAlphabetically(success, failure)
     }
   },
 
-  sortAlphabetically: function(callback) {
+  sortAlphabetically: function(success) {
     var self = this
 
     if(self.sorted == "alphabetic") {
-      callback()
+      success()
     }
     else {
       self.items.each(function(item) {
@@ -83,32 +95,36 @@ var AllSubscriptions = Class.create(SubscriptionContainer, {
       })
 
       self.sorted = "alphabetic"
-      callback()
+      success()
     }
   },
 
-  sortManually: function(callback) {
+  sortManually: function(success, failure) {
     var self = this
 
     if(self.sorted == "manual") {
-      callback()
+      success()
     }
     else {
-      self.api.getSortOrder(function(sortOrders) {
-        var rootSortOrder = sortOrders["user/-/state/com.google/root"] || new SortOrder("")
+      self.api.getSortOrder(
+        function(sortOrders) {
+          var rootSortOrder = sortOrders["user/-/state/com.google/root"] || new SortOrder("")
 
-        self.items.each(function(item) {
-          item.sortNumber = rootSortOrder.getSortNumberFor(item.sortId)
-          if(item.isFolder) item.sortManually(sortOrders[item.id.gsub(/user\/\d+\//, "user/-/")])
-        })
+          self.items.each(function(item) {
+            item.sortNumber = rootSortOrder.getSortNumberFor(item.sortId)
+            if(item.isFolder) item.sortManually(sortOrders[item.id.gsub(/user\/\d+\//, "user/-/")])
+          })
 
-        self.sortBy(function(item) {
-          return item.sortNumber
-        })
+          self.sortBy(function(item) {
+            return item.sortNumber
+          })
 
-        self.sorted = "manual"
-        callback()
-      })
+          self.sorted = "manual"
+          success()
+        },
+
+        failure
+      )
     }
   },
 

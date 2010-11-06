@@ -72,7 +72,7 @@ var Folder = Class.create(ArticleContainer, {
     })
   },
 
-  sortManually: function(sortOrder) {
+  sortManually: function(sortOrder, error) {
     if(!sortOrder) return
 
     this.subscriptions.items.each(function(subscription, index) {
