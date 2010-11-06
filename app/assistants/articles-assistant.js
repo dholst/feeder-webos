@@ -148,7 +148,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
 	    var item = this.subscription.items[i]
 
       if(item._itemNode && (this.scroller.offsetTop - item._itemNode.offsetTop - item._itemNode.offsetHeight) > theBottom && !item.isRead) {
-        item.turnReadOn(function() {})
+        item.turnReadOn(function() {}, function() {})
         item._itemNode.removeClassName("unread")
       }
 	  }
