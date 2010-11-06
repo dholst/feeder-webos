@@ -15,31 +15,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
     this.controller.listen("read", Mojo.Event.tap, this.setRead = this.setRead.bind(this))
     this.controller.listen("sendto", Mojo.Event.tap, this.sendTo = this.sendTo.bind(this))
     this.controller.listen("header", Mojo.Event.tap, this.openInBrowser = this.openInBrowser.bind(this))
-  },
 
-  cleanup: function($super) {
-    $super()
-    this.controller.stopListening("previous-article", Mojo.Event.tap, this.previousArticle)
-    this.controller.stopListening("next-article", Mojo.Event.tap, this.nextArticle)
-    this.controller.stopListening("starred", Mojo.Event.tap, this.setStarred)
-    this.controller.stopListening("read", Mojo.Event.tap, this.setRead)
-    this.controller.stopListening("sendto", Mojo.Event.tap, this.sendTo)
-    this.controller.stopListening("header", Mojo.Event.tap, this.openInBrowser)
-    this.removeAnchorFix()
-    this.removeLoadImage()
-    this.removeVideoClick()
-  },
-
-  activate: function($super, changes) {
-    $super(changes)
-
-    if(changes && changes.fontSizeChanged) {
-      this.setFontSize()
-    }
-  },
-
-  ready: function($super) {
-    $super()
     this.controller.get("title").update(this.article.title)
     this.controller.get("subscription").update(this.article.origin)
     this.controller.get("author").update(this.article.author ? $L("by #{author}").interpolate(this.article) : "")
@@ -61,6 +37,27 @@ var ArticleAssistant = Class.create(BaseAssistant, {
     this.addAnchorFix()
     this.addLoadImage()
     this.addVideoClick()
+  },
+
+  cleanup: function($super) {
+    $super()
+    this.controller.stopListening("previous-article", Mojo.Event.tap, this.previousArticle)
+    this.controller.stopListening("next-article", Mojo.Event.tap, this.nextArticle)
+    this.controller.stopListening("starred", Mojo.Event.tap, this.setStarred)
+    this.controller.stopListening("read", Mojo.Event.tap, this.setRead)
+    this.controller.stopListening("sendto", Mojo.Event.tap, this.sendTo)
+    this.controller.stopListening("header", Mojo.Event.tap, this.openInBrowser)
+    this.removeAnchorFix()
+    this.removeLoadImage()
+    this.removeVideoClick()
+  },
+
+  activate: function($super, changes) {
+    $super(changes)
+
+    if(changes && changes.fontSizeChanged) {
+      this.setFontSize()
+    }
   },
 
   setFontSize: function() {

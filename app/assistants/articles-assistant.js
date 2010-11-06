@@ -21,11 +21,12 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     this.controller.listen("articles", Mojo.Event.listTap, this.articleTapped = this.articleTapped.bind(this))
     this.controller.listen("mark-all-read", Mojo.Event.tap, this.markAllRead = this.markAllRead.bind(this))
     this.controller.listen("articles", Mojo.Event.dragStart, this.dragStart = this.dragStart.bind(this))
+
+    this.controller.get("header").update(this.subscription.title)
   },
 
   ready: function($super) {
     $super()
-    this.controller.get("header").update(this.subscription.title)
     this.findArticles()
   },
 

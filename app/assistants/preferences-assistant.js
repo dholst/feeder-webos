@@ -84,10 +84,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
 
     this.controller.setupWidget("debug", {}, this.debug)
     this.controller.listen("debug", Mojo.Event.propertyChange, this.setDebugging = this.setDebugging.bind(this))
-  },
 
-  ready: function($super) {
-    $super()
     $("header").update($L("Preferences"))
     $("general-label").update($L("General"))
     $("landscape-label").update($L("Allow landscape"))
