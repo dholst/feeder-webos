@@ -34,7 +34,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     $super()
     this.findArticles()
   },
-  
+
   reload: function() {
     this.findArticles()
   },
@@ -145,11 +145,26 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
 	scrolling: function(event) {
     var scrollPosition = this.scroller.mojo.getScrollPosition()
     var theBottom = scrollPosition.top - this.scroller.offsetHeight
+    var markAllRead = true
 
 	  for(var i = 0; i < this.subscription.items.length; i++) {
 	    var item = this.subscription.items[i]
 
-      if(item._itemNode && (this.scroller.offsetTop - item._itemNode.offsetTop - item._itemNode.offsetHeight) > theBottom && !item.isRead) {
+	    if(!item._itemNode) {
+	      markAllRead = false
+	      break
+	    }
+
+	    if(this.scroller.offsetTop - item._itemNode.offsetTop - item._itemNode.offsetHeight < theBottom) {
+	      markAllRead = false
+	      break
+	    }
+    }
+
+	  for(var i = 0; i < this.subscription.items.length; i++) {
+	    var item = this.subscription.items[i]
+
+      if(item._itemNode && (item._itemNode.offsetTop + scrollPosition.top < this.articlesTop || markAllRead) && !item.isRead) {
         item.turnReadOn(function() {}, function() {})
         item._itemNode.removeClassName("unread")
       }
