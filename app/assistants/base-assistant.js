@@ -35,7 +35,11 @@ var BaseAssistant = Class.create({
   ready: function() {
   },
 
-  readytoactivat: function() {
+  readytoactivate: function() {
+  },
+  
+  aboutToActivate: function(callback) {
+    callback.defer()
   },
 
   activate: function(changes) {

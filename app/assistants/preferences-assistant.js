@@ -29,7 +29,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.originalTheme = Preferences.getTheme()
 
     this.debug = {value: Preferences.isDebugging()}
-    
+
     this.markReadScroll = {value: Preferences.markReadAsScroll()}
   },
 
@@ -100,7 +100,8 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     $("hide-read-articles-label").update($L("Hide read articles"))
     $("folders-label").update($L("Folders"))
     $("combine-articles-label").update($L("Combine articles"))
-    $("debug-label").update($L("Debug Log"))
+    $("debug-label").update($L("Debug"))
+    $("debug-log-label").update($L("Debug Log"))
     $("mark-read-scroll-label").update($L("Mark read as you scroll"))
   },
 
@@ -165,7 +166,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
   setDebugging: function() {
     Preferences.setDebugging(this.debug.value)
   },
-  
+
   setMarkReadScroll: function() {
     Preferences.setMarkReadAsScroll(this.markReadScroll.value)
   },
