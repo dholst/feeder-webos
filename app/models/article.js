@@ -24,11 +24,16 @@ var Article = Class.create({
   },
 
   replaceYouTubeLinks: function(content) {
-    var embed = /<embed.*src="(.*)".*<\/embed>/
-    var match = embed.exec(content)
+    var embed = /<(embed|iframe).*src="(.*?youtube.com.*?)".*<\/(embed|iframe)>/
+    var urlMatch = embed.exec(content)
 
-    if(match) {
-      content = content.replace(embed, '<div class="video" data-url="' + match[1] + '"></div>')
+    if(urlMatch) {
+      var idMatch = /\/(embed|v)\/([\-a-zA-Z0-9]+)/.exec(urlMatch[2])
+
+      if(idMatch) {
+        var id = idMatch[2]
+        content = content.replace(embed, '<a class="video" href="http://youtube.com/watch?v=' + id + '"><img src="http://img.youtube.com/vi/' + id + '/0.jpg"></a>')
+      }
     }
 
     return content
