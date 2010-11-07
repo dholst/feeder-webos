@@ -361,29 +361,32 @@ var ArticleAssistant = Class.create(BaseAssistant, {
   addVideoClick: function() {
     this.videoClick = this.videoClick.bind(this)
 
-    $$("div.video").each(function(div) {
-      div.observe('click' , this.videoClick)
+    $$("a.video").each(function(link) {
+      link.observe('click' , this.videoClick)
     }.bind(this))
   },
 
   removeVideoClick: function() {
-    $$("div.video").each(function(div) {
-      div.stopObserving('click' , this.videoClick)
+    $$("a.video").each(function(link) {
+      link.stopObserving('click' , this.videoClick)
     }.bind(this))
   },
 
   videoClick: function(event) {
-		var div = event.target || event.srcElement
+    event.stop()
+		var link = event.target || event.srcElement
 
     this.controller.serviceRequest("palm://com.palm.applicationManager", {
       method: "open",
-      parameters: {
-        id: "com.palm.app.browser",
+      parameters:  {
+        id: 'com.palm.app.youtube',
         params: {
-          target: div.readAttribute("data-url")
+          target: link.href
         }
       }
     })
+
+    return false
   },
 
   //
