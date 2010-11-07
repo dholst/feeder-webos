@@ -28,7 +28,7 @@ var Article = Class.create({
     var urlMatch = embed.exec(content)
 
     if(urlMatch) {
-      var idMatch = /\/(embed|v)\/([\-a-zA-Z0-9]+)/.exec(urlMatch[2])
+      var idMatch = /\/(embed|v)\/([_\-a-zA-Z0-9]+)/.exec(urlMatch[2])
 
       if(idMatch) {
         var id = idMatch[2]
