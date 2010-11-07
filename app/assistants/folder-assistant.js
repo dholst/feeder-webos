@@ -67,7 +67,7 @@ var FolderAssistant = Class.create(BaseAssistant, {
 
   folderRendered: function(listWidget, itemModel, itemNode) {
     if(itemModel.constructor == Folder) {
-      itemNode.down(".folder-title").update("All")
+      itemNode.down(".folder-title").update($L("All"))
     }
 
     if(itemModel.unreadCount) {
