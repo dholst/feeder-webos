@@ -221,7 +221,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
         params: {action: "add_url", url: this.article.url, title: this.article.title}
       },
 
-      onFailure: this.offerToInstallApp.bind(this, "Spare Time", "com.semicolonapps.sparetime")
+      onFailure: this.offerToInstallApp.bind(this, $L("Spare Time"), "com.semicolonapps.sparetime")
     })
   },
 
