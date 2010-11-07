@@ -374,14 +374,14 @@ var ArticleAssistant = Class.create(BaseAssistant, {
 
   videoClick: function(event) {
     event.stop()
-		var link = event.target || event.srcElement
+    var link = event.target.href || event.target.up('a').href
 
     this.controller.serviceRequest("palm://com.palm.applicationManager", {
       method: "open",
       parameters:  {
         id: 'com.palm.app.youtube',
         params: {
-          target: link.href
+          target: link
         }
       }
     })
