@@ -4,7 +4,7 @@ var Folder = Class.create(ArticleContainer, {
     this.id = id
     this.title = title
     this.icon = "folder"
-    this.divideBy = "Subscriptions"
+    this.divideBy = $L("Subscriptions")
     this.stickySubscriptions = [this]
     this.subscriptions = new FolderSubscriptions(api, this.id)
     this.setUnreadCount(0)
