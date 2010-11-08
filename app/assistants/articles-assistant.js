@@ -164,7 +164,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
 	  for(var i = 0; i < this.subscription.items.length; i++) {
 	    var item = this.subscription.items[i]
 
-      if(item._itemNode && (item._itemNode.offsetTop + scrollPosition.top < this.articlesTop || markAllRead) && !item.isRead) {
+      if(item._itemNode && (item._itemNode.offsetTop + scrollPosition.top < this.articlesTop || markAllRead) && !item.isRead && !item.keepUnread) {
         item.turnReadOn(function() {}, function() {})
         item._itemNode.removeClassName("unread")
       }
