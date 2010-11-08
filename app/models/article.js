@@ -69,7 +69,7 @@ var Article = Class.create({
     var day = this.leftPad(this.updatedAt.getDate())
     var year = "" + this.updatedAt.getFullYear()
 
-    this.displayDate = month + "/" + day + "/" + year
+    this.displayDate = Mojo.Format.formatDate(this.updatedAt, {date: "medium"})
     this.sortDate = year + month + day
   },
 
