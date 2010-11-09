@@ -34,9 +34,9 @@ var ArticleAssistant = Class.create(BaseAssistant, {
       this.toggleState(this.controller.get("read"), "Read")
     }
 
-    this.addAnchorFix()
     this.addLoadImage()
     this.addVideoClick()
+    this.addAnchorFix()
   },
 
   cleanup: function($super) {
@@ -361,32 +361,39 @@ var ArticleAssistant = Class.create(BaseAssistant, {
   addVideoClick: function() {
     this.videoClick = this.videoClick.bind(this)
 
-    $$("a.video").each(function(link) {
+    $$("div.youtube-play").each(function(link) {
       link.observe('click' , this.videoClick)
     }.bind(this))
   },
 
   removeVideoClick: function() {
-    $$("a.video").each(function(link) {
+    $$("div.youtube-play").each(function(link) {
       link.stopObserving('click' , this.videoClick)
     }.bind(this))
   },
 
   videoClick: function(event) {
-    event.stop()
-    var link = event.target.href || event.target.up('a').href
+    if(this.lastDrag && this.lastDrag > this.getTimestamp() - 1) {
+      event.preventDefault()
+      event.stop()
+      return false
+    }
+    else {
+      event.stop()
+      var link = event.target.getAttribute("data-url")
 
-    this.controller.serviceRequest("palm://com.palm.applicationManager", {
-      method: "open",
-      parameters:  {
-        id: 'com.palm.app.youtube',
-        params: {
-          target: link
+      this.controller.serviceRequest("palm://com.palm.applicationManager", {
+        method: "open",
+        parameters:  {
+          id: 'com.palm.app.youtube',
+          params: {
+            target: link
+          }
         }
-      }
-    })
+      })
 
-    return false
+      return false
+    }
   },
 
   //

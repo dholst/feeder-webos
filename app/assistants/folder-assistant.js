@@ -9,7 +9,6 @@ var FolderAssistant = Class.create(BaseAssistant, {
     $super()
     this.filter()
 
-    console.log(this.subscriptions.items.length)
     this.controller.setupWidget("folders", {
       itemTemplate: "folder/folder",
       onItemRendered: this.folderRendered,

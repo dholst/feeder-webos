@@ -84,8 +84,8 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.controller.setupWidget("theme", themeChoices, this.theme)
     this.controller.listen("theme", Mojo.Event.propertyChange, this.setTheme = this.setTheme.bind(this))
 
-    this.controller.setupWidget("debug", {}, this.debug)
-    this.controller.listen("debug", Mojo.Event.propertyChange, this.setDebugging = this.setDebugging.bind(this))
+    // this.controller.setupWidget("debug", {}, this.debug)
+    // this.controller.listen("debug", Mojo.Event.propertyChange, this.setDebugging = this.setDebugging.bind(this))
 
     this.controller.setupWidget("mark-read-scroll", {}, this.markReadScroll)
     this.controller.listen("mark-read-scroll", Mojo.Event.propertyChange, this.setMarkReadScroll = this.setMarkReadScroll.bind(this))
@@ -100,8 +100,8 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     $("hide-read-articles-label").update($L("Hide read articles"))
     $("folders-label").update($L("Folders"))
     $("combine-articles-label").update($L("Combine articles"))
-    $("debug-label").update($L("Debug"))
-    $("debug-log-label").update($L("Debug Log"))
+    // $("debug-label").update($L("Debug"))
+    // $("debug-log-label").update($L("Debug Log"))
     $("mark-read-scroll-label").update($L("Mark read as you scroll"))
   },
 
@@ -115,7 +115,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("combine-folders", Mojo.Event.propertyChange, this.setCombineFolders)
     this.controller.stopListening("feed-sort", Mojo.Event.propertyChange, this.setFeedSortOrder)
     this.controller.stopListening("theme", Mojo.Event.propertyChange, this.setTheme)
-    this.controller.stopListening("debug", Mojo.Event.propertyChange, this.setDebugging)
+    // this.controller.stopListening("debug", Mojo.Event.propertyChange, this.setDebugging)
     this.controller.stopListening("mark-read-scroll", Mojo.Event.propertyChange, this.setMarkReadScroll)
   },
 

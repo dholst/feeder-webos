@@ -152,7 +152,16 @@ var Api = Class.create({
       parameters: {output: "json"},
       requestHeaders: this._requestHeaders(),
       onFailure: failure,
-      onSuccess: function(response) {success(response.responseText.evalJSON().unreadcounts)}
+      onSuccess: function(response) {
+        var json = response.responseText.evalJSON()
+
+        if(json.denied) {
+          failure()
+        }
+        else {
+          success(json.unreadcounts)
+        }
+      }
     })
   },
 

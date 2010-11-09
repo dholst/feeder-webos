@@ -111,6 +111,13 @@ var MainAssistant = Class.create(BaseAssistant, {
     else {
       this.filterAndRefresh()
     }
+
+    this.active = true
+  },
+
+  deactivate: function($super) {
+    $super()
+    this.active = false
   },
 
   filterAndRefresh: function() {
@@ -166,11 +173,13 @@ var MainAssistant = Class.create(BaseAssistant, {
   articleRead: function(event) {
     Log.debug("1 item marked read in " + event.subscriptionId)
     this.sources.articleRead(event.subscriptionId)
+    if(this.active) this.filterAndRefresh()
   },
 
   articleNotRead: function(event) {
     Log.debug("1 item marked not read in " + event.subscriptionId)
     this.sources.articleNotRead(event.subscriptionId)
+    if(this.active) this.filterAndRefresh()
   },
 
   markedAllRead: function(event) {
