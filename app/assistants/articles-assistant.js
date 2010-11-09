@@ -117,6 +117,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
   },
 
   itemRendered: function(listWidget, itemModel, itemNode) {
+    var origin
     itemModel._itemNode = itemNode
 
     if(itemModel.load_more) {
@@ -129,26 +130,27 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
 
       if(itemModel.isStarred) {
         itemNode.addClassName("starred")
-        var origin = itemNode.down(".article-origin")
+        origin = itemNode.down(".article-origin")
         origin.update("&nbsp;")
         origin.show()
       }
 
       if(this.subscription.showOrigin) {
-        var origin = itemNode.down(".article-origin")
+        origin = itemNode.down(".article-origin")
         origin.update(itemModel.origin)
         origin.show()
       }
     }
   },
 
-	scrolling: function(event) {
+	scrolling: function() {
     var scrollPosition = this.scroller.mojo.getScrollPosition()
     var theBottom = scrollPosition.top - this.scroller.offsetHeight
     var markAllRead = true
+    var item, i
 
-	  for(var i = 0; i < this.subscription.items.length; i++) {
-	    var item = this.subscription.items[i]
+	  for(i = 0; i < this.subscription.items.length; i++) {
+	    item = this.subscription.items[i]
 
 	    if(!item._itemNode) {
 	      markAllRead = false
@@ -161,8 +163,8 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
 	    }
     }
 
-	  for(var i = 0; i < this.subscription.items.length; i++) {
-	    var item = this.subscription.items[i]
+	  for(i = 0; i < this.subscription.items.length; i++) {
+	    item = this.subscription.items[i]
 
       if(item._itemNode && (item._itemNode.offsetTop + scrollPosition.top < this.articlesTop || markAllRead) && !item.isRead && !item.keepUnread) {
         item.turnReadOn(function() {}, function() {})
@@ -171,7 +173,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
 	  }
 	},
 
-  markAllRead: function(event) {
+  markAllRead: function() {
     this.controller.get("mark-all-read").hide()
     this.smallSpinnerOn()
     var count = this.subscription.getUnreadCount()
@@ -218,8 +220,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
   },
 
   dragEnter: function(item) {
-		var itemHeight = item.getHeight()
-		this.dragHeight = itemHeight
+		this.dragHeight = item.getHeight()
 		this.dragAdjNode = undefined
 		this.insertSpacer(item)
 	},
