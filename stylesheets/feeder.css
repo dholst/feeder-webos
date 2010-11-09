@@ -333,7 +333,7 @@ body.theme-light {
   color: black;
 }
 
-#summary.small, #summary.small p{
+#summary.small, #summary.small p {
   font-size: 15px !important;
   line-height: 18px !important;
 }
@@ -369,8 +369,27 @@ body.theme-light {
   background: #aaa url(../images/starred-footer.png) no-repeat 95% center;
 }
 
-div.video {
-  height: 128px;
-  width: 100%;
-  background: url(../images/video.png) no-repeat center center;
+div.youtube {
+  position: relative;
+  width: 288px;
+  height: 216px;
+  overflow: hidden;
 }
+
+div.youtube-play {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 288px;
+  height: 216px;
+  background: transparent url(../images/play.png) no-repeat center center;
+}
+
+img.youtube-thumbnail {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 288px;
+  height: 216px;
+}
+

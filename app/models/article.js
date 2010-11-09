@@ -32,7 +32,7 @@ var Article = Class.create({
 
       if(idMatch) {
         var id = idMatch[2]
-        content = content.replace(embed, '<a class="video" href="http://youtube.com/watch?v=' + id + '"><img src="http://img.youtube.com/vi/' + id + '/0.jpg"></a>')
+        content = content.replace(embed, '<div class="youtube"><img class="youtube-thumbnail" src="http://img.youtube.com/vi/' + id + '/0.jpg"><div class="youtube-play" data-url="http://youtube.com/watch?v=' + id + '">&nbsp;</div></div>')
       }
     }
 
