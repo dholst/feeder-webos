@@ -18,6 +18,8 @@ body.theme-light {
 .preferences .title {
   font-size: 16px !important;
   line-height: 22px !important;
+  padding-left: 13px !important;
+  padding-right: 13px !important;
 }
 
 .palm-drag-spacer .release {
