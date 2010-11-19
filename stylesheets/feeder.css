@@ -1,8 +1,8 @@
-body.theme-grey {
+div.theme-grey {
   background-color: #e6e3de !important;
 }
 
-body.theme-light {
+div.theme-light {
   background-color: white !important;
   color: black !important;
 }
