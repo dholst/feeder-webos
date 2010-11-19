@@ -101,7 +101,7 @@ Preferences = {
   },
 
   notificationInterval: function() {
-    return this.getCookie(this.NOTIFICATIONS_INTERVAL, false)
+    return this.getCookie(this.NOTIFICATIONS_INTERVAL, "00:00:00")
   },
 
   setNotificationInterval: function(interval) {
