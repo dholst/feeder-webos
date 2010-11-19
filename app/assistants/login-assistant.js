@@ -49,7 +49,7 @@ var LoginAssistant = Class.create(BaseAssistant, {
 
   loginSuccess: function() {
     this.credentials.save()
-    this.controller.stageController.swapScene("main", this.api)
+    this.controller.stageController.swapScene("home", this.api)
   },
 
   loginFailure: function() {

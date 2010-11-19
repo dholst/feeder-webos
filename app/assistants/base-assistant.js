@@ -4,7 +4,7 @@ var BaseAssistant = Class.create({
   },
 
   setup: function() {
-    this.controller.get(this.controller.getSceneScroller()).addClassName("theme-" + Preferences.getTheme())
+    this.setTheme()
 
     var appMenuItems = []
     appMenuItems.push(Mojo.Menu.editItem)
@@ -49,7 +49,6 @@ var BaseAssistant = Class.create({
   },
 
   deactivate: function() {
-
   },
 
   cleanup: function() {
@@ -98,7 +97,7 @@ var BaseAssistant = Class.create({
   handleCommand: function(event) {
     if(Mojo.Event.command === event.type) {
       if("logout" == event.command) {
-        this.controller.stageController.popScenesTo("main", "logout")
+        this.controller.stageController.popScenesTo("home", "logout")
       }
       else if("add-subscription" == event.command) {
         this.controller.stageController.pushScene("add", this.api)
@@ -117,5 +116,17 @@ var BaseAssistant = Class.create({
         event.stop()
       }
     }
+  },
+
+  setTheme: function() {
+    var body = this.controller.sceneElement.up('.palm-default')
+    
+    $w(body.className).each(function(className) {
+      if(className.startsWith("theme-")) {
+        body.removeClassName(className)
+      }
+    })
+
+    body.addClassName("theme-" + Preferences.getTheme())
   }
 })

@@ -25,7 +25,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
 
     this.controller.get("header").update(this.subscription.title)
 
-    this.articlesTop = $("articles").offsetTop
+    this.articlesTop = this.controller.get("articles").offsetTop
     this.scroller = this.controller.getSceneScroller()
     this.scrolling = this.scrolling.bind(this)
   },
