@@ -10,6 +10,7 @@ Preferences = {
   THEME: "theme",
   DEBUG: "debug",
   MARK_READ_SCROLL: "mark-read-scroll",
+  NOTIFICATIONS_INTERVAL: "notifications-interval",
 
   isOldestFirst: function() {
     return this.getCookie(this.OLDEST_FIRST, false)
@@ -99,10 +100,18 @@ Preferences = {
     this.setCookie(this.MARK_READ_SCROLL, markRead)
   },
 
+  notificationInterval: function() {
+    return this.getCookie(this.NOTIFICATIONS_INTERVAL, false)
+  },
+
+  setNotificationInterval: function(interval) {
+    this.setCookie(this.NOTIFICATIONS_INTERVAL, interval)
+  },
+
   getCookie: function(name, defaultValue) {
     var cookie = this.cookieFor(name)
 
-    if(cookie.get() != undefined) {
+    if (cookie.get() != undefined) {
       return cookie.get()
     }
     else {
@@ -119,3 +128,4 @@ Preferences = {
     return new Mojo.Model.Cookie(name)
   }
 }
+

@@ -31,6 +31,8 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.debug = {value: Preferences.isDebugging()}
 
     this.markReadScroll = {value: Preferences.markReadAsScroll()}
+
+    this.notificationInterval = {value: Preferences.notificationInterval()}
   },
 
   setup: function($super) {
@@ -55,6 +57,11 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     var themeChoices = {choices: [
       {label: $L("Grey Theme"), value: "grey"},
       {label: $L("Light Theme"), value: "light"}
+    ]}
+
+    var intervalChoices = {choices: [
+      {label: $L("Off"), value: false},
+      {label: $L("5 Minutes"), value: "00:00:05"}
     ]}
 
     this.controller.setupWidget("allow-landscape", {}, this.allowLandscape)
@@ -90,6 +97,9 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.controller.setupWidget("mark-read-scroll", {}, this.markReadScroll)
     this.controller.listen("mark-read-scroll", Mojo.Event.propertyChange, this.setMarkReadScroll = this.setMarkReadScroll.bind(this))
 
+    this.controller.setupWidget("notification-interval", intervalChoices, this.notificationInterval)
+    this.controller.listen("notification-interval", Mojo.Event.propertyChange, this.setNotificationInterval = this.setNotificationInterval.bind(this))
+
     this.controller.get("header").update($L("Preferences"))
     this.controller.get("general-label").update($L("General"))
     this.controller.get("landscape-label").update($L("Allow landscape"))
@@ -103,6 +113,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     // this.controller.get("debug-label").update($L("Debug"))
     // this.controller.get("debug-log-label").update($L("Debug Log"))
     this.controller.get("mark-read-scroll-label").update($L("Mark read as you scroll"))
+    this.controller.get("notifications-label").update($L("Notifications"))
   },
 
   cleanup: function($super) {
@@ -117,6 +128,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("theme", Mojo.Event.propertyChange, this.setTheme)
     // this.controller.stopListening("debug", Mojo.Event.propertyChange, this.setDebugging)
     this.controller.stopListening("mark-read-scroll", Mojo.Event.propertyChange, this.setMarkReadScroll)
+    this.controller.stopListening("notification-interval", Mojo.Event.propertyChange, this.setNotificationInterval)
   },
 
   setAllowLandscape: function() {
@@ -154,6 +166,10 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
   setTheme: function($super) {
     Preferences.setTheme(this.theme.value)
     $super()
+  },
+
+  setNotificationInterval: function() {
+    Preferences.setNotificationInterval(this.notificationInterval.value)
   },
 
   setDebugging: function() {
