@@ -90,19 +90,19 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.controller.setupWidget("mark-read-scroll", {}, this.markReadScroll)
     this.controller.listen("mark-read-scroll", Mojo.Event.propertyChange, this.setMarkReadScroll = this.setMarkReadScroll.bind(this))
 
-    $("header").update($L("Preferences"))
-    $("general-label").update($L("General"))
-    $("landscape-label").update($L("Allow landscape"))
-    $("feeds-label").update($L("Feeds"))
-    $("hide-read-feeds-label").update($L("Hide read feeds"))
-    $("back-after-mark-read-label").update($L("Go back after mark all read"))
-    $("articles-label").update($L("Articles"))
-    $("hide-read-articles-label").update($L("Hide read articles"))
-    $("folders-label").update($L("Folders"))
-    $("combine-articles-label").update($L("Combine articles"))
-    // $("debug-label").update($L("Debug"))
-    // $("debug-log-label").update($L("Debug Log"))
-    $("mark-read-scroll-label").update($L("Mark read as you scroll"))
+    this.controller.get("header").update($L("Preferences"))
+    this.controller.get("general-label").update($L("General"))
+    this.controller.get("landscape-label").update($L("Allow landscape"))
+    this.controller.get("feeds-label").update($L("Feeds"))
+    this.controller.get("hide-read-feeds-label").update($L("Hide read feeds"))
+    this.controller.get("back-after-mark-read-label").update($L("Go back after mark all read"))
+    this.controller.get("articles-label").update($L("Articles"))
+    this.controller.get("hide-read-articles-label").update($L("Hide read articles"))
+    this.controller.get("folders-label").update($L("Folders"))
+    this.controller.get("combine-articles-label").update($L("Combine articles"))
+    // this.controller.get("debug-label").update($L("Debug"))
+    // this.controller.get("debug-log-label").update($L("Debug Log"))
+    this.controller.get("mark-read-scroll-label").update($L("Mark read as you scroll"))
   },
 
   cleanup: function($super) {
@@ -151,16 +151,9 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     Preferences.setManualFeedSort(this.feedSortOrder.value == "manual")
   },
 
-  setTheme: function() {
+  setTheme: function($super) {
     Preferences.setTheme(this.theme.value)
-
-    $w(document.body.className).each(function(className) {
-      if(className.startsWith("theme-")) {
-        $(document.body).removeClassName(className)
-      }
-    })
-
-    $(document.body).addClassName("theme-" + Preferences.getTheme())
+    $super()
   },
 
   setDebugging: function() {

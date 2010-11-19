@@ -18,7 +18,7 @@ var AppAssistant = Class.create({
       else {
         this.controller.createStageWithCallback(
           {name: this.mainStageName, lightweight: true}, 
-          function(stageController){stageController.pushScene("first")}, 
+          function(stageController){stageController.pushScene("login")}, 
           "card"
         )
       }

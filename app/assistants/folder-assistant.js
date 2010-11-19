@@ -70,7 +70,7 @@ var FolderAssistant = Class.create(BaseAssistant, {
     }
 
     if(itemModel.unreadCount) {
-      $(itemNode).addClassName("unread")
+      itemNode.addClassName("unread")
     }
   },
 

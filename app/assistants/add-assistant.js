@@ -14,14 +14,14 @@ var AddAssistant = Class.create(BaseAssistant, {
 		this.controller.listen("url", Mojo.Event.propertyChange, this.propertyChanged = this.propertyChanged.bind(this))
     this.controller.listen("add", Mojo.Event.tap, this.add = this.add.bind(this))
 
-    $("header").update($L("Add Subscription"))
-    $("url-label").update($L("URL"))
-    $("error-message").update($L("Unable to add subscription"))
+    this.controller.get("header").update($L("Add Subscription"))
+    this.controller.get("url-label").update($L("URL"))
+    this.controller.get("error-message").update($L("Unable to add subscription"))
   },
 
   activate: function($super) {
     $super()
-    $("url").mojo.setConsumesEnterKey(false)
+    this.controller.get("url").mojo.setConsumesEnterKey(false)
   },
 
   cleanup: function($super) {
@@ -38,8 +38,8 @@ var AddAssistant = Class.create(BaseAssistant, {
   },
 
   add: function() {
-    $("add").mojo.disabled = true
-    $("add").mojo.activate()
+    this.controller.get("add").mojo.disabled = true
+    this.controller.get("add").mojo.activate()
     this.controller.modelChanged(this.button)
     this.api.addSubscription(this.url.value, this.subscriptionAddSuccess.bind(this), this.subscriptionAddFailure.bind(this))
   },
@@ -49,9 +49,9 @@ var AddAssistant = Class.create(BaseAssistant, {
   },
 
   subscriptionAddFailure: function() {
-    $("add-failure").show()
-    $("add").mojo.disabled = false
-    $("add").mojo.deactivate()
+    this.controller.get("add-failure").show()
+    this.controller.get("add").mojo.disabled = false
+    this.controller.get("add").mojo.deactivate()
     this.controller.modelChanged(this.button)
   }
 })

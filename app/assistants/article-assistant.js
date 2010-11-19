@@ -116,7 +116,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
     ]
 
     this.controller.popupSubmenu({
-      placeNear: $("sendto"),
+      placeNear: this.controller.get("sendto"),
       items: items,
 
       onChoose: function(command) {
