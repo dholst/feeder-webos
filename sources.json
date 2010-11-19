@@ -24,7 +24,7 @@
   {"source": "app/lib/ajax.js"},
   {"source": "app/lib/log.js"},
 
-  {"source": "app/assistants/stage-assistant.js"},
+  {"source": "app/assistants/app-assistant.js"},
   {"source": "app/assistants/base-assistant.js"},
   {"source": "app/assistants/debug-assistant.js"},
   {"source": "app/assistants/add-assistant.js"},

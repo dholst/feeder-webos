@@ -8,6 +8,13 @@ var LoginAssistant = Class.create(BaseAssistant, {
     this.hideLogout = true
   },
 
+  setup: function($super) {
+    $super()
+
+    Log.debug("sending metrix data")
+    Feeder.Metrix.postDeviceData()
+  },
+    
   activate: function($super, changes) {
     $super(changes)
 

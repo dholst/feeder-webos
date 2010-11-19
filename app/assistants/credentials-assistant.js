@@ -13,9 +13,9 @@ var CredentialsAssistant = Class.create(BaseAssistant, {
     this.setupWidgets()
     this.setupListeners()
 
-    $("email-label").update($L("Email"))
-    $("password-label").update($L("Password"))
-    $("error-message").update($L("Login failed. Try again."))
+    this.controller.update("email-label", $L("Email"))
+    this.controller.update("password-label", $L("Password"))
+    this.controller.update("error-message", $L("Login failed. Try again."))
   },
 
   activate: function($super, changes) {

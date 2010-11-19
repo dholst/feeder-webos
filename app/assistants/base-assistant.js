@@ -4,6 +4,8 @@ var BaseAssistant = Class.create({
   },
 
   setup: function() {
+    this.controller.get(this.controller.getSceneScroller()).addClassName("theme-" + Preferences.getTheme())
+
     var appMenuItems = []
     appMenuItems.push(Mojo.Menu.editItem)
 
