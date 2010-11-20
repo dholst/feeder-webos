@@ -160,12 +160,9 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.markReadScroll)
     this.controller.listen("mark-read-scroll", Mojo.Event.propertyChange, this.setMarkReadScroll = this.setMarkReadScroll.bind(this))
 
-<<<<<<< HEAD
-=======
     this.controller.setupWidget("notification-interval", intervalChoices, this.notificationInterval)
     this.controller.listen("notification-interval", Mojo.Event.propertyChange, this.setNotificationInterval = this.setNotificationInterval.bind(this))
 
->>>>>>> master
     this.controller.get("header").update($L("Preferences"))
     this.controller.get("general-label").update($L("General"))
     this.controller.get("landscape-label").update($L("Allow landscape"))
@@ -179,10 +176,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     // this.controller.get("debug-label").update($L("Debug"))
     // this.controller.get("debug-log-label").update($L("Debug Log"))
     this.controller.get("mark-read-scroll-label").update($L("Mark read as you scroll"))
-<<<<<<< HEAD
-=======
     this.controller.get("notifications-label").update($L("Notifications"))
->>>>>>> master
   },
 
   cleanup: function($super) {
@@ -235,13 +229,10 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
   setTheme: function($super) {
     Preferences.setTheme(this.theme.value)
     $super()
-<<<<<<< HEAD
-=======
   },
 
   setNotificationInterval: function() {
     Preferences.setNotificationInterval(this.notificationInterval.value)
->>>>>>> master
   },
 
   setDebugging: function() {
@@ -297,7 +288,4 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     }
   }
 })
-<<<<<<< HEAD
-=======
 
->>>>>>> master
