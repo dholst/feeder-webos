@@ -108,6 +108,10 @@ Preferences = {
     this.setCookie(this.NOTIFICATIONS_INTERVAL, interval)
   },
 
+  wantsNotificationFor: function(id) {
+    return id.startsWith("feed/")
+  },
+
   getCookie: function(name, defaultValue) {
     var cookie = this.cookieFor(name)
 

@@ -13,6 +13,10 @@ var AppAssistant = Class.create({
 		var cardStageController = this.controller.getStageController(this.mainStageName)
 
 		if (parameters) {
+      if(parameters.action == "update") {
+        this.checkForUpdates()
+      }
+
 			this.setInterval()
 		}
 		else {
@@ -31,6 +35,26 @@ var AppAssistant = Class.create({
 			}
 		}
 	},
+
+  checkForUpdates: function() {
+    var self = this
+    var api = new Api()
+
+    api.login(new Credentials(), function() {
+      api.getUnreadCounts(function(counts) {
+        $A(counts).each(function(count) {
+          if(count.count && Preferences.wantsNotificationFor(count.id)) {
+            self.sendNotification()
+            throw $break
+          }
+        })
+      })
+    })
+  },
+
+  sendNotification: function() {
+    console.log("NOTIFY!!!!!!!!!")
+  },
 
 	setInterval: function(interval) {
 		if (Preferences.notificationInterval() == "00:00:00") {

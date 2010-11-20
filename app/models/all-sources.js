@@ -62,9 +62,13 @@ var AllSources = Class.create({
   nukedEmAll: function() {
     this.all.clearUnreadCount()
 
+    Log.debug("Marked EVERYTHING read")
+
     this.subscriptions.items.each(function(item) {
+      Log.debug("Marking " + item.id + " read")
+
       if(item.isFolder) {
-        item.subscriptions.each(function(subscription) {
+        item.subscriptions.items.each(function(subscription) {
           subscription.clearUnreadCount()
         })
 

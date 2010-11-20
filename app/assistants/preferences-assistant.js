@@ -118,7 +118,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
       },
       {
         label: $L("5 Minutes"),
-        value: "00:00:15"
+        value: "00:01:00"
       }]
     }
 
