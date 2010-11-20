@@ -27,6 +27,7 @@
   {"source": "app/assistants/app-assistant.js"},
   {"source": "app/assistants/base-assistant.js"},
   {"source": "app/assistants/debug-assistant.js"},
+  {"source": "app/assistants/dashboard-assistant.js"},
   {"source": "app/assistants/add-assistant.js"},
   {"source": "app/assistants/help-assistant.js"},
   {"source": "app/assistants/expired-assistant.js"},

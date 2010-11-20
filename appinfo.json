@@ -1,11 +1,11 @@
 {
-	"id": "com.semicolonapps.feeder.beta050",
-	"version": "0.5.0",
-	"vendor": "SemicolonApps",
-	"type": "web",
-	"main": "index.html",
-	"title": "Feeder (B4)",
-	"icon": "feeder_64.png",
-	"splashicon": "feeder_250.png",
+  "id": "com.semicolonapps.feeder.beta050",
+  "version": "0.5.0",
+  "vendor": "SemicolonApps",
+  "type": "web",
+  "main": "index.html",
+  "title": "Feeder (B4)",
+  "icon": "feeder_64.png",
+  "splashicon": "feeder_250.png",
   "noWindow": "true"
 }
