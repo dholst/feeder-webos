@@ -395,3 +395,6 @@ img.youtube-thumbnail {
   height: 216px;
 }
 
+.dashboard-icon-feeder {
+  background: url(../images/dashboard-icon-feeder.png);
+}

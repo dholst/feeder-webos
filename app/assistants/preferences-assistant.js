@@ -248,14 +248,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
       event.stop();
 
       if (this.originalNotificationInterval != Preferences.notificationInterval()) {
-        this.controller.serviceRequest("palm://com.palm.applicationManager", {
-          method: "open",
-
-          parameters: {
-            id: Mojo.appInfo.id,
-            params: {action: "notificationIntervalChange"}
-          }
-        })
+        Mojo.Controller.getAppController().assistant.handleLaunch({action: "notificationIntervalChange"})
       }
 
       changes = {}
@@ -286,10 +279,10 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
 
       if (this.originalTheme != Preferences.getTheme()) {
         changes.themeChanged = true
-      }
-
+      } 
+      
       this.controller.stageController.popScene(changes)
-    }
+    } 
     else {
       $super(event)
     }

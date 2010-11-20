@@ -1,6 +1,7 @@
 var AppAssistant = Class.create({
 	initialize: function() {
 		this.mainStageName = "MainStage"
+    this.dashboardStageName = "DashboardStage"
 	},
 
 	setup: function() {
@@ -17,21 +18,18 @@ var AppAssistant = Class.create({
         this.checkForUpdates()
       }
 
-			this.setInterval()
+			this.setInterval(parameters.action == "notificationIntervalChange")
 		}
 		else {
 			if (cardStageController) {
 				cardStageController.activate()
 			}
 			else {
-				this.controller.createStageWithCallback({
-					name: this.mainStageName,
-					lightweight: true
-				},
-				function(stageController) {
-					stageController.pushScene("login")
-				},
-				"card")
+				this.controller.createStageWithCallback(
+          {name: this.mainStageName, lightweight: true},
+				  function(stageController) {stageController.pushScene("login")},
+				  "card"
+        )
 			}
 		}
 	},
@@ -42,22 +40,41 @@ var AppAssistant = Class.create({
 
     api.login(new Credentials(), function() {
       api.getUnreadCounts(function(counts) {
+        var unreadCount = 0
+
         $A(counts).each(function(count) {
           if(count.count && Preferences.wantsNotificationFor(count.id)) {
-            self.sendNotification()
-            throw $break
+            unreadCount += count.count
           }
         })
+
+        if(unreadCount) {
+          self.sendNotification(unreadCount)
+        }
       })
     })
   },
 
-  sendNotification: function() {
-    console.log("NOTIFY!!!!!!!!!")
+  sendNotification: function(unreadCount) {
+    var appController = Mojo.Controller.getAppController()
+    var dashboardStage = appController.getStageProxy(this.dashboardStageName)
+
+    if(dashboardStage) {
+      dashboardStage.delegateToSceneAssistant("updateDashboard", unreadCount)
+    }
+    else {
+      appController.createStageWithCallback(
+        {name: this.dashboardStageName, lightweight: true},
+        function(stageController){stageController.pushScene("dashboard", unreadCount)},
+        "dashboard"
+      )
+    }
   },
 
-	setInterval: function(interval) {
-		if (Preferences.notificationInterval() == "00:00:00") {
+	setInterval: function(changed) {
+    var self = this
+
+		if (Preferences.notificationInterval() == "00:00:00" || changed) {
 			new Mojo.Service.Request("palm://com.palm.power/timeout", {
 				method: "clear",
 
@@ -66,8 +83,13 @@ var AppAssistant = Class.create({
 				}
 			})
 		}
-		else {
-			this.wakeupRequest = new Mojo.Service.Request("palm://com.palm.power/timeout", {
+
+		if (Preferences.notificationInterval() != "00:00:00") {
+      if(!self.wakeupRequest) {
+        self.checkForUpdates()
+      }
+        
+			self.wakeupRequest = new Mojo.Service.Request("palm://com.palm.power/timeout", {
 				method: "set",
 
 				parameters: {
