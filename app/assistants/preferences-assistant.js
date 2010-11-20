@@ -112,14 +112,15 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     }
 
     var intervalChoices = {
-      choices: [{
-        label: $L("Off"),
-        value: "00:00:00"
-      },
-      {
-        label: $L("5 Minutes"),
-        value: "00:01:00"
-      }]
+      choices: [
+        {label: $L("Off"), value: "00:00:00"},
+        {label: $L("5 Minutes"), value: "00:05:00"},
+        {label: $L("15 Minutes"), value: "00:15:00"},
+        {label: $L("30 Minutes"), value: "00:30:00"},
+        {label: $L("1 Hour"), value: "01:00:00"},
+        {label: $L("4 Hours"), value: "04:00:00"},
+        {label: $L("8 Hours"), value: "08:00:00"}
+      ]
     }
 
     this.controller.setupWidget("allow-landscape", {},
