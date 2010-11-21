@@ -110,6 +110,14 @@ Preferences = {
     this.setCookie(this.NOTIFICATIONS_INTERVAL, interval)
   },
 
+  getWatchedFeeds: function() {
+    return this.getCookie(this.NOTIFICATIONS_FEEDS, [])
+  },
+
+  setWatchedFeeds: function(feeds) {
+    this.setCookie(this.NOTIFICATIONS_FEEDS, feeds)
+  },
+
   anyOrSelectedFeedsForNotifications: function() {
     return this.getCookie(this.ANY_OR_SELECTED_FEEDS, "any")
   },
@@ -119,26 +127,24 @@ Preferences = {
   },
 
   wantsNotificationFor: function(id) {
-    var feeds = getCookie(this.NOTIFICATIONS_FEEDS, [])
-
-    if(feeds.length == 0) {
+    if(this.anyOrSelectedFeedsForNotifications() == "any") {
       return id.startsWith("feed/")
     }
     else {
-      return feeds.any(function(n) {return n == id})
+      return this.getWatchedFeeds().any(function(n) {return n == id})
     }
   },
 
   addNotificationFeed: function(feed) {
-    var feeds = getCookie(this.NOTIFICATIONS_FEEDS, [])
+    var feeds = this.getWatchedFeeds()
     feeds.push(feed)
-    setCookie(this.NOTIFICATIONS_FEEDS, feeds)
+    this.setWatchedFeeds(feeds)
   },
 
   removeNotificationFeed: function(feed) {
-    var feeds = getCookie(this.NOTIFICATIONS_FEEDS, [])
+    var feeds = this.getWatchedFeeds()
     feeds = feeds.reject(function(n) {return n == feed})
-    setCookie(this.NOTIFICATIONS_FEEDS, feeds)
+    this.setWatchedFeeds(feeds)
   },
 
   getCookie: function(name, defaultValue) {
