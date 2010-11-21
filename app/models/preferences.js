@@ -11,6 +11,8 @@ Preferences = {
   DEBUG: "debug",
   MARK_READ_SCROLL: "mark-read-scroll",
   NOTIFICATIONS_INTERVAL: "notifications-interval",
+  NOTIFICATIONS_FEEDS: "m-notifications-feeds",
+  ANY_OR_SELECTED_FEEDS: "n-any-or-selected-feeds",
 
   isOldestFirst: function() {
     return this.getCookie(this.OLDEST_FIRST, false)
@@ -108,8 +110,35 @@ Preferences = {
     this.setCookie(this.NOTIFICATIONS_INTERVAL, interval)
   },
 
+  anyOrSelectedFeedsForNotifications: function() {
+    return this.getCookie(this.ANY_OR_SELECTED_FEEDS, "any")
+  },
+
+  setAnyOrSelectedFeedsForNotification: function(value) {
+    this.setCookie(this.ANY_OR_SELECTED_FEEDS, value)
+  },
+
   wantsNotificationFor: function(id) {
-    return id.startsWith("feed/")
+    var feeds = getCookie(this.NOTIFICATIONS_FEEDS, [])
+
+    if(feeds.length == 0) {
+      return id.startsWith("feed/")
+    }
+    else {
+      return feeds.any(function(n) {return n == id})
+    }
+  },
+
+  addNotificationFeed: function(feed) {
+    var feeds = getCookie(this.NOTIFICATIONS_FEEDS, [])
+    feeds.push(feed)
+    setCookie(this.NOTIFICATIONS_FEEDS, feeds)
+  },
+
+  removeNotificationFeed: function(feed) {
+    var feeds = getCookie(this.NOTIFICATIONS_FEEDS, [])
+    feeds = feeds.reject(function(n) {return n == feed})
+    setCookie(this.NOTIFICATIONS_FEEDS, feeds)
   },
 
   getCookie: function(name, defaultValue) {

@@ -39,7 +39,7 @@ var BaseAssistant = Class.create({
 
   readytoactivate: function() {
   },
-  
+
   aboutToActivate: function(callback) {
     callback.defer()
   },
@@ -120,7 +120,7 @@ var BaseAssistant = Class.create({
 
   setTheme: function() {
     var body = this.controller.sceneElement.up('.palm-default')
-    
+
     $w(body.className).each(function(className) {
       if(className.startsWith("theme-")) {
         body.removeClassName(className)

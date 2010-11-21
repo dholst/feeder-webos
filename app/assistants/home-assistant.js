@@ -3,6 +3,7 @@ var HomeAssistant = Class.create(BaseAssistant, {
     $super()
     this.api = api
     this.sources = sources || new AllSources(api)
+    BaseAssistant.sources = this.sources
     this.loaded = loaded
     this.showAddSubscription = true
   },

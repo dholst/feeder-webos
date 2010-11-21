@@ -3,167 +3,110 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     $super()
     this.hidePreferences = true
 
-    this.allowLandscape = {
-      value: Preferences.allowLandscape()
-    }
+    this.sortChoices = {choices: [
+      {label: $L("Sort newest first"), value: "newest"},
+      {label: $L("Sort oldest first"), value: "oldest"}
+    ]}
+
+    this.fontSizeChoices = {choices: [
+      {label: $L("Small Font"), value: "small"},
+      {label: $L("Medium Font"), value: "medium"},
+      {label: $L("Large Font"), value: "large"}
+    ]}
+
+    this.feedSortChoices = {choices: [
+      {label: $L("Sort alphabetically"), value: "alphabetical"},
+      {label: $L("Sort manually"), value: "manual"}
+    ]}
+
+    this.themeChoices = {choices: [
+      {label: $L("Grey Theme"), value: "grey"},
+      {label: $L("Light Theme"), value: "light"}
+    ]}
+
+    this.intervalChoices = {choices: [
+      {label: $L("Off"), value: "00:00:00"},
+      {label: $L("5 Minutes"), value: "00:05:00"},
+      {label: $L("15 Minutes"), value: "00:15:00"},
+      {label: $L("30 Minutes"), value: "00:30:00"},
+      {label: $L("1 Hour"), value: "01:00:00"},
+      {label: $L("4 Hours"), value: "04:00:00"},
+      {label: $L("8 Hours"), value: "08:00:00"}
+    ]}
+
+    this.notificationFeedsChoices = {choices: [
+      {label: $L("Any feed"), value: "any"},
+      {label: $L("Selected feeds"), value: "selected"}
+    ]}
+
+    this.allowLandscape = {value: Preferences.allowLandscape()}
+    this.sortOrder = {value: (Preferences.isOldestFirst() ? "oldest": "newest")}
+    this.hideReadFeeds = {value: Preferences.hideReadFeeds()}
+    this.hideReadArticles = {value: Preferences.hideReadArticles()}
+    this.backAfterMarkRead = {value: Preferences.goBackAfterMarkAsRead()}
+    this.fontSize = {value: Preferences.fontSize()}
+    this.combineFolders = {value: Preferences.combineFolders()}
+    this.feedSortOrder = {value: (Preferences.isManualFeedSort() ? "manual": "alphabetical")}
+    this.theme = {value: Preferences.getTheme()}
+    this.debug = {value: Preferences.isDebugging()}
+    this.markReadScroll = {value: Preferences.markReadAsScroll()}
+    this.notificationInterval = {value: Preferences.notificationInterval()}
+    this.notificationFeeds = {value: Preferences.anyOrSelectedFeedsForNotifications()}
+    this.notificationFeedSelection = {buttonLabel: $L("Select Feeds")}
+    
     this.originalAllowLandscape = Preferences.allowLandscape()
-
-    this.sortOrder = {
-      value: (Preferences.isOldestFirst() ? "oldest": "newest")
-    }
     this.originalSortOrder = Preferences.isOldestFirst()
-
-    this.hideReadFeeds = {
-      value: Preferences.hideReadFeeds()
-    }
     this.originalHideReadFeeds = Preferences.hideReadFeeds()
-
-    this.hideReadArticles = {
-      value: Preferences.hideReadArticles()
-    }
     this.originalHideReadArticles = Preferences.hideReadArticles()
-
-    this.backAfterMarkRead = {
-      value: Preferences.goBackAfterMarkAsRead()
-    }
-
-    this.fontSize = {
-      value: Preferences.fontSize()
-    }
     this.originalFontSize = Preferences.fontSize()
-
-    this.combineFolders = {
-      value: Preferences.combineFolders()
-    }
-
-    this.feedSortOrder = {
-      value: (Preferences.isManualFeedSort() ? "manual": "alphabetical")
-    }
     this.originalFeedSortOrder = Preferences.isManualFeedSort()
-
-    this.theme = {
-      value: Preferences.getTheme()
-    }
     this.originalTheme = Preferences.getTheme()
-
-    this.debug = {
-      value: Preferences.isDebugging()
-    }
-
-    this.markReadScroll = {
-      value: Preferences.markReadAsScroll()
-    }
-
-    this.notificationInterval = {
-      value: Preferences.notificationInterval()
-    }
     this.originalNotificationInterval = Preferences.notificationInterval()
   },
 
   setup: function($super) {
     $super()
+    this.setupWidgets()
+    this.addListeners()
+    this.updateLabels()
+    this.showAndHideStuff()
+  },
 
-    var sortChoices = {
-      choices: [{
-        label: $L("Sort newest first"),
-        value: "newest"
-      },
-      {
-        label: $L("Sort oldest first"),
-        value: "oldest"
-      }]
-    }
-
-    var fontSizeChoices = {
-      choices: [{
-        label: $L("Small Font"),
-        value: "small"
-      },
-      {
-        label: $L("Medium Font"),
-        value: "medium"
-      },
-      {
-        label: $L("Large Font"),
-        value: "large"
-      }]
-    }
-
-    var feedSortChoices = {
-      choices: [{
-        label: $L("Sort alphabetically"),
-        value: "alphabetical"
-      },
-      {
-        label: $L("Sort manually"),
-        value: "manual"
-      }]
-    }
-
-    var themeChoices = {
-      choices: [{
-        label: $L("Grey Theme"),
-        value: "grey"
-      },
-      {
-        label: $L("Light Theme"),
-        value: "light"
-      }]
-    }
-
-    var intervalChoices = {
-      choices: [
-        {label: $L("Off"), value: "00:00:00"},
-        {label: $L("5 Minutes"), value: "00:05:00"},
-        {label: $L("15 Minutes"), value: "00:15:00"},
-        {label: $L("30 Minutes"), value: "00:30:00"},
-        {label: $L("1 Hour"), value: "01:00:00"},
-        {label: $L("4 Hours"), value: "04:00:00"},
-        {label: $L("8 Hours"), value: "08:00:00"}
-      ]
-    }
-
-    this.controller.setupWidget("allow-landscape", {},
-    this.allowLandscape)
-    this.controller.listen("allow-landscape", Mojo.Event.propertyChange, this.setAllowLandscape = this.setAllowLandscape.bind(this))
-
-    this.controller.setupWidget("article-sort", sortChoices, this.sortOrder)
-    this.controller.listen("article-sort", Mojo.Event.propertyChange, this.setSortOrder = this.setSortOrder.bind(this))
-
-    this.controller.setupWidget("font-size", fontSizeChoices, this.fontSize)
-    this.controller.listen("font-size", Mojo.Event.propertyChange, this.setFontSize = this.setFontSize.bind(this))
-
-    this.controller.setupWidget("hide-read-feeds", {},
-    this.hideReadFeeds)
-    this.controller.listen("hide-read-feeds", Mojo.Event.propertyChange, this.setHideReadFeeds = this.setHideReadFeeds.bind(this))
-
-    this.controller.setupWidget("hide-read-articles", {},
-    this.hideReadArticles)
-    this.controller.listen("hide-read-articles", Mojo.Event.propertyChange, this.setHideReadArticles = this.setHideReadArticles.bind(this))
-
-    this.controller.setupWidget("back-after-mark-read", {},
-    this.backAfterMarkRead)
-    this.controller.listen("back-after-mark-read", Mojo.Event.propertyChange, this.setBackAfterMarkRead = this.setBackAfterMarkRead.bind(this))
-
-    this.controller.setupWidget("combine-folders", {},
-    this.combineFolders)
-    this.controller.listen("combine-folders", Mojo.Event.propertyChange, this.setCombineFolders = this.setCombineFolders.bind(this))
-
-    this.controller.setupWidget("feed-sort", feedSortChoices, this.feedSortOrder)
-    this.controller.listen("feed-sort", Mojo.Event.propertyChange, this.setFeedSortOrder = this.setFeedSortOrder.bind(this))
-
-    this.controller.setupWidget("theme", themeChoices, this.theme)
-    this.controller.listen("theme", Mojo.Event.propertyChange, this.setTheme = this.setTheme.bind(this))
-
+  setupWidgets: function() {
+    this.controller.setupWidget("allow-landscape", {}, this.allowLandscape)
+    this.controller.setupWidget("article-sort", this.sortChoices, this.sortOrder)
+    this.controller.setupWidget("font-size", this.fontSizeChoices, this.fontSize)
+    this.controller.setupWidget("hide-read-feeds", {}, this.hideReadFeeds)
+    this.controller.setupWidget("hide-read-articles", {}, this.hideReadArticles)
+    this.controller.setupWidget("back-after-mark-read", {}, this.backAfterMarkRead)
+    this.controller.setupWidget("combine-folders", {}, this.combineFolders)
+    this.controller.setupWidget("feed-sort", this.feedSortChoices, this.feedSortOrder)
+    this.controller.setupWidget("theme", this.themeChoices, this.theme)
     // this.controller.setupWidget("debug", {}, this.debug)
+    this.controller.setupWidget("mark-read-scroll", {}, this.markReadScroll)
+    this.controller.setupWidget("notification-interval", this.intervalChoices, this.notificationInterval)
+    this.controller.setupWidget("notification-feeds", this.notificationFeedsChoices, this.notificationFeeds)
+    this.controller.setupWidget("notification-feed-selection", {}, this.notificationFeedSelection)
+  },
+
+  addListeners: function() {
+    this.controller.listen("back-after-mark-read", Mojo.Event.propertyChange, this.setBackAfterMarkRead = this.setBackAfterMarkRead.bind(this))
+    this.controller.listen("hide-read-articles", Mojo.Event.propertyChange, this.setHideReadArticles = this.setHideReadArticles.bind(this))
+    this.controller.listen("hide-read-feeds", Mojo.Event.propertyChange, this.setHideReadFeeds = this.setHideReadFeeds.bind(this))
+    this.controller.listen("font-size", Mojo.Event.propertyChange, this.setFontSize = this.setFontSize.bind(this))
+    this.controller.listen("article-sort", Mojo.Event.propertyChange, this.setSortOrder = this.setSortOrder.bind(this))
+    this.controller.listen("allow-landscape", Mojo.Event.propertyChange, this.setAllowLandscape = this.setAllowLandscape.bind(this))
+    this.controller.listen("combine-folders", Mojo.Event.propertyChange, this.setCombineFolders = this.setCombineFolders.bind(this))
+    this.controller.listen("feed-sort", Mojo.Event.propertyChange, this.setFeedSortOrder = this.setFeedSortOrder.bind(this))
+    this.controller.listen("theme", Mojo.Event.propertyChange, this.setTheme = this.setTheme.bind(this))
     // this.controller.listen("debug", Mojo.Event.propertyChange, this.setDebugging = this.setDebugging.bind(this))
-    this.controller.setupWidget("mark-read-scroll", {},
-    this.markReadScroll)
     this.controller.listen("mark-read-scroll", Mojo.Event.propertyChange, this.setMarkReadScroll = this.setMarkReadScroll.bind(this))
-
-    this.controller.setupWidget("notification-interval", intervalChoices, this.notificationInterval)
     this.controller.listen("notification-interval", Mojo.Event.propertyChange, this.setNotificationInterval = this.setNotificationInterval.bind(this))
+    this.controller.listen("notification-feeds", Mojo.Event.propertyChange, this.setNotificationFeeds = this.setNotificationFeeds.bind(this))
+    this.controller.listen("notification-feed-selection", Mojo.Event.tap, this.selectFeeds = this.selectFeeds.bind(this))
+  },
 
+  updateLabels: function() {
     this.controller.get("header").update($L("Preferences"))
     this.controller.get("general-label").update($L("General"))
     this.controller.get("landscape-label").update($L("Allow landscape"))
@@ -193,6 +136,31 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     // this.controller.stopListening("debug", Mojo.Event.propertyChange, this.setDebugging)
     this.controller.stopListening("mark-read-scroll", Mojo.Event.propertyChange, this.setMarkReadScroll)
     this.controller.stopListening("notification-interval", Mojo.Event.propertyChange, this.setNotificationInterval)
+    this.controller.stopListening("notification-feeds", Mojo.Event.propertyChange, this.setNotificationFeeds)
+    this.controller.stopListening("notification-feed-selection", Mojo.Event.tap, this.selectFeeds)
+  },
+
+  showAndHideStuff: function() {
+    if(Preferences.notificationInterval() == "00:00:00") {
+      this.controller.get("notification-feeds-row").hide()
+      this.controller.get("notification-feed-selection-row").hide()
+      this.controller.get("notifications-row").addClassName("last")
+    }
+    else {
+      this.controller.get("notification-feeds-row").show()
+      this.controller.get("notifications-row").removeClassName("last")
+      this.controller.get("notification-feeds-row").addClassName("last")
+
+      if(Preferences.anyOrSelectedFeedsForNotifications() == "any") {
+        this.controller.get("notification-feeds-row").addClassName("last")
+        this.controller.get("notification-feed-selection-row").hide()
+      }
+      else {
+        this.controller.get("notification-feeds-row").removeClassName("last")
+        this.controller.get("notification-feed-selection-row").show()
+        this.controller.get("notification-feed-selection-row").addClassName("last")
+      }
+    }
   },
 
   setAllowLandscape: function() {
@@ -234,6 +202,14 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
 
   setNotificationInterval: function() {
     Preferences.setNotificationInterval(this.notificationInterval.value)
+    this.showAndHideStuff()
+    this.controller.getSceneScroller().mojo.revealBottom()
+  },
+
+  setNotificationFeeds: function() {
+    Preferences.setAnyOrSelectedFeedsForNotification(this.notificationFeeds.value)
+    this.showAndHideStuff()
+    this.controller.getSceneScroller().mojo.revealBottom()
   },
 
   setDebugging: function() {
@@ -242,6 +218,10 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
 
   setMarkReadScroll: function() {
     Preferences.setMarkReadAsScroll(this.markReadScroll.value)
+  },
+
+  selectFeeds: function() {
+    this.controller.stageController.pushScene("notification-feeds")
   },
 
   handleCommand: function($super, event) {
@@ -254,33 +234,13 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
 
       changes = {}
 
-      if (this.originalAllowLandscape != Preferences.allowLandscape()) {
-        changes.allowLandscapeChanged = true
-      }
-
-      if (this.originalSortOrder != Preferences.isOldestFirst()) {
-        changes.sortOrderChanged = true
-      }
-
-      if (this.originalHideReadFeeds != Preferences.hideReadFeeds()) {
-        changes.hideReadFeedsChanged = true
-      }
-
-      if (this.originalHideReadArticles != Preferences.hideReadArticles()) {
-        changes.hideReadArticlesChanged = true
-      }
-
-      if (this.originalFontSize != Preferences.fontSize()) {
-        changes.fontSizeChanged = true
-      }
-
-      if (this.originalFeedSortOrder != Preferences.isManualFeedSort()) {
-        changes.feedSortOrderChanged = true
-      }
-
-      if (this.originalTheme != Preferences.getTheme()) {
-        changes.themeChanged = true
-      } 
+      if (this.originalAllowLandscape != Preferences.allowLandscape()) changes.allowLandscapeChanged = true
+      if (this.originalSortOrder != Preferences.isOldestFirst()) changes.sortOrderChanged = true
+      if (this.originalHideReadFeeds != Preferences.hideReadFeeds()) changes.hideReadFeedsChanged = true
+      if (this.originalHideReadArticles != Preferences.hideReadArticles()) changes.hideReadArticlesChanged = true
+      if (this.originalFontSize != Preferences.fontSize()) changes.fontSizeChanged = true
+      if (this.originalFeedSortOrder != Preferences.isManualFeedSort()) changes.feedSortOrderChanged = true
+      if (this.originalTheme != Preferences.getTheme()) changes.themeChanged = true 
       
       this.controller.stageController.popScene(changes)
     } 

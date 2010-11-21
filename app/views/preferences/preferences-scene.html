@@ -89,9 +89,19 @@
   <div class="palm-group">
     <div id="notifications-label" class="palm-group-title" x-mojo-loc=''>Notifications</div>
     <div class="palm-list">
-      <div class="palm-row single">
+      <div id="notifications-row" class="palm-row first last">
         <div class="palm-row-wrapper">
           <div id="notification-interval" x-mojo-element="ListSelector"></div>
+        </div>
+      </div>
+      <div id="notification-feeds-row" class="palm-row" style="display: none;">
+        <div class="palm-row-wrapper">
+          <div id="notification-feeds" x-mojo-element="ListSelector"></div>
+        </div>
+      </div>
+      <div id="notification-feed-selection-row" class="palm-row" style="display: none;">
+        <div class="palm-row-wrapper">
+          <div x-mojo-element="Button" id="notification-feed-selection"></div>
         </div>
       </div>
     </div>
