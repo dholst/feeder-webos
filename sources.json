@@ -37,5 +37,6 @@
   {"source": "app/assistants/home-assistant.js"},
   {"source": "app/assistants/articles-assistant.js"},
   {"source": "app/assistants/article-assistant.js"},
+  {"source": "app/assistants/notification-feeds-assistant.js"},
   {"source": "app/assistants/folder-assistant.js"}
 ]

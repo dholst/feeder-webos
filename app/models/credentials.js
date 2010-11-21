@@ -1,6 +1,6 @@
 var Credentials = Class.create({
   initialize: function() {
-    this.email = this.emailCookie().get()
+    this.email = this.emailCookie().get() 
     this.password = this.passwordCookie().get()
   },
 
