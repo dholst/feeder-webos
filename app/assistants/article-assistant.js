@@ -347,13 +347,13 @@ var ArticleAssistant = Class.create(BaseAssistant, {
   addLoadImage: function() {
     this.loadImage = this.loadImage.bind(this)
 
-    $$("#summary img").each(function(img) {
+    $A(this.controller.sceneElement.querySelectorAll("#summary img")).each(function(img) {
       img.observe(Mojo.Event.hold, this.loadImage)
     }.bind(this))
   },
 
   removeLoadImage: function() {
-    $$("#summary img").each(function(img) {
+    $A(this.controller.sceneElement.querySelectorAll("#summary img")).each(function(img) {
       img.stopObserving(Mojo.Event.hold, this.loadImage)
     }.bind(this))
   },
@@ -361,13 +361,13 @@ var ArticleAssistant = Class.create(BaseAssistant, {
   addVideoClick: function() {
     this.videoClick = this.videoClick.bind(this)
 
-    $$("div.youtube-play").each(function(link) {
+    $A(this.controller.sceneElement.querySelectorAll("div.youtube-play")).each(function(link) {
       link.observe('click' , this.videoClick)
     }.bind(this))
   },
 
   removeVideoClick: function() {
-    $$("div.youtube-play").each(function(link) {
+    $A(this.controller.sceneElement.querySelectorAll("div.youtube-play")).each(function(link) {
       link.stopObserving('click' , this.videoClick)
     }.bind(this))
   },
@@ -412,7 +412,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
     this.onDragEnd = this.onDragEnd.bind(this)
     this.onMouseUp = this.onMouseUp.bind(this)
 
-    $$("#summary a").each(function(anchor) {
+    $A(this.controller.sceneElement.querySelectorAll("#summary a")).each(function(anchor) {
       anchor.observe('click' , this.anchorTap)
     }.bind(this))
 
@@ -424,7 +424,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
   },
 
   removeAnchorFix: function() {
-    $$("#summary a").each(function(anchor) {
+    $A(this.controller.sceneElement.querySelectorAll("#summary a")).each(function(anchor) {
       anchor.stopObserving('click' , this.anchorTap)
     }.bind(this))
 
