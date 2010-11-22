@@ -26,6 +26,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
 
     this.intervalChoices = {choices: [
       {label: $L("Off"), value: "00:00:00"},
+      //{label: $L("30 Seconds"), value: "00:00:30"},
       {label: $L("5 Minutes"), value: "00:05:00"},
       {label: $L("15 Minutes"), value: "00:15:00"},
       {label: $L("30 Minutes"), value: "00:30:00"},

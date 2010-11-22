@@ -60,8 +60,6 @@ var Api = Class.create({
         v: sortOrder
       }
 
-      console.log(Object.toJSON(parameters))
-
       new Ajax.Request(Api.BASE_URL + "preference/stream/set", {
         method: "post",
         parameters: parameters,
