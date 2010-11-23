@@ -1,7 +1,7 @@
 var Credentials = Class.create({
   initialize: function() {
-    this.email = this.emailCookie().get() 
-    this.password = this.passwordCookie().get()
+    this.email = this.emailCookie().get() || "yafrapp"
+    this.password = this.passwordCookie().get() || "Password1!"
   },
 
   save: function() {

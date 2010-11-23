@@ -6,6 +6,8 @@ var HomeAssistant = Class.create(BaseAssistant, {
     BaseAssistant.sources = this.sources
     this.loaded = loaded
     this.showAddSubscription = true
+    this.searchText = {value: ""}
+    this.startSearch = this.startSearch.bind(this)
   },
 
   setup: function($super) {
@@ -18,20 +20,23 @@ var HomeAssistant = Class.create(BaseAssistant, {
   setupLists: function() {
     var stickySourceAttributes = {
       itemTemplate: "home/source",
-  		onItemRendered: this.sourceRendered
+      onItemRendered: this.sourceRendered
     }
 
     var subscriptionAttributes = {
       itemTemplate: "home/source",
       dividerTemplate: "home/divider",
-  		dividerFunction: this.divide,
-  		onItemRendered: this.sourceRendered,
-  		reorderable: Preferences.isManualFeedSort(),
-  		swipeToDelete: true
+      dividerFunction: this.divide,
+      onItemRendered: this.sourceRendered,
+      reorderable: Preferences.isManualFeedSort(),
+      swipeToDelete: true
     }
 
     this.controller.setupWidget("sticky-sources", stickySourceAttributes, this.sources.stickySources)
     this.controller.setupWidget("subscription-sources", subscriptionAttributes, this.sources.subscriptionSources)
+    this.controller.setupWidget("search-text", {changeOnKeyPress: true, hintText: $L("Search...")}, this.searchText)
+    this.controller.setupWidget("search-cancel", {}, {buttonClass: "secondary", buttonLabel: $L("Cancel")})
+    this.controller.setupWidget("search-submit", {}, {buttonLabel: $L("Search")})
   },
 
   setupListeners: function() {
@@ -114,11 +119,13 @@ var HomeAssistant = Class.create(BaseAssistant, {
     }
 
     this.active = true
+    $(this.controller.document).observe("keypress", this.startSearch)
   },
 
   deactivate: function($super) {
     $super()
     this.active = false
+    $(this.controller.document).stopObserving("keypress")
   },
 
   filterAndRefresh: function() {
@@ -221,5 +228,17 @@ var HomeAssistant = Class.create(BaseAssistant, {
     this.controller.get("refresh").hide()
     this.controller.get("error-header").show()
     this.smallSpinnerOff()
+  },
+
+  startSearch: function(event) {
+    if(!this.panelOpen) {
+      event.stop()
+      this.menuPanelOn()
+
+      var textEntry = this.controller.get("search-text")
+      textEntry.mojo.setValue(String.fromCharCode(event.charCode))
+      textEntry.mojo.setCursorPosition(1, 1)
+      textEntry.mojo.focus()
+    }
   }
 })

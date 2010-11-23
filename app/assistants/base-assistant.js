@@ -128,5 +128,48 @@ var BaseAssistant = Class.create({
     })
 
     body.addClassName("theme-" + Preferences.getTheme())
+  },
+
+  menuPanelOn: function() {
+    this.panelOpen = true
+    this.getMenuScrim().show()
+    this.getMenuPanel().show()
+    this.disableSceneScroller()
+  },
+
+  menuPanelOff: function() {
+    this.panelOpen = false
+    this.getMenuPanel().hide()
+    this.getMenuScrim().hide()
+    this.enableSceneScroller()
+  },
+
+  getMenuScrim: function() {
+    return this.controller.sceneElement.querySelector("div[x-mojo-menupanel-scrim]")
+  },
+
+  getMenuPanel: function() {
+    return this.controller.sceneElement.querySelector("div[x-mojo-menupanel]")
+  },
+
+  toggleMenuPanel: function() {
+    if(this.panelOpen) {
+      this.menuPanelOff()
+    }
+    else {
+      this.menuPanelOn()
+    }
+  },
+
+  disableSceneScroller: function() {
+    this.controller.listen(this.controller.sceneElement, Mojo.Event.dragStart, this.dragHandler)
+  },
+
+  dragHandler: function(event) {
+    event.stop() //prevents the scene from scrolling.
+  },
+
+  enableSceneScroller : function() {
+    this.controller.stopListening(this.controller.sceneElement, Mojo.Event.dragStart, this.dragHandler)
   }
 })
