@@ -292,6 +292,9 @@ var Api = Class.create({
         }
       )
     }
+    else {
+      success([], "", false)
+    }
   },
 
   mapSearchResults: function(response) {

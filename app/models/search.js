@@ -2,7 +2,7 @@ var Search = Class.create(ArticleContainer, {
   initialize: function($super, api, query) {
     $super(api)
     this.query = query
-    this.title = $L("Search")
+    this.title = $L("Search for #{query}").interpolate(this)
     this.showOrigin = true
     this.canMarkAllRead = false
   },
