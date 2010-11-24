@@ -46,6 +46,9 @@ var HomeAssistant = Class.create(BaseAssistant, {
     this.controller.listen("subscription-sources", Mojo.Event.listDelete, this.sourceDeleted = this.sourceDeleted.bind(this))
     this.controller.listen("refresh", Mojo.Event.tap, this.reload = this.reload.bind(this))
     this.controller.listen("error-header", Mojo.Event.tap, this.reload)
+		this.controller.listen("search-text", Mojo.Event.propertyChange, this.searchTextEntry = this.searchTextEntry.bind(this))
+    this.controller.listen("search-cancel", Mojo.Event.tap, this.cancelSearch = this.cancelSearch.bind(this))
+    this.controller.listen("search-submit", Mojo.Event.tap, this.search = this.search.bind(this))
     this.controller.listen(document, "ArticleRead", this.articleRead = this.articleRead.bind(this))
     this.controller.listen(document, "ArticleNotRead", this.articleNotRead = this.articleNotRead.bind(this))
     this.controller.listen(document, "MassMarkAsRead", this.markedAllRead = this.markedAllRead.bind(this))
@@ -61,6 +64,8 @@ var HomeAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("subscription-sources", Mojo.Event.listDelete, this.sourceDeleted)
     this.controller.stopListening("refresh", Mojo.Event.tap, this.reload)
     this.controller.stopListening("error-header", Mojo.Event.tap, this.reload)
+    this.controller.stopListening("search-cancel", Mojo.Event.tap, this.cancelSearch)
+    this.controller.stopListening("search-submit", Mojo.Event.tap, this.search)
     this.controller.stopListening(document, "ArticleRead", this.articleRead)
     this.controller.stopListening(document, "ArticleNotRead", this.articleNotRead)
     this.controller.stopListening(document, "MassMarkAsRead", this.markedAllRead)
@@ -120,6 +125,7 @@ var HomeAssistant = Class.create(BaseAssistant, {
 
     this.active = true
     $(this.controller.document).observe("keypress", this.startSearch)
+    this.controller.get("search-text").mojo.setConsumesEnterKey(false)
   },
 
   deactivate: function($super) {
@@ -217,6 +223,10 @@ var HomeAssistant = Class.create(BaseAssistant, {
     if(Mojo.Event.forward == event.type) {
       this.reload()
     }
+    else if(Mojo.Event.back == event.type && this.panelOpen) {
+      this.menuPanelOff()
+      event.stop()
+    }
     else {
       $super(event)
     }
@@ -230,6 +240,16 @@ var HomeAssistant = Class.create(BaseAssistant, {
     this.smallSpinnerOff()
   },
 
+  searchTextEntry: function(event) {
+    if(event.originalEvent && Mojo.Char.enter === event.originalEvent.keyCode) {
+      this.search()
+    }
+  },
+
+  cancelSearch: function(event) {
+    this.menuPanelOff()
+  },
+
   startSearch: function(event) {
     if(!this.panelOpen) {
       event.stop()
@@ -239,6 +259,16 @@ var HomeAssistant = Class.create(BaseAssistant, {
       textEntry.mojo.setValue(String.fromCharCode(event.charCode))
       textEntry.mojo.setCursorPosition(1, 1)
       textEntry.mojo.focus()
+    }
+  },
+
+  search: function() {
+    if(this.searchText.value.strip().length) {
+      console.log("SEARCHING FOR " + this.searchText.value.strip())
+      this.menuPanelOff()
+    }
+    else {
+      this.controller.get("search-text").mojo.focus()
     }
   }
 })
