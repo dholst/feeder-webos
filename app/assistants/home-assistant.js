@@ -264,8 +264,8 @@ var HomeAssistant = Class.create(BaseAssistant, {
 
   search: function() {
     if(this.searchText.value.strip().length) {
-      console.log("SEARCHING FOR " + this.searchText.value.strip())
       this.menuPanelOff()
+      this.controller.stageController.pushScene("articles", new Search(this.api, this.searchText.value.strip()))
     }
     else {
       this.controller.get("search-text").mojo.focus()
