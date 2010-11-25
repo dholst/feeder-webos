@@ -1,5 +1,20 @@
 <div x-mojo-element="Spinner" id="small-spinner" class="spinner"></div>
 
+<div id="menu-panel-scrim" class="palm-scrim menu-panel" x-mojo-menupanel-scrim="" style="display: none"></div>
+<div class="palm-menu-panel" x-mojo-menupanel="" style="display: none;">
+  <div class="palm-menu-panel-wrapper" x-mojo-element="Scroller">
+    <div class="palm-row">
+      <div class="palm-row-wrapper textfield-group focused">
+        <div class="title">
+          <div id="search-text" x-mojo-element="TextField"></div>
+        </div>
+      </div>
+    </div>
+    <div id="search-cancel" class="button" x-mojo-element="Button"></div>
+    <div id="search-submit" class="button" x-mojo-element="Button"></div>
+  </div>
+</div>
+
 <div class="palm-page-header fixed">
   <div class="palm-page-header-wrapper">
     <div id="header" class="center truncating-text">Feeder</div>

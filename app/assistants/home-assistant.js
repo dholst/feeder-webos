@@ -13,21 +13,22 @@ var HomeAssistant = Class.create(BaseAssistant, {
     Feeder.Metrix.checkBulletinBoard(this.controller, 20);
     this.setupLists()
     this.setupListeners()
+    this.setupSearch()
   },
 
   setupLists: function() {
     var stickySourceAttributes = {
       itemTemplate: "home/source",
-  		onItemRendered: this.sourceRendered
+      onItemRendered: this.sourceRendered
     }
 
     var subscriptionAttributes = {
       itemTemplate: "home/source",
       dividerTemplate: "home/divider",
-  		dividerFunction: this.divide,
-  		onItemRendered: this.sourceRendered,
-  		reorderable: Preferences.isManualFeedSort(),
-  		swipeToDelete: true
+      dividerFunction: this.divide,
+      onItemRendered: this.sourceRendered,
+      reorderable: Preferences.isManualFeedSort(),
+      swipeToDelete: true
     }
 
     this.controller.setupWidget("sticky-sources", stickySourceAttributes, this.sources.stickySources)
@@ -61,6 +62,7 @@ var HomeAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening(document, "MassMarkAsRead", this.markedAllRead)
     this.controller.stopListening(document, "SubscriptionDeleted", this.markedAllRead)
     this.controller.stopListening(document, "FolderDeleted", this.folderDeleted)
+    this.cleanupSearch()
   },
 
   ready: function($super) {
@@ -114,11 +116,13 @@ var HomeAssistant = Class.create(BaseAssistant, {
     }
 
     this.active = true
+    this.listenForSearch()
   },
 
   deactivate: function($super) {
     $super()
     this.active = false
+    this.stopListeningForSearch()
   },
 
   filterAndRefresh: function() {
@@ -221,5 +225,9 @@ var HomeAssistant = Class.create(BaseAssistant, {
     this.controller.get("refresh").hide()
     this.controller.get("error-header").show()
     this.smallSpinnerOff()
+  },
+
+  doSearch: function(query) {
+    this.controller.stageController.pushScene("articles", new Search(this.api, query))
   }
 })

@@ -253,6 +253,60 @@ var Api = Class.create({
     )
   },
 
+  search: function(query, id, success, failure) {
+    var parameters = {
+      q: query,
+      num: 50,
+      output: "json"
+    }
+
+    if(id) {
+      parameters.s = id
+    }
+
+    new Ajax.Request(Api.BASE_URL + "search/items/ids", {
+      method: "get",
+      parameters: parameters,
+      requestHeaders: this._requestHeaders(),
+      onSuccess: this.searchItemsFound.bind(this, success, failure),
+      onFailure: failure
+    })
+  },
+
+  searchItemsFound: function(success, failure, response) {
+    var self = this
+    var ids = response.responseText.evalJSON().results
+
+    if(ids.length) {
+      self._getEditToken(
+        function(token) {
+          var parameters = {
+            T: token,
+            i: ids.map(function(n) {return n.id})
+          }
+
+          new Ajax.Request(Api.BASE_URL + "stream/items/contents", {
+            method: "post",
+            parameters: parameters,
+            requestHeaders: self._requestHeaders(),
+            onFailure: failure,
+            onSuccess: function(response) {
+              var articles = response.responseText.evalJSON()
+              success(articles.items, articles.id, articles.continuation)
+            }
+          })
+        }
+      )
+    }
+    else {
+      success([], "", false)
+    }
+  },
+
+  mapSearchResults: function(response) {
+    console.log(response.responseText)
+  },
+
   setArticleRead: function(articleId, subscriptionId, success, failure) {
     this._editTag(
       articleId,

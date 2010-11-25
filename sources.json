@@ -20,6 +20,7 @@
   {"source": "app/models/folders.js"},
   {"source": "app/models/folder.js"},
   {"source": "app/models/preferences.js"},
+  {"source": "app/models/search.js"},
 
   {"source": "app/lib/ajax.js"},
   {"source": "app/lib/log.js"},
