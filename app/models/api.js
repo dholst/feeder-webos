@@ -253,14 +253,20 @@ var Api = Class.create({
     )
   },
 
-  search: function(query, success, failure) {
+  search: function(query, id, success, failure) {
+    var parameters = {
+      q: query,
+      num: 50,
+      output: "json"
+    }
+
+    if(id) {
+      parameters.s = id
+    }
+
     new Ajax.Request(Api.BASE_URL + "search/items/ids", {
       method: "get",
-      parameters: {
-        q: query,
-        num: 50,
-        output: "json"
-      },
+      parameters: parameters,
       requestHeaders: this._requestHeaders(),
       onSuccess: this.searchItemsFound.bind(this, success, failure),
       onFailure: failure

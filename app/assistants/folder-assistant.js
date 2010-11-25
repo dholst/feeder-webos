@@ -24,6 +24,7 @@ var FolderAssistant = Class.create(BaseAssistant, {
     this.controller.listen(document, "SubscriptionDeleted", this.filterAndRefresh = this.filterAndRefresh.bind(this))
 
     this.controller.get("header").update(this.folder.title)
+    this.setupSearch()
   },
 
   cleanup: function($super) {
@@ -33,11 +34,18 @@ var FolderAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("folders", Mojo.Event.listReorder, this.sourcesReordered)
     this.controller.stopListening("folders", Mojo.Event.listDelete, this.sourceDeleted)
     this.controller.stopListening(document, "SubscriptionDeleted", this.filterAndRefresh)
+    this.cleanupSearch()
   },
 
   activate: function($super, changes) {
     $super(changes)
     this.filterAndRefresh()
+    this.listenForSearch()
+  },
+
+  deactivate: function($super) {
+    $super()
+    this.stopListeningForSearch()
   },
 
   filterAndRefresh: function() {
@@ -92,5 +100,9 @@ var FolderAssistant = Class.create(BaseAssistant, {
 
   sourceDeleted: function(event) {
     this.folder.subscriptions.remove(event.item)
+  },
+
+  doSearch: function(query) {
+    this.controller.stageController.pushScene("articles", new Search(this.folder.api, query, this.folder.id))
   }
 })

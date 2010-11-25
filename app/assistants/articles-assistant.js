@@ -8,13 +8,13 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
   setup: function($super) {
     $super()
 
-		this.spacerTemplate = Mojo.View.convertToNode(Mojo.View.render({template: "articles/spacer"}), this.controller.document)
+    this.spacerTemplate = Mojo.View.convertToNode(Mojo.View.render({template: "articles/spacer"}), this.controller.document)
 
     var listAttributes = {
       itemTemplate: "articles/article",
       dividerTemplate: "articles/divider",
-  		dividerFunction: this.divide,
-  		onItemRendered: this.itemRendered.bind(this)
+      dividerFunction: this.divide,
+      onItemRendered: this.itemRendered.bind(this)
     }
 
     this.controller.setupWidget("articles", listAttributes, this.subscription)
@@ -28,6 +28,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     this.articlesTop = this.controller.get("articles").offsetTop
     this.scroller = this.controller.getSceneScroller()
     this.scrolling = this.scrolling.bind(this)
+    if(!this.subscription.disableSearch) this.setupSearch()
   },
 
   ready: function($super) {
@@ -70,6 +71,13 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     else {
       this.scroller.stopObserving(Mojo.Event.dragging, this.scrolling)
     }
+
+    if(!this.subscription.disableSearch) this.listenForSearch()
+  },
+
+  deactivate: function($super) {
+    $super()
+    if(!this.subscription.disableSearch) this.stopListeningForSearch()
   },
 
   cleanup: function($super) {
@@ -79,7 +87,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     this.scroller.stopObserving(Mojo.Event.dragging, this.scrolling)
     this.controller.stopListening("mark-all-read", Mojo.Event.tap, this.markAllRead)
     this.controller.stopListening("error-header", Mojo.Event.tap, this.reload)
-
+    if(!this.subscription.disableSearch) this.cleanupSearch()
   },
 
   findArticles: function(scrollToTop) {
@@ -143,35 +151,35 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     }
   },
 
-	scrolling: function() {
+  scrolling: function() {
     var scrollPosition = this.scroller.mojo.getScrollPosition()
     var theBottom = scrollPosition.top - this.scroller.offsetHeight
     var markAllRead = true
     var item, i
 
-	  for(i = 0; i < this.subscription.items.length; i++) {
-	    item = this.subscription.items[i]
+    for(i = 0; i < this.subscription.items.length; i++) {
+      item = this.subscription.items[i]
 
-	    if(!item._itemNode) {
-	      markAllRead = false
-	      break
-	    }
+      if(!item._itemNode) {
+        markAllRead = false
+        break
+      }
 
-	    if(this.scroller.offsetTop - item._itemNode.offsetTop - item._itemNode.offsetHeight < theBottom) {
-	      markAllRead = false
-	      break
-	    }
+      if(this.scroller.offsetTop - item._itemNode.offsetTop - item._itemNode.offsetHeight < theBottom) {
+        markAllRead = false
+        break
+      }
     }
 
-	  for(i = 0; i < this.subscription.items.length; i++) {
-	    item = this.subscription.items[i]
+    for(i = 0; i < this.subscription.items.length; i++) {
+      item = this.subscription.items[i]
 
       if(item._itemNode && (item._itemNode.offsetTop + scrollPosition.top < this.articlesTop || markAllRead) && !item.isRead && !item.keepUnread) {
         item.turnReadOn(function() {}, function() {})
         item._itemNode.removeClassName("unread")
       }
-	  }
-	},
+    }
+  },
 
   markAllRead: function() {
     this.controller.get("mark-all-read").hide()
@@ -199,31 +207,31 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
   },
 
   dragStart: function(event) {
-		if(Math.abs(event.filteredDistance.x) > 2 * Math.abs(event.filteredDistance.y)) {
+    if(Math.abs(event.filteredDistance.x) > 2 * Math.abs(event.filteredDistance.y)) {
       var node = this._getNodeFrom(event)
 
-  	  Mojo.Drag.setupDropContainer(node, this)
+      Mojo.Drag.setupDropContainer(node, this)
 
-  	  node._dragger = Mojo.Drag.startDragging(
-  	    this.controller,
-  	    node,
-  	    event.down,
-  	    {
+      node._dragger = Mojo.Drag.startDragging(
+        this.controller,
+        node,
+        event.down,
+        {
           preventVertical: true,
           draggingClass: "palm-delete-element",
           preventDropReset: false
-  		  }
-  		)
+        }
+      )
 
-  		event.stop()
-		}
+      event.stop()
+    }
   },
 
   dragEnter: function(item) {
-		this.dragHeight = item.getHeight()
-		this.dragAdjNode = undefined
-		this.insertSpacer(item)
-	},
+    this.dragHeight = item.getHeight()
+    this.dragAdjNode = undefined
+    this.insertSpacer(item)
+  },
 
   dragHover: function(element) {
     var spacer = element._spacer
@@ -247,42 +255,46 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     }
   },
 
-	dragDrop: function(element) {
+  dragDrop: function(element) {
     element._dragger.resetElement()
     delete element._dragger
 
     element._spacer.remove()
     delete element._spacer
 
-	  if(element._toggleRead) {
-	    element._mojoListItemModel.toggleRead()
-	    this.refreshList(this.controller.get("articles"), this.subscription.items)
-	  }
+    if(element._toggleRead) {
+      element._mojoListItemModel.toggleRead()
+      this.refreshList(this.controller.get("articles"), this.subscription.items)
+    }
 
-	  if(element._toggleStarred) {
-	    element._mojoListItemModel.toggleStarred()
-	    this.refreshList(this.controller.get("articles"), this.subscription.items)
-	  }
+    if(element._toggleStarred) {
+      element._mojoListItemModel.toggleStarred()
+      this.refreshList(this.controller.get("articles"), this.subscription.items)
+    }
   },
 
-	insertSpacer: function(itemNode) {
-		var spacer = this.spacerTemplate.cloneNode(true)
-		itemNode.insert({before: spacer})
-		itemNode._spacer = spacer
+  insertSpacer: function(itemNode) {
+    var spacer = this.spacerTemplate.cloneNode(true)
+    itemNode.insert({before: spacer})
+    itemNode._spacer = spacer
 
-		var height = Element.getHeight(itemNode) + 'px'
-		spacer.style.height = height
+    var height = Element.getHeight(itemNode) + 'px'
+    spacer.style.height = height
 
     var heightNodes = spacer.querySelectorAll("div[x-mojo-set-height]")
 
     for(var i = 0; i < heightNodes.length; i++) {
       heightNodes[i].style.height = height
     }
-	},
+  },
 
-	showError: function() {
+  showError: function() {
     this.smallSpinnerOff()
     this.controller.get("mark-all-read").hide()
     this.controller.get("error-header").show()
-	}
+  },
+
+  doSearch: function(query) {
+    this.controller.stageController.pushScene("articles", new Search(this.subscription.api, query, this.subscription.id))
+  }
 })

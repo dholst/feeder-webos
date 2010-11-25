@@ -6,8 +6,6 @@ var HomeAssistant = Class.create(BaseAssistant, {
     BaseAssistant.sources = this.sources
     this.loaded = loaded
     this.showAddSubscription = true
-    this.searchText = {value: ""}
-    this.startSearch = this.startSearch.bind(this)
   },
 
   setup: function($super) {
@@ -15,6 +13,7 @@ var HomeAssistant = Class.create(BaseAssistant, {
     Feeder.Metrix.checkBulletinBoard(this.controller, 20);
     this.setupLists()
     this.setupListeners()
+    this.setupSearch()
   },
 
   setupLists: function() {
@@ -34,9 +33,6 @@ var HomeAssistant = Class.create(BaseAssistant, {
 
     this.controller.setupWidget("sticky-sources", stickySourceAttributes, this.sources.stickySources)
     this.controller.setupWidget("subscription-sources", subscriptionAttributes, this.sources.subscriptionSources)
-    this.controller.setupWidget("search-text", {changeOnKeyPress: true, hintText: $L("Search...")}, this.searchText)
-    this.controller.setupWidget("search-cancel", {}, {buttonClass: "secondary", buttonLabel: $L("Cancel")})
-    this.controller.setupWidget("search-submit", {}, {buttonLabel: $L("Search")})
   },
 
   setupListeners: function() {
@@ -46,9 +42,6 @@ var HomeAssistant = Class.create(BaseAssistant, {
     this.controller.listen("subscription-sources", Mojo.Event.listDelete, this.sourceDeleted = this.sourceDeleted.bind(this))
     this.controller.listen("refresh", Mojo.Event.tap, this.reload = this.reload.bind(this))
     this.controller.listen("error-header", Mojo.Event.tap, this.reload)
-		this.controller.listen("search-text", Mojo.Event.propertyChange, this.searchTextEntry = this.searchTextEntry.bind(this))
-    this.controller.listen("search-cancel", Mojo.Event.tap, this.cancelSearch = this.cancelSearch.bind(this))
-    this.controller.listen("search-submit", Mojo.Event.tap, this.search = this.search.bind(this))
     this.controller.listen(document, "ArticleRead", this.articleRead = this.articleRead.bind(this))
     this.controller.listen(document, "ArticleNotRead", this.articleNotRead = this.articleNotRead.bind(this))
     this.controller.listen(document, "MassMarkAsRead", this.markedAllRead = this.markedAllRead.bind(this))
@@ -64,13 +57,12 @@ var HomeAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("subscription-sources", Mojo.Event.listDelete, this.sourceDeleted)
     this.controller.stopListening("refresh", Mojo.Event.tap, this.reload)
     this.controller.stopListening("error-header", Mojo.Event.tap, this.reload)
-    this.controller.stopListening("search-cancel", Mojo.Event.tap, this.cancelSearch)
-    this.controller.stopListening("search-submit", Mojo.Event.tap, this.search)
     this.controller.stopListening(document, "ArticleRead", this.articleRead)
     this.controller.stopListening(document, "ArticleNotRead", this.articleNotRead)
     this.controller.stopListening(document, "MassMarkAsRead", this.markedAllRead)
     this.controller.stopListening(document, "SubscriptionDeleted", this.markedAllRead)
     this.controller.stopListening(document, "FolderDeleted", this.folderDeleted)
+    this.cleanupSearch()
   },
 
   ready: function($super) {
@@ -124,14 +116,13 @@ var HomeAssistant = Class.create(BaseAssistant, {
     }
 
     this.active = true
-    $(this.controller.document).observe("keypress", this.startSearch)
-    this.controller.get("search-text").mojo.setConsumesEnterKey(false)
+    this.listenForSearch()
   },
 
   deactivate: function($super) {
     $super()
     this.active = false
-    $(this.controller.document).stopObserving("keypress")
+    this.stopListeningForSearch()
   },
 
   filterAndRefresh: function() {
@@ -223,10 +214,6 @@ var HomeAssistant = Class.create(BaseAssistant, {
     if(Mojo.Event.forward == event.type) {
       this.reload()
     }
-    else if(Mojo.Event.back == event.type && this.panelOpen) {
-      this.menuPanelOff()
-      event.stop()
-    }
     else {
       $super(event)
     }
@@ -240,35 +227,7 @@ var HomeAssistant = Class.create(BaseAssistant, {
     this.smallSpinnerOff()
   },
 
-  searchTextEntry: function(event) {
-    if(event.originalEvent && Mojo.Char.enter === event.originalEvent.keyCode) {
-      this.search()
-    }
-  },
-
-  cancelSearch: function(event) {
-    this.menuPanelOff()
-  },
-
-  startSearch: function(event) {
-    if(!this.panelOpen) {
-      event.stop()
-      this.menuPanelOn()
-
-      var textEntry = this.controller.get("search-text")
-      textEntry.mojo.setValue(String.fromCharCode(event.charCode))
-      textEntry.mojo.setCursorPosition(1, 1)
-      textEntry.mojo.focus()
-    }
-  },
-
-  search: function() {
-    if(this.searchText.value.strip().length) {
-      this.menuPanelOff()
-      this.controller.stageController.pushScene("articles", new Search(this.api, this.searchText.value.strip()))
-    }
-    else {
-      this.controller.get("search-text").mojo.focus()
-    }
+  doSearch: function(query) {
+    this.controller.stageController.pushScene("articles", new Search(this.api, query))
   }
 })
