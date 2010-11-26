@@ -323,12 +323,11 @@ var ArticleAssistant = Class.create(BaseAssistant, {
   },
 
   handleCommand: function($super, event) {
-    if(Mojo.Event.back == event.type) {
-      event.stop()
-      this.controller.stageController.popScene(this.scrollingIndex)
-    }
-    else {
-      $super(event)
+    if(!$super(event)) {
+      if(Mojo.Event.back == event.type) {
+        event.stop()
+        this.controller.stageController.popScene(this.scrollingIndex)
+      }
     }
   },
 

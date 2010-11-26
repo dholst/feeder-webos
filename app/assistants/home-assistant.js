@@ -213,11 +213,10 @@ var HomeAssistant = Class.create(BaseAssistant, {
   },
 
   handleCommand: function($super, event) {
-    if(Mojo.Event.forward == event.type) {
-      this.reload()
-    }
-    else {
-      $super(event)
+    if(!$super(event)) {
+      if(Mojo.Event.forward == event.type) {
+        this.reload()
+      }
     }
   },
 
