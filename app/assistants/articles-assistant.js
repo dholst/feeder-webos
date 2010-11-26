@@ -23,6 +23,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     this.controller.listen("articles", Mojo.Event.dragStart, this.dragStart = this.dragStart.bind(this))
     this.controller.listen("error-header", Mojo.Event.tap, this.reload = this.reload.bind(this))
     this.controller.listen("header", Mojo.Event.tap, this.scrollToTop = this.scrollToTop.bind(this))
+    this.controller.listen("header", Mojo.Event.hold, this.showOrHideArticles = this.showOrHideArticles.bind(this))
 
     this.controller.get("header").update(this.subscription.title)
 
@@ -89,6 +90,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("mark-all-read", Mojo.Event.tap, this.markAllRead)
     this.controller.stopListening("error-header", Mojo.Event.tap, this.reload)
     this.controller.stopListening("header", Mojo.Event.tap, this.scrollToTop)
+    this.controller.stopListening("header", Mojo.Event.hold, this.showOrHideArticles)
     if(!this.subscription.disableSearch) this.cleanupSearch()
   },
 

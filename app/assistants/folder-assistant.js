@@ -21,6 +21,8 @@ var FolderAssistant = Class.create(BaseAssistant, {
     this.controller.listen("folders", Mojo.Event.listTap, this.folderTaped)
     this.controller.listen("folders", Mojo.Event.listReorder, this.sourcesReordered = this.sourcesReordered.bind(this))
     this.controller.listen("folders", Mojo.Event.listDelete, this.sourceDeleted = this.sourceDeleted.bind(this))
+    this.controller.listen("header", Mojo.Event.tap, this.scrollToTop = this.scrollToTop.bind(this))
+    this.controller.listen("header", Mojo.Event.hold, this.showOrHideFeeds = this.showOrHideFeeds.bind(this))
     this.controller.listen(document, "SubscriptionDeleted", this.filterAndRefresh = this.filterAndRefresh.bind(this))
 
     this.controller.get("header").update(this.folder.title)
@@ -33,6 +35,8 @@ var FolderAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("folders", Mojo.Event.listTap, this.folderTaped)
     this.controller.stopListening("folders", Mojo.Event.listReorder, this.sourcesReordered)
     this.controller.stopListening("folders", Mojo.Event.listDelete, this.sourceDeleted)
+    this.controller.stopListening("header", Mojo.Event.tap, this.scrollToTop)
+    this.controller.stopListening("header", Mojo.Event.hold, this.showOrHideFeeds)
     this.controller.stopListening(document, "SubscriptionDeleted", this.filterAndRefresh)
     this.cleanupSearch()
   },
