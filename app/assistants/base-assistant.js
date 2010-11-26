@@ -97,31 +97,46 @@ var BaseAssistant = Class.create({
   },
 
   handleCommand: function(event) {
+    var handled = false
+
     if(Mojo.Event.command === event.type) {
       if("logout" == event.command) {
         this.controller.stageController.popScenesTo("home", "logout")
+        handled = true
       }
       else if("add-subscription" == event.command) {
         this.controller.stageController.pushScene("add", this.api)
-        event.stop()
+        handled = true
       }
       else if(Mojo.Menu.helpCmd == event.command) {
         this.controller.stageController.pushScene("help")
-        event.stop()
+        handled = true
       }
       else if(Mojo.Menu.prefsCmd == event.command) {
         this.controller.stageController.pushScene("preferences")
-        event.stop()
+        handled = true
       }
       else if("debug" == event.command) {
         this.controller.stageController.pushScene("debug")
-        event.stop()
+        handled = true
       }
     }
-    else if(Mojo.Event.back == event.type && this.panelOpen) {
+
+    if((Mojo.Event.back == event.type || Mojo.Event.forward == event.type) && this.inLandscape()) {
+      this.landscapeScroll(event.type)
+      handled = true
+    }
+
+    if(Mojo.Event.back == event.type && this.panelOpen && !this.inLandscape()) {
       this.menuPanelOff()
+      handled = true
+    }
+
+    if(handled) {
       event.stop()
     }
+
+    return handled
   },
 
   setTheme: function() {
@@ -215,7 +230,7 @@ var BaseAssistant = Class.create({
     this.controller.setupWidget("search-text", {changeOnKeyPress: true, hintText: $L("Search...")}, this.searchText)
     this.controller.setupWidget("search-cancel", {}, {buttonClass: "secondary", buttonLabel: $L("Cancel")})
     this.controller.setupWidget("search-submit", {}, {buttonLabel: $L("Search")})
-		this.controller.listen("search-text", Mojo.Event.propertyChange, this.searchTextEntry = this.searchTextEntry.bind(this))
+    this.controller.listen("search-text", Mojo.Event.propertyChange, this.searchTextEntry = this.searchTextEntry.bind(this))
     this.controller.listen("search-cancel", Mojo.Event.tap, this.cancelSearch = this.cancelSearch.bind(this))
     this.controller.listen("search-submit", Mojo.Event.tap, this.search = this.search.bind(this))
   },
@@ -231,11 +246,34 @@ var BaseAssistant = Class.create({
   },
 
   stopListeningForSearch: function() {
-    console.log("STOP")
     $(this.controller.document).stopObserving("keypress", this.startSearch)
   },
 
   scrollToTop: function() {
     this.controller.getSceneScroller().mojo.scrollTo(0, 0, true)
+  },
+
+  orientationChanged: function(orientation) {
+    this.orientation = orientation
+  },
+
+  inLandscape: function() {
+    return this.orientation == "left" || this.orientation == "right"
+  },
+
+  landscapeScroll: function(backOrForward) {
+    var scroller = this.controller.getSceneScroller()
+    var currentPosition = scroller.mojo.getScrollPosition()
+    var scrollerSize = scroller.mojo.scrollerSize()
+
+    var fixedHeader = this.controller.sceneElement.querySelector(".palm-page-header.fixed")
+    var headerHeight = fixedHeader ? fixedHeader.getHeight() : 0
+
+    var fixedFooter = this.controller.sceneElement.querySelector("#footer")
+    var footerHeight = fixedFooter ? fixedFooter.getHeight() : 0
+
+    var goingDown = (this.orientation == "right" && backOrForward == Mojo.Event.back) || (this.orientation == "left" && backOrForward == Mojo.Event.forward)
+    var adjustBy = goingDown ? (-(scrollerSize.height) + headerHeight + footerHeight + 10) : (scrollerSize.height - headerHeight - footerHeight - 10)
+    scroller.mojo.scrollTo(0, currentPosition.top + adjustBy, true)
   }
 })

@@ -54,7 +54,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.notificationInterval = {value: Preferences.notificationInterval()}
     this.notificationFeeds = {value: Preferences.anyOrSelectedFeedsForNotifications()}
     this.notificationFeedSelection = {buttonLabel: $L("Select Feeds")}
-    
+
     this.originalAllowLandscape = Preferences.allowLandscape()
     this.originalSortOrder = Preferences.isOldestFirst()
     this.originalHideReadFeeds = Preferences.hideReadFeeds()
@@ -226,27 +226,27 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
   },
 
   handleCommand: function($super, event) {
-    if (Mojo.Event.back == event.type) {
-      event.stop();
+    if(!$super(event)) {
+      if (Mojo.Event.back == event.type) {
+        event.stop();
 
-      if (this.originalNotificationInterval != Preferences.notificationInterval()) {
-        Mojo.Controller.getAppController().assistant.handleLaunch({action: "notificationIntervalChange"})
+        if (this.originalNotificationInterval != Preferences.notificationInterval()) {
+          Mojo.Controller.getAppController().assistant.handleLaunch({action: "notificationIntervalChange"})
+        }
+
+        changes = {}
+
+        if (this.originalAllowLandscape != Preferences.allowLandscape()) changes.allowLandscapeChanged = true
+        if (this.originalSortOrder != Preferences.isOldestFirst()) changes.sortOrderChanged = true
+        if (this.originalHideReadFeeds != Preferences.hideReadFeeds()) changes.hideReadFeedsChanged = true
+        if (this.originalHideReadArticles != Preferences.hideReadArticles()) changes.hideReadArticlesChanged = true
+        if (this.originalFontSize != Preferences.fontSize()) changes.fontSizeChanged = true
+        if (this.originalFeedSortOrder != Preferences.isManualFeedSort()) changes.feedSortOrderChanged = true
+        if (this.originalTheme != Preferences.getTheme()) changes.themeChanged = true
+
+        this.controller.stageController.popScene(changes)
       }
 
-      changes = {}
-
-      if (this.originalAllowLandscape != Preferences.allowLandscape()) changes.allowLandscapeChanged = true
-      if (this.originalSortOrder != Preferences.isOldestFirst()) changes.sortOrderChanged = true
-      if (this.originalHideReadFeeds != Preferences.hideReadFeeds()) changes.hideReadFeedsChanged = true
-      if (this.originalHideReadArticles != Preferences.hideReadArticles()) changes.hideReadArticlesChanged = true
-      if (this.originalFontSize != Preferences.fontSize()) changes.fontSizeChanged = true
-      if (this.originalFeedSortOrder != Preferences.isManualFeedSort()) changes.feedSortOrderChanged = true
-      if (this.originalTheme != Preferences.getTheme()) changes.themeChanged = true 
-      
-      this.controller.stageController.popScene(changes)
-    } 
-    else {
-      $super(event)
     }
   }
 })
