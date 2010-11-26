@@ -233,5 +233,9 @@ var BaseAssistant = Class.create({
   stopListeningForSearch: function() {
     console.log("STOP")
     $(this.controller.document).stopObserving("keypress", this.startSearch)
+  },
+
+  scrollToTop: function() {
+    this.controller.getSceneScroller().mojo.scrollTo(0, 0, true)
   }
 })
