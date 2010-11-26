@@ -22,6 +22,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     this.controller.listen("mark-all-read", Mojo.Event.tap, this.markAllRead = this.markAllRead.bind(this))
     this.controller.listen("articles", Mojo.Event.dragStart, this.dragStart = this.dragStart.bind(this))
     this.controller.listen("error-header", Mojo.Event.tap, this.reload = this.reload.bind(this))
+    this.controller.listen("header", Mojo.Event.tap, this.scrollToTop = this.scrollToTop.bind(this))
 
     this.controller.get("header").update(this.subscription.title)
 
@@ -87,6 +88,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     this.scroller.stopObserving(Mojo.Event.dragging, this.scrolling)
     this.controller.stopListening("mark-all-read", Mojo.Event.tap, this.markAllRead)
     this.controller.stopListening("error-header", Mojo.Event.tap, this.reload)
+    this.controller.stopListening("header", Mojo.Event.tap, this.scrollToTop)
     if(!this.subscription.disableSearch) this.cleanupSearch()
   },
 
@@ -106,6 +108,17 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
 
     this.smallSpinnerOff()
     this.showMarkAllRead()
+    this.showMessageIfEmpty()
+  },
+
+  showMessageIfEmpty: function() {
+    if(this.subscription.items.length) {
+      var noItems = this.controller.sceneElement.querySelector(".no-items")
+      if(noItems) noItems.remove()
+    }
+    else {
+      this.controller.sceneElement.insert("<div class=\"no-items\">" + $L("No articles were found") + "</div>")
+    }
   },
 
   showMarkAllRead: function() {
@@ -116,7 +129,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     if(!event.item.load_more) {
       event.item.index = event.index
       this.tappedIndex = event.index
-      this.controller.stageController.pushScene("article", event.item, 0)
+      this.controller.stageController.pushScene("article", event.item, 0, this.subscription)
     }
   },
 
@@ -125,6 +138,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
   },
 
   itemRendered: function(listWidget, itemModel, itemNode) {
+    this.subscription.highlight(itemNode.down(".article-title"))
     var origin
     itemModel._itemNode = itemNode
 
