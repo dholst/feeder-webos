@@ -275,5 +275,62 @@ var BaseAssistant = Class.create({
     var goingDown = (this.orientation == "right" && backOrForward == Mojo.Event.back) || (this.orientation == "left" && backOrForward == Mojo.Event.forward)
     var adjustBy = goingDown ? (-(scrollerSize.height) + headerHeight + footerHeight + 10) : (scrollerSize.height - headerHeight - footerHeight - 10)
     scroller.mojo.scrollTo(0, currentPosition.top + adjustBy, true)
+  },
+
+  showOrHideFeeds: function(event) {
+    event.stop()
+    var items = []
+
+    if(Preferences.hideReadFeeds()) {
+      items.push({label: $L("Show read feeds"), command: "show-read-feeds"})
+    }
+    else {
+      items.push({label: $L("Hide read feeds"), command: "hide-read-feeds"})
+    }
+
+    this.controller.popupSubmenu({
+      placeNear: this.controller.get("header"),
+      items: items,
+
+      onChoose: function(command) {
+        if(command == "show-read-feeds") {
+          Preferences.setHideReadFeeds(false)
+        }
+        else if(command == "hide-read-feeds") {
+          Preferences.setHideReadFeeds(true)
+        }
+
+        this.filterAndRefresh()
+      }.bind(this)
+    })
+  },
+
+  showOrHideArticles: function(event) {
+    event.stop()
+    var items = []
+
+    if(Preferences.hideReadArticles()) {
+      items.push({label: $L("Show read articles"), command: "show-read-articles"})
+    }
+    else {
+      items.push({label: $L("Hide read articles"), command: "hide-read-articles"})
+    }
+
+    this.controller.popupSubmenu({
+      placeNear: this.controller.get("header"),
+      items: items,
+
+      onChoose: function(command) {
+        if(command == "show-read-articles") {
+          Preferences.setHideReadArticles(false)
+        }
+        else if(command == "hide-read-articles") {
+          Preferences.setHideReadArticles(true)
+        }
+
+        this.subscription.reset()
+        this.findArticles(true)
+      }.bind(this)
+    })
   }
 })

@@ -56,5 +56,26 @@
   "Unable to add subscription": "Unable to add subscription",
   "Unshare": "Unshare",
   "URL": "URL",
-  "Yes": "Yes"
+  "Yes": "Yes",
+
+  "5 Minutes": "5 Minutes",
+  "15 Minutes": "15 Minutes",
+  "30 Minutes": "30 Minutes",
+  "1 Hour": "1 Hour",
+  "4 Hours": "4 Hours",
+  "8 Hours": "8 Hours",
+  "Any feed": "Any feed",
+  "Cancel": "Cancel",
+  "New Articles": "New Articles",
+  "No articles were found": "No articles were found",
+  "Notifications": "Notifications",
+  "Off": "Off",
+  "Search for \"#{query}\"": "Search for \"#{query}\"",
+  "Search": "Search",
+  "Search...": "Search...",
+  "Select Feeds": "Select Feeds",
+  "Selected feeds": "Selected feeds",
+  "Show read articles": "Show read articles",
+  "Show read feeds": "Show read feeds",
+  "You have new articles to read": "You have new articles to read"
 }
