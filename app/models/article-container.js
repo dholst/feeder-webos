@@ -33,5 +33,8 @@ var ArticleContainer = Class.create(Countable, {
     }.bind(this)
 
     this.makeApiCall(this.continuation, onSuccess, failure)
+  },
+
+  highlight: function(node) {
   }
 })

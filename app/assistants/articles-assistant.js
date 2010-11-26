@@ -106,6 +106,17 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
 
     this.smallSpinnerOff()
     this.showMarkAllRead()
+    this.showMessageIfEmpty()
+  },
+
+  showMessageIfEmpty: function() {
+    if(this.subscription.items.length) {
+      var noItems = this.controller.sceneElement.querySelector(".no-items")
+      if(noItems) noItems.remove()
+    }
+    else {
+      this.controller.sceneElement.insert("<div class=\"no-items\">" + $L("No articles were found") + "</div>")
+    }
   },
 
   showMarkAllRead: function() {
@@ -116,7 +127,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     if(!event.item.load_more) {
       event.item.index = event.index
       this.tappedIndex = event.index
-      this.controller.stageController.pushScene("article", event.item, 0)
+      this.controller.stageController.pushScene("article", event.item, 0, this.subscription)
     }
   },
 
@@ -125,6 +136,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
   },
 
   itemRendered: function(listWidget, itemModel, itemNode) {
+    this.subscription.highlight(itemNode.down(".article-title"))
     var origin
     itemModel._itemNode = itemNode
 

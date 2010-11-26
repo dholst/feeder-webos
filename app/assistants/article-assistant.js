@@ -1,9 +1,10 @@
 var ArticleAssistant = Class.create(BaseAssistant, {
-  initialize: function($super, article, scrollingIndex) {
+  initialize: function($super, article, scrollingIndex, articleContainer) {
     $super()
     this.article = article
     this.scrollingIndex = scrollingIndex
     this.workingSpinner = {spinning: false}
+    this.articleContainer = articleContainer
   },
 
   setup: function($super) {
@@ -20,6 +21,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
     this.controller.get("subscription").update(this.article.origin)
     this.controller.get("author").update(this.article.author ? $L("by #{author}").interpolate(this.article) : "")
     this.controller.get("summary").update(this.article.summary)
+    this.articleContainer.highlight(this.controller.get("summary"))
     this.setFontSize()
 
     if(this.article.isRead) {

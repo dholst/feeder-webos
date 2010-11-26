@@ -7,6 +7,14 @@ body.theme-light {
   color: black !important;
 }
 
+.no-items {
+  padding: 15px;
+}
+
+.highlight {
+  background-color: #FF7
+}
+
 /*
  * MENUBAR
  */
