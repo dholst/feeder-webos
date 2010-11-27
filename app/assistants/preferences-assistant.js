@@ -41,6 +41,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     ]}
 
     this.allowLandscape = {value: Preferences.allowLandscape()}
+    this.gestureScrolling = {value: Preferences.gestureScrolling()}
     this.sortOrder = {value: (Preferences.isOldestFirst() ? "oldest": "newest")}
     this.hideReadFeeds = {value: Preferences.hideReadFeeds()}
     this.hideReadArticles = {value: Preferences.hideReadArticles()}
@@ -75,6 +76,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
 
   setupWidgets: function() {
     this.controller.setupWidget("allow-landscape", {}, this.allowLandscape)
+    this.controller.setupWidget("gesture-scrolling", {}, this.gestureScrolling)
     this.controller.setupWidget("article-sort", this.sortChoices, this.sortOrder)
     this.controller.setupWidget("font-size", this.fontSizeChoices, this.fontSize)
     this.controller.setupWidget("hide-read-feeds", {}, this.hideReadFeeds)
@@ -97,6 +99,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.controller.listen("font-size", Mojo.Event.propertyChange, this.setFontSize = this.setFontSize.bind(this))
     this.controller.listen("article-sort", Mojo.Event.propertyChange, this.setSortOrder = this.setSortOrder.bind(this))
     this.controller.listen("allow-landscape", Mojo.Event.propertyChange, this.setAllowLandscape = this.setAllowLandscape.bind(this))
+    this.controller.listen("gesture-scrolling", Mojo.Event.propertyChange, this.setGestureScrolling = this.setGestureScrolling.bind(this))
     this.controller.listen("combine-folders", Mojo.Event.propertyChange, this.setCombineFolders = this.setCombineFolders.bind(this))
     this.controller.listen("feed-sort", Mojo.Event.propertyChange, this.setFeedSortOrder = this.setFeedSortOrder.bind(this))
     this.controller.listen("theme", Mojo.Event.propertyChange, this.setTheme = this.setTheme.bind(this))
@@ -111,6 +114,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.controller.get("header").update($L("Preferences"))
     this.controller.get("general-label").update($L("General"))
     this.controller.get("landscape-label").update($L("Allow landscape"))
+    this.controller.get("gesture-scrolling-label").update($L("Landscape gesture scrolling"))
     this.controller.get("feeds-label").update($L("Feeds"))
     this.controller.get("hide-read-feeds-label").update($L("Hide read feeds"))
     this.controller.get("back-after-mark-read-label").update($L("Go back after mark all read"))
@@ -127,6 +131,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
   cleanup: function($super) {
     $super()
     this.controller.stopListening("allow-landscape", Mojo.Event.propertyChange, this.setAllowLandscape)
+    this.controller.stopListening("gesture-scrolling", Mojo.Event.propertyChange, this.setGestureScrolling)
     this.controller.stopListening("article-sort", Mojo.Event.propertyChange, this.setSortOrder)
     this.controller.stopListening("hide-read-feeds", Mojo.Event.propertyChange, this.setHideReadFeeds)
     this.controller.stopListening("hide-read-articles", Mojo.Event.propertyChange, this.setHideReadArticles)
@@ -166,6 +171,10 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
 
   setAllowLandscape: function() {
     Preferences.setAllowLandscape(this.allowLandscape.value)
+  },
+
+  setGestureScrolling: function() {
+    Preferences.setGestureScrolling(this.gestureScrolling.value)
   },
 
   setSortOrder: function() {

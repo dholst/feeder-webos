@@ -13,6 +13,7 @@ Preferences = {
   NOTIFICATIONS_INTERVAL: "notifications-interval",
   NOTIFICATIONS_FEEDS: "m-notifications-feeds",
   ANY_OR_SELECTED_FEEDS: "n-any-or-selected-feeds",
+  GESTURE_SCROLLING: "o-gesture-scrolling",
 
   isOldestFirst: function() {
     return this.getCookie(this.OLDEST_FIRST, false)
@@ -52,6 +53,14 @@ Preferences = {
 
   setAllowLandscape: function(allowLandscape) {
     this.setCookie(this.ALLOW_LANDSCAPE, allowLandscape)
+  },
+
+  gestureScrolling: function() {
+    return this.getCookie(this.GESTURE_SCROLLING, true)
+  },
+
+  setGestureScrolling: function(gestureScrolling) {
+    this.setCookie(this.GESTURE_SCROLLING, gestureScrolling)
   },
 
   fontSize: function() {

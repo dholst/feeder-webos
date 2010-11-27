@@ -122,7 +122,7 @@ var BaseAssistant = Class.create({
       }
     }
 
-    if((Mojo.Event.back == event.type || Mojo.Event.forward == event.type) && this.inLandscape()) {
+    if((Mojo.Event.back == event.type || Mojo.Event.forward == event.type) && this.inLandscape() && Preferences.gestureScrolling()) {
       this.landscapeScroll(event.type)
       handled = true
     }

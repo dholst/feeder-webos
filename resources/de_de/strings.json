@@ -56,5 +56,28 @@
   "Unable to add subscription": "Abonnement kann nicht hinzugefügt werden",
   "Unshare": "Empfehlung entfernen",
   "URL": "URL",
-  "Yes": "Ja"
+  "Yes": "Ja",
+
+  "5 Minutes": "5 Minuten",
+  "15 Minutes": "15 Minuten",
+  "30 Minutes": "30 Minuten",
+  "1 Hour": "1 Stunde",
+  "4 Hours": "4 Stunden",
+  "8 Hours": "8 Stunden",
+  "Any feed": "Jeder Feed",
+  "Cancel": "Abbrechen",
+  "New Articles": "Neue Artikel",
+  "No articles were found": "Es wurden keine Artikel gefunden",
+  "Notifications": "Benachrichtigungen",
+  "Off": "Aus",
+  "Search for \"#{query}\"": "Suche nach \"#{query}\"",
+  "Search": "Suche",
+  "Search...": "Suche...",
+  "Select Feeds": "Feeds auswählen",
+  "Select feeds to watch": "Zu beobachtende Feeds",
+  "Selected feeds": "Ausgewählte Feeds",
+  "Show read articles": "Gelesene Artikel anzeigen",
+  "Show read feeds": "Gelesene Feeds anzeigen",
+  "You have new articles to read": "Sie haben neue Artikel zum Lesen"
+
 }
