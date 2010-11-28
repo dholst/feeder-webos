@@ -275,6 +275,7 @@ var BaseAssistant = Class.create({
     var goingDown = (this.orientation == "right" && backOrForward == Mojo.Event.back) || (this.orientation == "left" && backOrForward == Mojo.Event.forward)
     var adjustBy = goingDown ? (-(scrollerSize.height) + headerHeight + footerHeight + 10) : (scrollerSize.height - headerHeight - footerHeight - 10)
     scroller.mojo.scrollTo(0, currentPosition.top + adjustBy, true)
+    Mojo.Event.send.delay(.5, scroller, Mojo.Event.dragging, {})
   },
 
   showOrHideFeeds: function(event) {
