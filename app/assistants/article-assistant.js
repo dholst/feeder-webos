@@ -18,7 +18,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
     this.controller.listen("header", Mojo.Event.tap, this.openInBrowser = this.openInBrowser.bind(this))
 
     this.controller.get("title").update(this.article.title)
-    this.controller.get("subscription").update(this.article.origin)
+    this.controller.get("subscription").update(this.articleContainer.api.titleFor(this.article.subscriptionId))
     this.controller.get("author").update(this.article.author ? $L("by #{author}").interpolate(this.article) : "")
     this.controller.get("summary").update(this.article.summary)
     this.articleContainer.highlight(this.controller.get("summary"))

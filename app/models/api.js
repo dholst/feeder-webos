@@ -135,13 +135,32 @@ var Api = Class.create({
   },
 
   getAllSubscriptions: function(success, failure) {
+    var self = this
+
     new Ajax.Request(Api.BASE_URL + "subscription/list", {
       method: "get",
       parameters: {output: "json"},
       requestHeaders: this._requestHeaders(),
       onFailure: failure,
-      onSuccess: function(response) {success(response.responseText.evalJSON().subscriptions)}
+      onSuccess: function(response) {
+        var subscriptions = response.responseText.evalJSON().subscriptions
+        self.cacheTitles(subscriptions)
+        success(subscriptions)
+      }
     })
+  },
+
+  cacheTitles: function(subscriptions) {
+    var self = this
+    self.titles = {}
+
+    subscriptions.each(function(subscription) {
+      self.titles[subscription.id] = subscription.title
+    })
+  },
+
+  titleFor: function(id) {
+    return this.titles[id]
   },
 
   getUnreadCounts: function(success, failure) {
