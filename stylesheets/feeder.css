@@ -35,7 +35,6 @@ body.theme-light {
    float: left;
  }
 
-
 .preferences .left {
   float: left;
 }
@@ -49,6 +48,21 @@ body.theme-light {
   line-height: 22px !important;
   padding-left: 13px !important;
   padding-right: 13px !important;
+}
+
+.preferences table {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.preferences tr, .preferences td {
+  margin: 0;
+  padding: 0;
+}
+
+.preferences .check {
+  width: 32px;
 }
 
 .palm-drag-spacer .release {
