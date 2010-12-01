@@ -269,7 +269,7 @@ body.theme-light {
 
 .subscription-title, .folder-title {
   float: left;
-  width: 205px;
+  width: 69%;
   margin-left: 5px;
 }
 
@@ -277,6 +277,7 @@ body.theme-light {
   float: right;
   width: 45px;
   text-align: right;
+  margin-left: 0;
 }
 
 .unread {
