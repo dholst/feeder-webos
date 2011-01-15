@@ -1,10 +1,10 @@
 {
-  "id": "com.semicolonapps.feeder.beta050",
-  "version": "0.5.8",
+  "id": "com.semicolonapps.feeder.beta060",
+  "version": "0.6.0",
   "vendor": "SemicolonApps",
   "type": "web",
   "main": "index.html",
-  "title": "Feeder (B5)",
+  "title": "Feeder (B6)",
   "icon": "feeder_64.png",
   "splashicon": "feeder_250.png",
   "noWindow": "true"

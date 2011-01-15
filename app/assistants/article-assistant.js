@@ -95,191 +95,10 @@ var ArticleAssistant = Class.create(BaseAssistant, {
   },
 
   sendTo: function(event) {
-    var items = [
-      {label: $L("Google"), items: [
-        {label: (this.article.isShared ? $L("Unshare") : $L("Share")), command: (this.article.isShared ? "unshare-with-google" : "share-with-google")}
-      ]},
-
-      {label: $L("Twitter"), items: [
-        {label: $L("Bad Kitty"), command: "send-to-bad-kitty"},
-        {label: $L("Spaz"), command: "send-to-spaz"}
-      ]},
-
-      {label: $L("Share"), items: [
-        {label: $L("Facebook"), command: "send-to-facebook"},
-        {label: $L("Email"), command: "send-to-email"},
-        {label: $L("SMS"), command: "send-to-sms"}
-      ]},
-
-      {label: $L("Read Later"), items: [
-        {label: $L("Relego"), command: "send-to-relego"},
-        {label: $L("Spare Time"), command: "send-to-spare-time"}
-      ]}
-    ]
-
     this.controller.popupSubmenu({
       placeNear: this.controller.get("sendto"),
-      items: items,
-
-      onChoose: function(command) {
-        switch(command) {
-          case "share-with-google":
-            this.shareWithGoogle()
-            break
-
-          case "unshare-with-google":
-            this.unshareWithGoogle()
-            break
-
-          case "send-to-spare-time":
-            this.sendToSpareTime()
-            break
-
-          case "send-to-relego":
-            this.sendToRelego()
-            break
-
-          case "send-to-bad-kitty":
-            this.sendToBadKitty()
-            break
-
-          case "send-to-spaz":
-            this.sendToSpaz()
-            break
-
-          case "send-to-email":
-            this.sendToEmail()
-            break
-
-          case "send-to-sms":
-            this.sendToSms()
-            break
-
-          case "send-to-facebook":
-            this.sendToFacebook()
-            break
-        }
-      }.bind(this)
-    })
-  },
-
-  shareWithGoogle: function() {
-    this.article.turnShareOn(function() {
-      Feeder.notify($L("Article shared"))
-    })
-  },
-
-  unshareWithGoogle: function() {
-    this.article.turnShareOff(function() {
-      Feeder.notify($L("Article unshared"))
-    })
-  },
-
-  sendToFacebook: function() {
-    this.controller.serviceRequest("palm://com.palm.applicationManager", {
-      method: "open",
-
-      parameters: {
-        id: "com.palm.app.facebook",
-        params: {status: this.article.title + "\n\n" + this.article.url}
-      },
-
-      onFailure: this.offerToInstallApp.bind(this, $L("Facebook"), "com.palm.app.facebook")
-    })
-  },
-
-  sendToBadKitty: function() {
-    this.controller.serviceRequest("palm://com.palm.applicationManager", {
-      method: "open",
-
-      parameters: {
-        id: "com.superinhuman.badkitty",
-        params: {action: "tweet", tweet: this.article.title + "\n\n" + this.article.url}
-      },
-
-      onFailure: this.offerToInstallApp.bind(this, $L("Bad Kitty"), "com.superinhuman.badkitty")
-    })
-  },
-
-  sendToSpaz: function() {
-    this.controller.serviceRequest("palm://com.palm.applicationManager", {
-      method: "open",
-
-      parameters: {
-        id: "com.funkatron.app.spaz",
-        params: {action: "prepPost", tweet: this.article.url}
-      },
-
-      onFailure: this.offerToInstallApp.bind(this, $L("Spaz"), "com.funkatron.app.spaz")
-    })
-  },
-
-  sendToSpareTime: function() {
-    this.controller.serviceRequest("palm://com.palm.applicationManager", {
-      method: "open",
-
-      parameters: {
-        id: "com.semicolonapps.sparetime",
-        params: {action: "add_url", url: this.article.url, title: this.article.title}
-      },
-
-      onFailure: this.offerToInstallApp.bind(this, $L("Spare Time"), "com.semicolonapps.sparetime")
-    })
-  },
-
-  sendToRelego: function() {
-    this.controller.serviceRequest("palm://com.palm.applicationManager", {
-      method: "open",
-
-      parameters: {
-        id: "com.webosroundup.relego",
-        params: {action: 'addtorelego', url: this.article.url, title: this.article.title}
-      },
-
-      onFailure: this.offerToInstallApp.bind(this, $L("Relego"), "com.webosroundup.relego")
-    })
-  },
-
-  sendToEmail: function() {
-    this.controller.serviceRequest("palm://com.palm.applicationManager", {
-      method: "open",
-
-      parameters: {
-        id: "com.palm.app.email",
-        params: {summary: this.article.title, text: this.article.title + "\n\n" + this.article.url}
-      }
-    })
-  },
-
-  sendToSms: function() {
-    this.controller.serviceRequest("palm://com.palm.applicationManager", {
-      method: "open",
-
-      parameters: {
-        id: "com.palm.app.messaging",
-        params: {messageText: this.article.title + "\n\n" + this.article.url}
-      }
-    })
-  },
-
-  offerToInstallApp: function(name, id) {
-    this.controller.showAlertDialog({
-      title:$L("#{app} is not installed").interpolate({app: name}),
-      message: $L("#{app} is not installed. Would you like to install it?").interpolate({app: name}),
-
-      choices:[
-        {label:$L("Yes"), value:"yes", type:"affirmative"},
-        {label:$L("No"), value:"no", type:"dismissal"}
-      ],
-
-      onChoose: function(value){
-        if("yes" == value){
-          this.controller.serviceRequest("palm://com.palm.applicationManager", {
-            method:"open",
-            parameters:{target: "http://developer.palm.com/appredirect/?packageid=" + id}
-          })
-        }
-      }
+      items: Sharing.getPopupFor(this.article),
+      onChoose: Sharing.handleSelection.bind(Sharing, this.article, this.controller)
     })
   },
 
@@ -332,7 +151,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
   },
 
   loadImage: function(event) {
-		var img = event.target || event.srcElement
+    var img = event.target || event.srcElement
 
     this.controller.serviceRequest("palm://com.palm.applicationManager", {
       method: "open",
@@ -484,3 +303,4 @@ var ArticleAssistant = Class.create(BaseAssistant, {
     this.onMouseUp(e)
   }
 })
+

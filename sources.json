@@ -24,6 +24,7 @@
 
   {"source": "app/lib/ajax.js"},
   {"source": "app/lib/log.js"},
+  {"source": "app/lib/sharing.js"},
 
   {"source": "app/assistants/app-assistant.js"},
   {"source": "app/assistants/base-assistant.js"},
@@ -39,5 +40,6 @@
   {"source": "app/assistants/articles-assistant.js"},
   {"source": "app/assistants/article-assistant.js"},
   {"source": "app/assistants/notification-feeds-assistant.js"},
-  {"source": "app/assistants/folder-assistant.js"}
+  {"source": "app/assistants/folder-assistant.js"},
+  {"source": "app/assistants/configure-sharing-assistant.js"}
 ]

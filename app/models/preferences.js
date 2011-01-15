@@ -15,6 +15,10 @@ Preferences = {
   ANY_OR_SELECTED_FEEDS: "n-any-or-selected-feeds",
   GESTURE_SCROLLING: "o-gesture-scrolling",
 
+  isSharingOptionEnabled: function(option, defaultValue) {
+    return this.getCookie(option, defaultValue)
+  },
+
   isOldestFirst: function() {
     return this.getCookie(this.OLDEST_FIRST, false)
   },
