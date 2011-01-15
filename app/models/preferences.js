@@ -14,9 +14,22 @@ Preferences = {
   NOTIFICATIONS_FEEDS: "m-notifications-feeds",
   ANY_OR_SELECTED_FEEDS: "n-any-or-selected-feeds",
   GESTURE_SCROLLING: "o-gesture-scrolling",
+  SHARING_SORT_ORDER: "p-sharing-sort-order",
+
+  getSharingOptionsSortOrder: function() {
+    return this.getCookie(this.SHARING_SORT_ORDER, [])
+  },
+
+  setSharingOptionsSortOrder: function(sortOrder) {
+    this.setCookie(this.SHARING_SORT_ORDER, sortOrder)
+  },
 
   isSharingOptionEnabled: function(option, defaultValue) {
     return this.getCookie(option, defaultValue)
+  },
+
+  setSharingOptionEnabled: function(option, value) {
+    this.setCookie(option, value)
   },
 
   isOldestFirst: function() {

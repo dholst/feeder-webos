@@ -15,6 +15,22 @@ var Sharing = {
   ],
 
   getPopupFor: function(article) {
+    var sortOrder = Preferences.getSharingOptionsSortOrder()
+    console.log(sortOrder)
+
+    if(sortOrder.length) {
+      sortOrder.each(function(id, i) {
+        Sharing.items.each(function(item) {
+          if(item.id == id) {
+            item.sortKey = i
+            throw $break
+          }
+        })
+      })
+
+      Sharing.items = Sharing.items.sortBy(function(i) {return i.sortKey})
+    }
+
     var popupItems = []
     var parentGroup
 
