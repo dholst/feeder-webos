@@ -6,7 +6,7 @@ desc "install and run the application on the emulator or device"
 task :run => ['install', 'launch', 'tail']
 
 task :launch do
-  puts system("palm-launch -i #{app_id}")
+  puts system("palm-launch #{app_id}")
 end
 
 task :tail do

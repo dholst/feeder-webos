@@ -267,23 +267,17 @@ body.theme-light {
   color: black;
 }
 
-.source table {
-  width: 100%;
-}
-
-.source td.icon {
-  width: 40px;
-}
-
 .subscription-title, .folder-title {
+  float: left;
+  width: 69%;
   margin-left: 5px;
-  text-align: left;
 }
 
 .subscription-count, .folder-count {
+  float: right;
   width: 45px;
   text-align: right;
-  padding-right: 10px;
+  margin-left: 0;
 }
 
 .unread {
