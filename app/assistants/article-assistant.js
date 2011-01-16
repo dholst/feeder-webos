@@ -151,30 +151,39 @@ var ArticleAssistant = Class.create(BaseAssistant, {
   },
 
   loadImage: function(event) {
-    var img = event.target || event.srcElement
+    if(this.lastDrag && this.lastDrag > this.getTimestamp() - 1) {
+      event.preventDefault()
+      event.stop()
+      return false
+    }
+    else {
+      var img = event.target || event.srcElement
 
-    this.controller.serviceRequest("palm://com.palm.applicationManager", {
-      method: "open",
-      parameters: {
-        id: "com.palm.app.browser",
-        params: {
-          target: img.src
-        }
+      if(!$(img).up("a")) {
+        this.controller.serviceRequest("palm://com.palm.applicationManager", {
+          method: "open",
+          parameters: {
+            id: "com.palm.app.browser",
+            params: {
+              target: img.src
+            }
+          }
+        })
       }
-    })
+    }
   },
 
   addLoadImage: function() {
     this.loadImage = this.loadImage.bind(this)
 
     $A(this.controller.sceneElement.querySelectorAll("#summary img")).each(function(img) {
-      img.observe(Mojo.Event.hold, this.loadImage)
+      img.observe('click', this.loadImage)
     }.bind(this))
   },
 
   removeLoadImage: function() {
     $A(this.controller.sceneElement.querySelectorAll("#summary img")).each(function(img) {
-      img.stopObserving(Mojo.Event.hold, this.loadImage)
+      img.stopObserving('click', this.loadImage)
     }.bind(this))
   },
 
