@@ -5,6 +5,8 @@ var Sharing = {
     {id: "sharing-ac", label: $L("Twitter"), defaultEnabled: true},
     {id: "sharing-ad", label: $L("Bad Kitty"), command: "send-to-bad-kitty", defaultEnabled: true},
     {id: "sharing-ae", label: $L("Spaz"), command: "send-to-spaz", defaultEnabled: true},
+    {id: "sharing-an", label: $L("Twee"), command: "send-to-twee", defaultEnabled: false},
+    {id: "sharing-ao", label: $L("Tweed"), command: "send-to-tweed", defaultEnabled: false},
     {id: "sharing-af", label: $L("Share"), defaultEnabled: true},
     {id: "sharing-ag", label: $L("Facebook"), command: "send-to-facebook", defaultEnabled: true},
     {id: "sharing-ah", label: $L("Email"), command: "send-to-email", defaultEnabled: true},
@@ -89,6 +91,8 @@ var Sharing = {
       case "send-to-relego":      Sharing.sendToRelego(article, controller); break;
       case "send-to-bad-kitty":   Sharing.sendToBadKitty(article, controller); break;
       case "send-to-spaz":        Sharing.sendToSpaz(article, controller); break;
+      case "send-to-twee":        Sharing.sendToTwee(article, controller); break;
+      case "send-to-tweed":       Sharing.sendToTweed(article, controller); break;
       case "send-to-email":       Sharing.sendToEmail(article, controller); break;
       case "send-to-sms":         Sharing.sendToSms(article, controller); break;
       case "send-to-facebook":    Sharing.sendToFacebook(article, controller); break;
@@ -117,7 +121,15 @@ var Sharing = {
   },
 
   sendToSpaz: function(article, controller) {
-    Sharing.sendToApp(controller, $L("Spaz"), "com.funkatron.app.spaz", {action: "prepPost", tweet: article.url})
+    Sharing.sendToApp(controller, $L("Spaz"), "com.funkatron.app.spaz", {action: "prepPost", tweet: article.title + "\n\n" + article.url})
+  },
+
+  sendToTwee: function(article, controller) {
+    Sharing.sendToApp(controller, $L("Twee"), "com.deliciousmorsel.twee", {tweet: article.title + "\n\n" + article.url})
+  },
+
+  sendToTweed: function(article, controller) {
+    Sharing.sendToApp(controller, $L("Tweed"), "com.pivotallabs.tweed.us", {newTweet: article.title + "\n\n" + article.url})
   },
 
   sendToInstapaper: function(article, controller) {
