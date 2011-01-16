@@ -122,7 +122,7 @@ var Sharing = {
 
   sendToInstapaper: function(article, controller) {
     var success = function() {
-      Feeder.notify($L("Article saved"))
+      Feeder.notify($L("Article saved to Instapaper"))
     }
 
     var credentials = function() {
