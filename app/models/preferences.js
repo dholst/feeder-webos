@@ -15,6 +15,24 @@ Preferences = {
   ANY_OR_SELECTED_FEEDS: "n-any-or-selected-feeds",
   GESTURE_SCROLLING: "o-gesture-scrolling",
   SHARING_SORT_ORDER: "p-sharing-sort-order",
+  INSTAPAPER_USERNAME: "q-instapaper-username",
+  INSTAPAPER_PASSWORD: "r-instapaper-password",
+
+  getInstapaperUsername: function() {
+    return this.getCookie(this.INSTAPAPER_USERNAME, null)
+  },
+
+  setInstapaperUsername: function(username) {
+    this.setCookie(this.INSTAPAPER_USERNAME, username)
+  },
+
+  getInstapaperPassword: function() {
+    return this.getCookie(this.INSTAPAPER_PASSWORD, null)
+  },
+
+  setInstapaperPassword: function(password) {
+    this.setCookie(this.INSTAPAPER_PASSWORD, password)
+  },
 
   getSharingOptionsSortOrder: function() {
     return this.getCookie(this.SHARING_SORT_ORDER, [])

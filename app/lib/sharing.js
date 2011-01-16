@@ -11,7 +11,8 @@ var Sharing = {
     {id: "sharing-ai", label: $L("SMS"), command: "send-to-sms", defaultEnabled: true},
     {id: "sharing-aj", label: $L("Read Later"), defaultEnabled: true},
     {id: "sharing-ak", label: $L("Relego"), command: "send-to-relego", defaultEnabled: true},
-    {id: "sharing-al", label: $L("Spare Time"), command: "send-to-spare-time", defaultEnabled: true}
+    {id: "sharing-al", label: $L("Spare Time"), command: "send-to-spare-time", defaultEnabled: true},
+    {id: "sharing-am", label: $L("Instapaper"), command: "send-to-instapaper", defaultEnabled: true}
   ],
 
   getPopupFor: function(article) {
@@ -83,6 +84,7 @@ var Sharing = {
     switch(command) {
       case "share-with-google":   Sharing.shareWithGoogle(article, controller); break;
       case "unshare-with-google": Sharing.unshareWithGoogle(article, controller); break;
+      case "send-to-instapaper":  Sharing.sendToInstapaper(article, controller); break;
       case "send-to-spare-time":  Sharing.sendToSpareTime(article, controller); break;
       case "send-to-relego":      Sharing.sendToRelego(article, controller); break;
       case "send-to-bad-kitty":   Sharing.sendToBadKitty(article, controller); break;
@@ -116,6 +118,22 @@ var Sharing = {
 
   sendToSpaz: function(article, controller) {
     Sharing.sendToApp(controller, $L("Spaz"), "com.funkatron.app.spaz", {action: "prepPost", tweet: article.url})
+  },
+
+  sendToInstapaper: function(article, controller) {
+    var success = function() {
+      Feeder.notify($L("Article saved"))
+    }
+
+    var credentials = function() {
+      controller.stageController.pushScene("instapaper-credentials", Sharing.sendToInstapaper.curry(article, controller))
+    }
+
+    var failure = function() {
+      Feeder.notify($L("Unable to save article"))
+    }
+
+    Instapaper.send(article.url, article.title, success, credentials, failure)
   },
 
   sendToSpareTime: function(article, controller) {

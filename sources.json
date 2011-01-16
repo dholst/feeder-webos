@@ -23,6 +23,7 @@
   {"source": "app/models/search.js"},
 
   {"source": "app/lib/ajax.js"},
+  {"source": "app/lib/instapaper.js"},
   {"source": "app/lib/log.js"},
   {"source": "app/lib/sharing.js"},
 
@@ -41,5 +42,6 @@
   {"source": "app/assistants/article-assistant.js"},
   {"source": "app/assistants/notification-feeds-assistant.js"},
   {"source": "app/assistants/folder-assistant.js"},
-  {"source": "app/assistants/configure-sharing-assistant.js"}
+  {"source": "app/assistants/configure-sharing-assistant.js"},
+  {"source": "app/assistants/instapaper-credentials-assistant.js"}
 ]
