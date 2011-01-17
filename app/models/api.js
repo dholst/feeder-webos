@@ -108,6 +108,21 @@ var Api = Class.create({
     }.bind(this))
   },
 
+  searchSubscriptions: function(query, success, failure) {
+    var self = this
+
+    new Ajax.Request(Api.BASE_URL + "feed-finder", {
+      method: "get",
+      parameters: {q: query, output: "json"},
+      requestHeaders: this._requestHeaders(),
+      onFailure: failure,
+      onSuccess: function(response) {
+        var subscriptions = response.responseText.evalJSON().items
+        success(subscriptions)
+      }
+    })
+  },
+
   addSubscription: function(url, success, failure) {
     this._getEditToken(function(token) {
       var parameters = {

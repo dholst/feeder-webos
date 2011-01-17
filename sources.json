@@ -32,6 +32,8 @@
   {"source": "app/assistants/debug-assistant.js"},
   {"source": "app/assistants/dashboard-assistant.js"},
   {"source": "app/assistants/add-assistant.js"},
+  {"source": "app/assistants/add-list-assistant.js"},
+  {"source": "app/assistants/add-detail-assistant.js"},
   {"source": "app/assistants/help-assistant.js"},
   {"source": "app/assistants/expired-assistant.js"},
   {"source": "app/assistants/preferences-assistant.js"},

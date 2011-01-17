@@ -2,56 +2,58 @@ var AddAssistant = Class.create(BaseAssistant, {
   initialize: function($super, api) {
     $super()
     this.api = api
-    this.url = {value: ""}
-    this.button = {buttonLabel: $L("Add")}
+    this.query = {value: ""}
+    this.button = {buttonLabel: $L("Search")}
   },
 
   setup: function($super) {
     $super()
-    this.controller.setupWidget("url", {changeOnKeyPress: true, autoFocus: true, textCase: Mojo.Widget.steModeLowerCase}, this.url)
-    this.controller.setupWidget("add", {type: Mojo.Widget.activityButton}, this.button)
+    this.controller.setupWidget("query", {changeOnKeyPress: true, autoFocus: true, textCase: Mojo.Widget.steModeLowerCase}, this.query)
+    this.controller.setupWidget("search", {type: Mojo.Widget.activityButton}, this.button)
 
-		this.controller.listen("url", Mojo.Event.propertyChange, this.propertyChanged = this.propertyChanged.bind(this))
-    this.controller.listen("add", Mojo.Event.tap, this.add = this.add.bind(this))
+    this.controller.listen("query", Mojo.Event.propertyChange, this.propertyChanged = this.propertyChanged.bind(this))
+    this.controller.listen("search", Mojo.Event.tap, this.search = this.search.bind(this))
 
     this.controller.get("header").update($L("Add Subscription"))
-    this.controller.get("url-label").update($L("URL"))
+    this.controller.get("query-label").update($L("Search"))
     this.controller.get("error-message").update($L("Unable to add subscription"))
   },
 
   activate: function($super) {
     $super()
-    this.controller.get("url").mojo.setConsumesEnterKey(false)
+    this.controller.get("query").mojo.setConsumesEnterKey(false)
   },
 
   cleanup: function($super) {
     $super()
 
-		this.controller.stopListening("url", Mojo.Event.propertyChange, this.propertyChanged)
-    this.controller.stopListening("add", Mojo.Event.tap, this.add)
+    this.controller.stopListening("query", Mojo.Event.propertyChange, this.propertyChanged)
+    this.controller.stopListening("search", Mojo.Event.tap, this.search)
   },
 
   propertyChanged: function(event) {
     if(Mojo.Char.enter === event.originalEvent.keyCode) {
-      this.add()
+      this.search()
     }
   },
 
-  add: function() {
-    this.controller.get("add").mojo.disabled = true
-    this.controller.get("add").mojo.activate()
+  search: function() {
+    this.controller.get("search").mojo.disabled = true
+    this.controller.get("search").mojo.activate()
     this.controller.modelChanged(this.button)
-    this.api.addSubscription(this.url.value, this.subscriptionAddSuccess.bind(this), this.subscriptionAddFailure.bind(this))
+    this.api.searchSubscriptions(this.query.value, this.subscriptionsFound.bind(this), this.subscriptionSearchFailure.bind(this))
   },
 
-  subscriptionAddSuccess: function() {
-    this.controller.stageController.popScene({feedAdded: true})
+  subscriptionsFound: function(subscriptions) {
+    this.controller.get("search").mojo.disabled = false
+    this.controller.get("search").mojo.deactivate()
+    this.controller.stageController.pushScene("add-list", this.api, subscriptions)
   },
 
-  subscriptionAddFailure: function() {
-    this.controller.get("add-failure").show()
-    this.controller.get("add").mojo.disabled = false
-    this.controller.get("add").mojo.deactivate()
+  subscriptionSearchFailure: function() {
+    this.controller.get("search-failure").show()
+    this.controller.get("search").mojo.disabled = false
+    this.controller.get("search").mojo.deactivate()
     this.controller.modelChanged(this.button)
   }
 })
