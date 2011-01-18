@@ -294,7 +294,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
       return
     }
 
-    if (Math.abs(this.dragLocation.last.x - this.dragLocation.start.x) > 50 && (this.dragLocation.last.timeStamp-2) < this.dragLocation.start.timeStamp) {
+    if (Math.abs(this.dragLocation.last.x - this.dragLocation.start.x) > 100 && (this.dragLocation.last.timeStamp-2) < this.dragLocation.start.timeStamp) {
       if ((this.dragLocation.last.x - this.dragLocation.start.x) > 0) {
        this.previousArticle()
       }
