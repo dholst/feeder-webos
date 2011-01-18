@@ -186,6 +186,16 @@ body.theme-light {
   height: 50px;
 }
 
+body.lefty .palm-page-header.fixed .my-right-icon {
+  left: 0;
+  right: auto;
+}
+
+body.lefty .palm-page-header.fixed .my-left-icon {
+  right: 0;
+  left: auto;
+}
+
 .palm-page-header.fixed #refresh {
   background: url(../images/refresh.png) no-repeat center;
 }
@@ -293,6 +303,11 @@ body.theme-light {
   z-index: 99999;
   top: 8px;
   right: 9px;
+}
+
+body.lefty #small-spinner {
+  left: 9px;
+  right: auto;
 }
 
 #footer .spinner {
