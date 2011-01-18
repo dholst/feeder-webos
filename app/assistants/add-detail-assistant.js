@@ -10,7 +10,7 @@ var AddDetailAssistant = Class.create(BaseAssistant, {
     $super()
     this.controller.setupWidget("add", {type: Mojo.Widget.activityButton}, this.button)
     this.controller.get("title").update(this.subscription.title)
-    this.controller.get("summary").update(this.subscription.content)
+    this.controller.get("summary").update(this.subscription.url + "<br><br>" + this.subscription.content)
     this.controller.get("error-message").update($L("Unable to add subscription"))
     this.controller.listen("add", Mojo.Event.tap, this.add = this.add.bind(this))
   },

@@ -1,25 +1,29 @@
-<div class="palm-page-header fixed">
-  <div class="palm-page-header-wrapper">
-    <div id="header" class="center truncating-text"></div>
-  </div>
-</div>
-<div class="palm-menu-spacer"></div>
-
-<div class="palm-group">
-  <div id="query-label" class="palm-group-title" x-mojo-loc=''></div>
-  <div class="palm-list">
-    <div class="palm-row single">
-      <div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+<div id="menu-panel-scrim" class="palm-scrim menu-panel" x-mojo-menupanel-scrim="" style="display: none"></div>
+<div class="palm-menu-panel" x-mojo-menupanel="" style="display: none;">
+  <div class="palm-menu-panel-wrapper" x-mojo-element="Scroller">
+    <div class="palm-row">
+      <div class="palm-row-wrapper textfield-group focused">
         <div class="title">
           <div id="query" x-mojo-element="TextField"></div>
         </div>
       </div>
     </div>
+    <div id="search-cancel" class="button" x-mojo-element="Button"></div>
+    <div id="search-submit" class="button" x-mojo-element="Button"></div>
   </div>
 </div>
+
+<div class="palm-page-header fixed">
+  <div class="palm-page-header-wrapper">
+    <div id="search-icon" class="my-right-icon"></div>
+    <div id="header" class="center truncating-text"></div>
+  </div>
+</div>
+<div class="palm-menu-spacer"></div>
 
 <div class="palm-inline-error" style="display:none" id="search-failure">
   <div id="error-message" class="error-message"></div>
 </div>
 
-<div x-mojo-element="Button" id="search"></div>
+<div id="subscriptions" x-mojo-element="List"></div>
+

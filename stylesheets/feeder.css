@@ -190,6 +190,10 @@ body.theme-light {
   background: url(../images/refresh.png) no-repeat center;
 }
 
+.palm-page-header.fixed #search-icon {
+  background: url(../images/search.png) no-repeat center;
+}
+
 .palm-row .rss {
   height: 50px;
   width: 30px;

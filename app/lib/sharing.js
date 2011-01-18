@@ -11,6 +11,7 @@ var Sharing = {
     {id: "sharing-ag", label: $L("Facebook"), command: "send-to-facebook", defaultEnabled: true},
     {id: "sharing-ah", label: $L("Email"), command: "send-to-email", defaultEnabled: true},
     {id: "sharing-ai", label: $L("SMS"), command: "send-to-sms", defaultEnabled: true},
+    {id: "sharing-ap", label: $L("neato!"), command: "send-to-neato", defaultEnabled: false},
     {id: "sharing-aj", label: $L("Read Later"), defaultEnabled: true},
     {id: "sharing-ak", label: $L("Relego"), command: "send-to-relego", defaultEnabled: true},
     {id: "sharing-al", label: $L("Spare Time"), command: "send-to-spare-time", defaultEnabled: true},
@@ -95,6 +96,7 @@ var Sharing = {
       case "send-to-tweed":       Sharing.sendToTweed(article, controller); break;
       case "send-to-email":       Sharing.sendToEmail(article, controller); break;
       case "send-to-sms":         Sharing.sendToSms(article, controller); break;
+      case "send-to-neato":       Sharing.sendToNeato(article, controller); break;
       case "send-to-facebook":    Sharing.sendToFacebook(article, controller); break;
       case "configure":           controller.stageController.pushScene("configure-sharing", Sharing.items)
     }
@@ -162,6 +164,10 @@ var Sharing = {
 
   sendToSms: function(article, controller) {
     Sharing.sendToApp(controller, $L("Messaging"), "com.palm.app.messaging", {messageText: article.title + "\n\n" + article.url})
+  },
+
+  sendToNeato: function(article, controller) {
+    Sharing.sendToApp(controller, $L("neato!"), "com.zhephree.neato", {a: "url", c: article.url})
   },
 
   sendToApp: function(controller, appName, id, params) {
