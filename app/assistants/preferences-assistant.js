@@ -108,6 +108,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.controller.listen("notification-interval", Mojo.Event.propertyChange, this.setNotificationInterval = this.setNotificationInterval.bind(this))
     this.controller.listen("notification-feeds", Mojo.Event.propertyChange, this.setNotificationFeeds = this.setNotificationFeeds.bind(this))
     this.controller.listen("notification-feed-selection", Mojo.Event.tap, this.selectFeeds = this.selectFeeds.bind(this))
+    this.controller.listen("lefties", Mojo.Event.tap, this.weLoveLefties = this.weLoveLefties.bind(this))
   },
 
   updateLabels: function() {
@@ -144,6 +145,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("notification-interval", Mojo.Event.propertyChange, this.setNotificationInterval)
     this.controller.stopListening("notification-feeds", Mojo.Event.propertyChange, this.setNotificationFeeds)
     this.controller.stopListening("notification-feed-selection", Mojo.Event.tap, this.selectFeeds)
+    this.controller.stopListening("lefties", Mojo.Event.tap, this.weLoveLefties)
   },
 
   showAndHideStuff: function() {
@@ -232,6 +234,11 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
 
   selectFeeds: function() {
     this.controller.stageController.pushScene("notification-feeds")
+  },
+
+  weLoveLefties: function() {
+    Preferences.setLeftyFriendly(Preferences.isLeftyFriendly() ? false : true)
+    this.setLeftyClass()
   },
 
   handleCommand: function($super, event) {

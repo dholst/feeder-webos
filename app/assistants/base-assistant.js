@@ -7,6 +7,7 @@ var BaseAssistant = Class.create({
 
   setup: function() {
     this.setTheme()
+    this.setLeftyClass()
 
     var appMenuItems = []
     appMenuItems.push(Mojo.Menu.editItem)
@@ -149,6 +150,17 @@ var BaseAssistant = Class.create({
     })
 
     body.addClassName("theme-" + Preferences.getTheme())
+  },
+
+  setLeftyClass: function() {
+    var body = this.controller.document.body
+    
+    if(Preferences.isLeftyFriendly()) {
+      body.addClassName("lefty")
+    }
+    else {
+      body.removeClassName("lefty")
+    }
   },
 
   menuPanelOn: function() {

@@ -17,6 +17,15 @@ Preferences = {
   SHARING_SORT_ORDER: "p-sharing-sort-order",
   INSTAPAPER_USERNAME: "q-instapaper-username",
   INSTAPAPER_PASSWORD: "r-instapaper-password",
+  LEFTY_FRIENDLY: "s-lefty-friendly",
+
+  isLeftyFriendly: function() {
+    return this.getCookie(this.LEFTY_FRIENDLY, false)
+  },
+
+  setLeftyFriendly: function(isLeftyFriendly) {
+    this.setCookie(this.LEFTY_FRIENDLY, isLeftyFriendly)
+  },
 
   getInstapaperUsername: function() {
     return this.getCookie(this.INSTAPAPER_USERNAME, null)

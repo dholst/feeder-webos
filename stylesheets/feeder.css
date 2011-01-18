@@ -196,6 +196,12 @@ body.lefty .palm-page-header.fixed .my-left-icon {
   left: auto;
 }
 
+body.lefty .palm-page-header.fixed #lefties {
+  background: url(../images/smiley.png) no-repeat center;
+  left: 0;
+  right: auto;
+}
+
 .palm-page-header.fixed #refresh {
   background: url(../images/refresh.png) no-repeat center;
 }
