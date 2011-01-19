@@ -13,7 +13,7 @@ var FolderAssistant = Class.create(BaseAssistant, {
       itemTemplate: "folder/folder",
       onItemRendered: this.folderRendered,
       reorderable: Preferences.isManualFeedSort(),
-  		swipeToDelete: true
+      swipeToDelete: true
     }, this.subscriptions)
 
     this.controller.setupWidget("sticky-folders", {itemTemplate: "folder/folder", onItemRendered: this.folderRendered, itemsProperty: "stickySubscriptions"}, this.folder)
@@ -24,7 +24,7 @@ var FolderAssistant = Class.create(BaseAssistant, {
     this.controller.listen("header", Mojo.Event.tap, this.scrollToTop = this.scrollToTop.bind(this))
     this.controller.listen("header", Mojo.Event.hold, this.showOrHideFeeds = this.showOrHideFeeds.bind(this))
     this.controller.listen(document, "SubscriptionDeleted", this.filterAndRefresh = this.filterAndRefresh.bind(this))
-
+    this.controller.listen(document, Feeder.Event.refreshComplete, this.refreshComplete = this.refreshComplete.bind(this))
     this.controller.get("header").update(this.folder.title)
     this.setupSearch()
   },
@@ -108,5 +108,36 @@ var FolderAssistant = Class.create(BaseAssistant, {
 
   doSearch: function(query) {
     this.controller.stageController.pushScene("articles", new Search(this.folder.api, query, this.folder.id))
+  },
+
+  handleCommand: function($super, event) {
+    if(!$super(event)) {
+      if(Mojo.Event.forward == event.type) {
+        this.refresh()
+      }
+    }
+  },
+
+  refresh: function() {
+    if(!self.refreshing) {
+      this.refreshing = true
+      this.smallSpinnerOn()
+      Mojo.Event.send(document, Feeder.Event.refreshWanted, {})
+    }
+  },
+
+  refreshComplete: function(event) {
+    var self = this
+    this.refreshing = false
+
+    event.sources.subscriptions.items.each(function(subscription) {
+      if(self.folder.id == subscription.id) {
+        self.folder = subscription
+        throw $break
+      }
+    })
+
+    this.filterAndRefresh()
+    this.smallSpinnerOff()
   }
 })

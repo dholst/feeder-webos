@@ -13,7 +13,6 @@ var AllSources = Class.create({
     var self = this
 
     self.subscriptions.findAll(
-
       function() {
         self.all.setUnreadCount(self.subscriptions.getUnreadCount())
         success()

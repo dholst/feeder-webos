@@ -19,11 +19,11 @@ var Subscription = Class.create(ArticleContainer, {
   },
 
   articleRead: function(subscriptionId) {
-    if(this.id == subscriptionId) this.decrementUnreadCountBy(1)
+    if(this.id == subscriptionId) {this.decrementUnreadCountBy(1)}
   },
 
   articleNotRead: function(subscriptionId) {
-    if(this.id == subscriptionId) this.incrementUnreadCountBy(1)
+    if(this.id == subscriptionId) {this.incrementUnreadCountBy(1)}
   },
 
   markAllRead: function(success, error) {

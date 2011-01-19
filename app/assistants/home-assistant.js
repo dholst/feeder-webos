@@ -49,6 +49,7 @@ var HomeAssistant = Class.create(BaseAssistant, {
     this.controller.listen(document, "MassMarkAsRead", this.markedAllRead = this.markedAllRead.bind(this))
     this.controller.listen(document, "SubscriptionDeleted", this.markedAllRead)
     this.controller.listen(document, "FolderDeleted", this.folderDeleted = this.folderDeleted.bind(this))
+    this.controller.listen(document, Feeder.Event.refreshWanted, this.refresh = this.refresh.bind(this))
   },
 
   cleanup: function($super) {
@@ -66,6 +67,7 @@ var HomeAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening(document, "MassMarkAsRead", this.markedAllRead)
     this.controller.stopListening(document, "SubscriptionDeleted", this.markedAllRead)
     this.controller.stopListening(document, "FolderDeleted", this.folderDeleted)
+    this.controller.stopListening(document, Feeder.Event.refreshWanted, this.refresh)
     this.cleanupSearch()
   },
 
@@ -74,6 +76,20 @@ var HomeAssistant = Class.create(BaseAssistant, {
 
     if(!this.loaded) {
       this.reload()
+    }
+  },
+
+  refresh: function() {
+    var self = this
+
+    var refreshComplete = function() {
+      self.refreshing = false
+      Mojo.Event.send(document, Feeder.Event.refreshComplete, {sources: self.sources})
+    }
+
+    if(!self.refreshing) {
+      self.refreshing = true
+      self.sources.findAll(refreshComplete, refreshComplete)
     }
   },
 

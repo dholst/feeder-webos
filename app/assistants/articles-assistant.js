@@ -24,13 +24,14 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     this.controller.listen("error-header", Mojo.Event.tap, this.reload = this.reload.bind(this))
     this.controller.listen("header", Mojo.Event.tap, this.scrollToTop = this.scrollToTop.bind(this))
     this.controller.listen("header", Mojo.Event.hold, this.showOrHideArticles = this.showOrHideArticles.bind(this))
+    this.controller.listen(document, Feeder.Event.refreshComplete, this.refreshComplete = this.refreshComplete.bind(this))
 
     this.controller.get("header").update(this.subscription.title)
 
     this.articlesTop = this.controller.get("articles").offsetTop
     this.scroller = this.controller.getSceneScroller()
     this.scrolling = this.scrolling.bind(this)
-    if(!this.subscription.disableSearch) this.setupSearch()
+    if(!this.subscription.disableSearch) {this.setupSearch()}
   },
 
   ready: function($super) {
@@ -58,8 +59,8 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
       else if("bottom" == changes_or_scroll) {
         this.controller.getSceneScroller().mojo.revealBottom()
       }
-      else if(parseInt(changes_or_scroll)) {
-        this.tappedIndex = this.tappedIndex + parseInt(changes_or_scroll)
+      else if(parseInt(changes_or_scroll, 10)) {
+        this.tappedIndex = this.tappedIndex + parseInt(changes_or_scroll, 10)
         this.controller.get("articles").mojo.revealItem(this.tappedIndex, true)
       }
     }
@@ -74,12 +75,12 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
       this.scroller.stopObserving(Mojo.Event.dragging, this.scrolling)
     }
 
-    if(!this.subscription.disableSearch) this.listenForSearch()
+    if(!this.subscription.disableSearch) {this.listenForSearch()}
   },
 
   deactivate: function($super) {
     $super()
-    if(!this.subscription.disableSearch) this.stopListeningForSearch()
+    if(!this.subscription.disableSearch) {this.stopListeningForSearch()}
   },
 
   cleanup: function($super) {
@@ -91,7 +92,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("error-header", Mojo.Event.tap, this.reload)
     this.controller.stopListening("header", Mojo.Event.tap, this.scrollToTop)
     this.controller.stopListening("header", Mojo.Event.hold, this.showOrHideArticles)
-    if(!this.subscription.disableSearch) this.cleanupSearch()
+    if(!this.subscription.disableSearch) {this.cleanupSearch()}
   },
 
   findArticles: function(scrollToTop) {
@@ -116,7 +117,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
   showMessageIfEmpty: function() {
     if(this.subscription.items.length) {
       var noItems = this.controller.sceneElement.querySelector(".no-items")
-      if(noItems) noItems.remove()
+      if(noItems) {noItems.remove()}
     }
     else {
       this.controller.sceneElement.insert("<div class=\"no-items\">" + $L("No articles were found") + "</div>")
@@ -312,5 +313,30 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
 
   doSearch: function(query) {
     this.controller.stageController.pushScene("articles", new Search(this.subscription.api, query, this.subscription.id))
+  },
+
+  handleCommand: function($super, event) {
+    if(!$super(event)) {
+      if(Mojo.Event.forward == event.type) {
+        this.refresh()
+      }
+    }
+  },
+
+  refresh: function() {
+    if(!self.refreshing) {
+      this.subscription.reset()
+      this.controller.modelChanged(this.subscription)
+      this.refreshing = true
+      this.controller.get("mark-all-read").hide()
+      this.controller.get("error-header").hide()
+      this.smallSpinnerOn()
+      Mojo.Event.send(document, Feeder.Event.refreshWanted, {})
+    }
+  },
+
+  refreshComplete: function() {
+    this.refreshing = false
+    this.reload()
   }
 })
