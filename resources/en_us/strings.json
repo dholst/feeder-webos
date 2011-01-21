@@ -78,5 +78,15 @@
   "Selected feeds": "Selected feeds",
   "Show read articles": "Show read articles",
   "Show read feeds": "Show read feeds",
-  "You have new articles to read": "You have new articles to read"
+  "You have new articles to read": "You have new articles to read",
+
+  "URL or query": "URL or query",
+  "Subscription added": "Subscription added",
+  "No subscriptions found": "No subscriptions found",
+  "Configure Sharing": "Configure Sharing",
+  "Save": "Save",
+  "Username": "Username",
+  "Configure...": "Configure...",
+  "Article saved to Instapaper": "Article saved to Instapaper",
+  "Unable to save article": "Unable to save article"
 }

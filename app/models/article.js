@@ -11,7 +11,7 @@ var Article = Class.create({
     this.summary = this.cleanUp(content.content)
     this.readLocked = data.isReadStateLocked
     this.setStates(data.categories)
-    this.setDates(parseInt(data.crawlTimeMsec))
+    this.setDates(parseInt(data.crawlTimeMsec, 10))
     this.setArticleLink(data.alternate)
   },
 
