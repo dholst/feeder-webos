@@ -167,6 +167,7 @@ var Sharing = {
   },
 
   sendToNeato: function(article, controller) {
+    Sharing.sendToApp(controller, $L("neato!"), "com.zhephree.neato", {send: '{"a":"url","c":"'+article.url+'"}'})
   },
 
   sendToApp: function(controller, appName, id, params) {
