@@ -79,6 +79,15 @@
   "Show read articles": "Gelesene Artikel anzeigen",
   "Show read feeds": "Gelesene Feeds anzeigen",
   "You have new articles to read": "Sie haben neue Artikel zum Lesen",
-  "Landscape gesture scrolling": "Im Querformat mit Gestenbereich scrollen"
+  "Landscape gesture scrolling": "Im Querformat mit Gestenbereich scrollen",
 
+  "URL or query": "URL oder Suchbegriff",
+  "Subscription added": "Abonnement hinzugefügt",
+  "No subscriptions found": "Keine Übereinstimmung gefunden",
+  "Configure Sharing": "Empfehlungen konfigurieren",
+  "Save": "Speichern",
+  "Username": "Benutzername",
+  "Configure...": "Konfigurieren...",
+  "Article saved to Instapaper": "Artikel bei Instapaper gespeichert",
+  "Unable to save article": "Artikel kann nicht gespeichert werden"
 }
