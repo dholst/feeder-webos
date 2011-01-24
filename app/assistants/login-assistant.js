@@ -23,25 +23,20 @@ var LoginAssistant = Class.create(BaseAssistant, {
       parameters: {},
 
       onSuccess: function(response) {
-        if(Feeder.Metrix.isExpired(response.utc, 14)) {
-          this.controller.stageController.pushScene("expired")
-        }
-        else {
-          if(this.credentials.email && this.credentials.password) {
-            if(this.triedLogin) {
-              Log.debug("ALREADY TRIED LOGGING IN, WHAT MAKES YOU THINK ITS GOING TO WORK NOW")
-            }
-            else {
-              this.triedLogin = true
-              Log.debug("logging in as " + this.credentials.email)
-              this.spinnerOn($L("logging in..."))
-              this.api.login(this.credentials, this.loginSuccess.bind(this), this.loginFailure.bind(this))
-            }
+        if(this.credentials.email && this.credentials.password) {
+          if(this.triedLogin) {
+            Log.debug("ALREADY TRIED LOGGING IN, WHAT MAKES YOU THINK ITS GOING TO WORK NOW")
           }
           else {
-            Log.debug("no credentials found")
-            this.controller.stageController.swapScene("credentials", this.credentials)
+            this.triedLogin = true
+            Log.debug("logging in as " + this.credentials.email)
+            this.spinnerOn($L("logging in..."))
+            this.api.login(this.credentials, this.loginSuccess.bind(this), this.loginFailure.bind(this))
           }
+        }
+        else {
+          Log.debug("no credentials found")
+          this.controller.stageController.swapScene("credentials", this.credentials)
         }
       }.bind(this)
     })
