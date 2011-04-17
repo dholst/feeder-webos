@@ -7,6 +7,7 @@ var Sharing = {
     {id: "sharing-ae", label: $L("Spaz"), command: "send-to-spaz", defaultEnabled: true},
     {id: "sharing-an", label: $L("Twee"), command: "send-to-twee", defaultEnabled: false},
     {id: "sharing-ao", label: $L("Tweed"), command: "send-to-tweed", defaultEnabled: false},
+    {id: "sharing-aq", label: $L("Carbon"), command: "send-to-carbon", defaultEnabled: true},
     {id: "sharing-af", label: $L("Share"), defaultEnabled: true},
     {id: "sharing-ag", label: $L("Facebook"), command: "send-to-facebook", defaultEnabled: true},
     {id: "sharing-ah", label: $L("Email"), command: "send-to-email", defaultEnabled: true},
@@ -94,6 +95,7 @@ var Sharing = {
       case "send-to-spaz":        Sharing.sendToSpaz(article, controller); break;
       case "send-to-twee":        Sharing.sendToTwee(article, controller); break;
       case "send-to-tweed":       Sharing.sendToTweed(article, controller); break;
+      case "send-to-carbon":      Sharing.sendToCarbon(article, controller); break;
       case "send-to-email":       Sharing.sendToEmail(article, controller); break;
       case "send-to-sms":         Sharing.sendToSms(article, controller); break;
       case "send-to-neato":       Sharing.sendToNeato(article, controller); break;
@@ -132,6 +134,10 @@ var Sharing = {
 
   sendToTweed: function(article, controller) {
     Sharing.sendToApp(controller, $L("Tweed"), "com.pivotallabs.tweed.us", {newTweet: article.title + "\n\n" + article.url})
+  },
+
+  sendToCarbon: function(article, controller) {
+    Sharing.sendToApp(controller, $L("Carbon"), "com.dotsandlines.carbon", {action: "compose", body: article.title + "\n\n" + article.url})
   },
 
   sendToInstapaper: function(article, controller) {
