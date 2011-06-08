@@ -15,7 +15,7 @@ end
 
 desc 'package the application'
 task :package do
-  puts system('palm-package -o /tmp . --exclude-from="config/excludes.txt"')
+  puts system('palm-package -o /tmp . --exclude-from="config/excludes.txt" --use-v1-format')
 end
 
 desc 'install the application on the emulator'
