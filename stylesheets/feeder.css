@@ -1,3 +1,13 @@
+@media (max-device-width: 700px) {
+  #go-back {
+    display: none;
+  }
+
+  #footer table td {
+    width: 20%;
+  }
+}
+
 body.theme-grey {
   background-color: #e6e3de !important;
 }
@@ -342,8 +352,12 @@ body.lefty #small-spinner {
 #footer table td {
   padding: 0;
   margin: 0;
-  width: 20%;
+  width: 16%;
   height: 100%;
+}
+
+#footer #go-back {
+  background: url(../images/previous-article.png) center center no-repeat;
 }
 
 #footer #previous-article {
