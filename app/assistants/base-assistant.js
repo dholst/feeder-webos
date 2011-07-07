@@ -35,6 +35,10 @@ var BaseAssistant = Class.create({
     this.controller.setupWidget(Mojo.Menu.appMenu, {omitDefaultItems: true}, {visible: true, items: appMenuItems})
     this.controller.setupWidget("spinner", {spinnerSize: Mojo.Widget.spinnerLarge}, {})
     this.controller.setupWidget("small-spinner", {spinnerSize: "small"}, this.smallSpinner)
+
+    if(this.controller.get("go-back")) {
+      this.controller.listen("go-back", Mojo.Event.tap, this.goBackButtonTapped = this.goBackButtonTapped.bind(this))
+    }
   },
 
   ready: function() {
@@ -55,6 +59,9 @@ var BaseAssistant = Class.create({
   },
 
   cleanup: function() {
+    if(this.controller.get("go-back")) {
+      this.controller.stopListening("go-back", Mojo.Event.tap, this.goBackButtonTapped)
+    }
   },
 
   smallSpinnerOn: function() {
@@ -95,6 +102,15 @@ var BaseAssistant = Class.create({
   refreshList: function(list, items) {
     list.mojo.noticeUpdatedItems(0, items)
     list.mojo.setLength(items.length)
+  },
+
+  goBackButtonTapped: function() {
+    if(this.handleGoBack) {
+      this.handleGoBack()
+    }
+    else {
+      this.controller.stageController.popScene(this.scrollingIndex)
+    }
   },
 
   handleCommand: function(event) {
@@ -154,7 +170,7 @@ var BaseAssistant = Class.create({
 
   setLeftyClass: function() {
     var body = this.controller.document.body
-    
+
     if(Preferences.isLeftyFriendly()) {
       body.addClassName("lefty")
     }

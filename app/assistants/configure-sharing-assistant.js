@@ -56,20 +56,23 @@ var ConfigureSharingAssistant = Class.create(BaseAssistant, {
     }
   },
 
+  handlGoBack: function() {
+    this.list.items.each(function(item) {
+      Preferences.setSharingOptionEnabled(item.id, item.enabled)
+    })
+
+    if(this.newSortOrder) {
+      Preferences.setSharingOptionsSortOrder(this.newSortOrder)
+    }
+
+    this.controller.stageController.popScene()
+  },
+
   handleCommand: function($super, event) {
     if(!$super(event)) {
       if (Mojo.Event.back == event.type) {
         event.stop();
-
-        this.list.items.each(function(item) {
-          Preferences.setSharingOptionEnabled(item.id, item.enabled)
-        })
-
-        if(this.newSortOrder) {
-          Preferences.setSharingOptionsSortOrder(this.newSortOrder)
-        }
-
-        this.controller.stageController.popScene()
+        this.handleGoBack()
       }
     }
   }

@@ -210,6 +210,10 @@ body.lefty .palm-page-header.fixed #lefties {
   background: url(../images/search.png) no-repeat center;
 }
 
+.palm-page-header.fixed #go-back {
+  background: url(../images/go-back.png) no-repeat center;
+}
+
 .palm-row .rss {
   height: 50px;
   width: 30px;

@@ -108,7 +108,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.controller.listen("notification-interval", Mojo.Event.propertyChange, this.setNotificationInterval = this.setNotificationInterval.bind(this))
     this.controller.listen("notification-feeds", Mojo.Event.propertyChange, this.setNotificationFeeds = this.setNotificationFeeds.bind(this))
     this.controller.listen("notification-feed-selection", Mojo.Event.tap, this.selectFeeds = this.selectFeeds.bind(this))
-    this.controller.listen("lefties", Mojo.Event.hold, this.weLoveLefties = this.weLoveLefties.bind(this))
+    // this.controller.listen("lefties", Mojo.Event.hold, this.weLoveLefties = this.weLoveLefties.bind(this))
   },
 
   updateLabels: function() {
@@ -145,7 +145,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("notification-interval", Mojo.Event.propertyChange, this.setNotificationInterval)
     this.controller.stopListening("notification-feeds", Mojo.Event.propertyChange, this.setNotificationFeeds)
     this.controller.stopListening("notification-feed-selection", Mojo.Event.tap, this.selectFeeds)
-    this.controller.stopListening("lefties", Mojo.Event.hold, this.weLoveLefties)
+    // this.controller.stopListening("lefties", Mojo.Event.hold, this.weLoveLefties)
   },
 
   showAndHideStuff: function() {
@@ -241,28 +241,30 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.setLeftyClass()
   },
 
+  handleGoBack: function() {
+    if (this.originalNotificationInterval != Preferences.notificationInterval()) {
+      Mojo.Controller.getAppController().assistant.handleLaunch({action: "notificationIntervalChange"})
+    }
+
+    changes = {}
+
+    if (this.originalAllowLandscape != Preferences.allowLandscape()) changes.allowLandscapeChanged = true
+    if (this.originalSortOrder != Preferences.isOldestFirst()) changes.sortOrderChanged = true
+    if (this.originalHideReadFeeds != Preferences.hideReadFeeds()) changes.hideReadFeedsChanged = true
+    if (this.originalHideReadArticles != Preferences.hideReadArticles()) changes.hideReadArticlesChanged = true
+    if (this.originalFontSize != Preferences.fontSize()) changes.fontSizeChanged = true
+    if (this.originalFeedSortOrder != Preferences.isManualFeedSort()) changes.feedSortOrderChanged = true
+    if (this.originalTheme != Preferences.getTheme()) changes.themeChanged = true
+
+    this.controller.stageController.popScene(changes)
+  },
+
   handleCommand: function($super, event) {
     if(!$super(event)) {
       if (Mojo.Event.back == event.type) {
         event.stop();
-
-        if (this.originalNotificationInterval != Preferences.notificationInterval()) {
-          Mojo.Controller.getAppController().assistant.handleLaunch({action: "notificationIntervalChange"})
-        }
-
-        changes = {}
-
-        if (this.originalAllowLandscape != Preferences.allowLandscape()) changes.allowLandscapeChanged = true
-        if (this.originalSortOrder != Preferences.isOldestFirst()) changes.sortOrderChanged = true
-        if (this.originalHideReadFeeds != Preferences.hideReadFeeds()) changes.hideReadFeedsChanged = true
-        if (this.originalHideReadArticles != Preferences.hideReadArticles()) changes.hideReadArticlesChanged = true
-        if (this.originalFontSize != Preferences.fontSize()) changes.fontSizeChanged = true
-        if (this.originalFeedSortOrder != Preferences.isManualFeedSort()) changes.feedSortOrderChanged = true
-        if (this.originalTheme != Preferences.getTheme()) changes.themeChanged = true
-
-        this.controller.stageController.popScene(changes)
+        this.handleGoBack()
       }
-
     }
   }
 })

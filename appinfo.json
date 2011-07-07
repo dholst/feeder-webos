@@ -1,11 +1,12 @@
 {
   "id": "com.semicolonapps.feeder",
-  "version": "0.6.4",
+  "version": "0.7.0",
   "vendor": "SemicolonApps",
   "type": "web",
   "main": "index.html",
   "title": "Feeder",
   "icon": "feeder_64.png",
   "splashicon": "feeder_250.png",
-  "noWindow": "true"
+  "noWindow": "true",
+  "uiRevision": 2
 }
