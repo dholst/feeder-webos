@@ -92,6 +92,14 @@ body.theme-light {
   background-image: url(../images/list-separator.png);
 }
 
+.theme-light .palm-divider.labeled .left {
+  background: url(../images/divider-line-light.png) no-repeat 100% 60%;
+}
+
+.theme-light .palm-divider.labeled .right {
+  background: url(../images/divider-line-light.png) no-repeat 0% 60%;
+}
+
 .theme-grey .palm-divider.labeled .left {
   background: url(../images/divider-line.png) no-repeat 100% 60%;
 }
