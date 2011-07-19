@@ -56,7 +56,7 @@ var ConfigureSharingAssistant = Class.create(BaseAssistant, {
     }
   },
 
-  handlGoBack: function() {
+  handleGoBack: function() {
     this.list.items.each(function(item) {
       Preferences.setSharingOptionEnabled(item.id, item.enabled)
     })
