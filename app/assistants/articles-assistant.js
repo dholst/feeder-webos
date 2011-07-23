@@ -121,7 +121,9 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
       if(noItems) {noItems.remove()}
     }
     else {
-      this.controller.sceneElement.insert("<div class=\"no-items\">" + $L("No articles were found") + "</div>")
+      if(this.controller.sceneElement.select(".no-items").length == 0) {
+        this.controller.sceneElement.insert("<div class=\"no-items\">" + $L("No articles were found") + "</div>")
+      }
     }
   },
 
