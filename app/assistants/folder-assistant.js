@@ -26,7 +26,7 @@ var FolderAssistant = Class.create(BaseAssistant, {
     this.controller.listen("header", Mojo.Event.hold, this.showOrHideFeeds = this.showOrHideFeeds.bind(this))
     this.controller.listen(document, "SubscriptionDeleted", this.filterAndRefresh = this.filterAndRefresh.bind(this))
     this.controller.listen(document, Feeder.Event.refreshComplete, this.refreshComplete = this.refreshComplete.bind(this))
-    this.controller.get("header").update(this.folder.title)
+    this.controller.get("header-text").update(this.folder.title)
     this.setupSearch()
   },
 

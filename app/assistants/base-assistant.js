@@ -307,59 +307,74 @@ var BaseAssistant = Class.create({
   },
 
   showOrHideFeeds: function(event) {
-    event.stop()
-    var items = []
+    event.stop();
+    var items = [];
 
     if(Preferences.hideReadFeeds()) {
-      items.push({label: $L("Show read feeds"), command: "show-read-feeds"})
+      items.push({label: $L("Show read feeds"), command: "show-read-feeds"});
     }
     else {
-      items.push({label: $L("Hide read feeds"), command: "hide-read-feeds"})
+      items.push({label: $L("Hide read feeds"), command: "hide-read-feeds"});
     }
 
+    items.push({label: $L("Search"), command: "search"});
+
     this.controller.popupSubmenu({
-      placeNear: this.controller.get("header"),
+      placeNear: this.controller.get("header-text"),
       items: items,
 
       onChoose: function(command) {
         if(command == "show-read-feeds") {
-          Preferences.setHideReadFeeds(false)
+          Preferences.setHideReadFeeds(false);
+          this.filterAndRefresh();
         }
         else if(command == "hide-read-feeds") {
-          Preferences.setHideReadFeeds(true)
+          Preferences.setHideReadFeeds(true);
+          this.filterAndRefresh();
         }
-
-        this.filterAndRefresh()
+        else if(command == "search") {
+          this.startSearch(event);
+        }
       }.bind(this)
-    })
+    });
   },
 
   showOrHideArticles: function(event) {
-    event.stop()
-    var items = []
+    event.stop();
+    var items = [];
 
     if(Preferences.hideReadArticles()) {
-      items.push({label: $L("Show read articles"), command: "show-read-articles"})
+      items.push({label: $L("Show read articles"), command: "show-read-articles"});
     }
     else {
-      items.push({label: $L("Hide read articles"), command: "hide-read-articles"})
+      items.push({label: $L("Hide read articles"), command: "hide-read-articles"});
     }
 
+    items.push({label: $L("Refresh"), command: "refresh"});
+    items.push({label: $L("Search"), command: "search"});
+
     this.controller.popupSubmenu({
-      placeNear: this.controller.get("header"),
+      placeNear: this.controller.get("header-text"),
       items: items,
 
       onChoose: function(command) {
         if(command == "show-read-articles") {
-          Preferences.setHideReadArticles(false)
+          Preferences.setHideReadArticles(false);
+          this.subscription.reset();
+          this.findArticles(true);
         }
         else if(command == "hide-read-articles") {
-          Preferences.setHideReadArticles(true)
+          Preferences.setHideReadArticles(true);
+          this.subscription.reset();
+          this.findArticles(true);
         }
-
-        this.subscription.reset()
-        this.findArticles(true)
+        else if(command == "search") {
+          this.startSearch(event)
+        }
+        else if(command == "refresh") {
+          this.refresh();
+        }
       }.bind(this)
-    })
+    });
   }
-})
+});

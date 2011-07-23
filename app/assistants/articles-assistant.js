@@ -27,7 +27,7 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
     this.controller.listen("header", Mojo.Event.hold, this.showOrHideArticles = this.showOrHideArticles.bind(this))
     this.controller.listen(document, Feeder.Event.refreshComplete, this.refreshComplete = this.refreshComplete.bind(this))
 
-    this.controller.get("header").update(this.subscription.title)
+    this.controller.get("header-text").update(this.subscription.title)
 
     this.articlesTop = this.controller.get("articles").offsetTop
     this.scroller = this.controller.getSceneScroller()
