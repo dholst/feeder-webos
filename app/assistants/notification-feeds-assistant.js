@@ -7,14 +7,16 @@ var NotificationFeedsAssistant = Class.create(BaseAssistant, {
     })
   },
 
-  setup: function() {
+  setup: function($super) {
+    $super()
     this.controller.setupWidget("feed", {modelProperty: "feedWatched"})
     this.controller.setupWidget("feeds", {itemTemplate: "notification-feeds/feed"}, BaseAssistant.sources.subscriptions)
     this.controller.listen("feeds", Mojo.Event.propertyChange, this.feedTapped = this.feedTapped.bind(this))
     this.controller.get("header").update($L("Select feeds to watch"))
   },
 
-  cleanup: function() {
+  cleanup: function($super) {
+    $super()
     this.controller.stopListening("feeds", Mojo.Event.propertyChange, this.feedTapped)
   },
 
