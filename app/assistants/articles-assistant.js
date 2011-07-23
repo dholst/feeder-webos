@@ -14,7 +14,8 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
       itemTemplate: "articles/article",
       dividerTemplate: "articles/divider",
       dividerFunction: this.divide,
-      onItemRendered: this.itemRendered.bind(this)
+      onItemRendered: this.itemRendered.bind(this),
+      renderLimit: 30
     }
 
     this.controller.setupWidget("articles", listAttributes, this.subscription)

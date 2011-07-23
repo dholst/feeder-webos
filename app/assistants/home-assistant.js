@@ -28,7 +28,8 @@ var HomeAssistant = Class.create(BaseAssistant, {
       dividerFunction: this.divide,
       onItemRendered: this.sourceRendered,
       reorderable: Preferences.isManualFeedSort(),
-      swipeToDelete: true
+      swipeToDelete: true,
+      renderLimit: 30
     }
 
     this.controller.setupWidget("sticky-sources", stickySourceAttributes, this.sources.stickySources)

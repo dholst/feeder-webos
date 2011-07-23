@@ -13,7 +13,8 @@ var FolderAssistant = Class.create(BaseAssistant, {
       itemTemplate: "folder/folder",
       onItemRendered: this.folderRendered,
       reorderable: Preferences.isManualFeedSort(),
-      swipeToDelete: true
+      swipeToDelete: true,
+      renderLimit: 30
     }, this.subscriptions)
 
     this.controller.setupWidget("sticky-folders", {itemTemplate: "folder/folder", onItemRendered: this.folderRendered, itemsProperty: "stickySubscriptions"}, this.folder)
