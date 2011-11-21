@@ -15,8 +15,10 @@ var Sharing = {
     {id: "sharing-ap", label: $L("neato!"), command: "send-to-neato", defaultEnabled: false},
     {id: "sharing-aj", label: $L("Read Later"), defaultEnabled: true},
     {id: "sharing-ak", label: $L("Relego"), command: "send-to-relego", defaultEnabled: true},
-    {id: "sharing-al", label: $L("Spare Time"), command: "send-to-spare-time", defaultEnabled: true},
-    {id: "sharing-am", label: $L("Instapaper"), command: "send-to-instapaper", defaultEnabled: true}
+    {id: "sharing-al", label: $L("Spare Time"), command: "send-to-spare-time", defaultEnabled: false},
+    {id: "sharing-am", label: $L("Instapaper"), command: "send-to-instapaper", defaultEnabled: true},
+    {id: "sharing-an", label: $L("ReadOnTouch PHONE"), command: "send-to-readontouch-phone", defaultEnabled: false},
+    {id: "sharing-ao", label: $L("ReadOnTouch PRO"), command: "send-to-readontouch-pro", defaultEnabled: false}
   ],
 
   getPopupFor: function(article) {
@@ -89,6 +91,8 @@ var Sharing = {
       case "share-with-google":   Sharing.shareWithGoogle(article, controller); break;
       case "unshare-with-google": Sharing.unshareWithGoogle(article, controller); break;
       case "send-to-instapaper":  Sharing.sendToInstapaper(article, controller); break;
+      case "send-to-readontouch-phone": Sharing.sendToReadontouchPhone(article, controller); break;
+      case "send-to-readontouch-pro": Sharing.sendToReadontouchPro(article, controller); break;
       case "send-to-spare-time":  Sharing.sendToSpareTime(article, controller); break;
       case "send-to-relego":      Sharing.sendToRelego(article, controller); break;
       case "send-to-bad-kitty":   Sharing.sendToBadKitty(article, controller); break;
@@ -174,6 +178,14 @@ var Sharing = {
 
   sendToNeato: function(article, controller) {
     Sharing.sendToApp(controller, $L("neato!"), "com.zhephree.neato", {send: '{"a":"url","c":"'+article.url+'"}'})
+  },
+
+  sendToReadontouchPhone: function(article, controller) {
+    Sharing.sendToApp(controller, $L("ReadOnTouch PHONE"), "com.sven-ziegler.readontouch-phone", {action: 'addLink', url: article.url, title: article.title})
+  },
+
+  sendToReadontouchPro: function(article, controller) {
+    Sharing.sendToApp(controller, $L("ReadOnTouch PRO"), "com.sven-ziegler.readontouch", {action: 'addLink', url: article.url, title: article.title})
   },
 
   sendToApp: function(controller, appName, id, params) {
