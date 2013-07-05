@@ -1,19 +1,20 @@
 var Api = Class.create({
   login: function(credentials, success, failure) {
+  	
     var authSuccess = function(response) {
       var authMatch = response.responseText.match(/Auth\=(.*)/)
       this.auth = authMatch ? authMatch[1] : ''
       success(this.auth)
     }.bind(this)
 
-    new Ajax.Request("https://www.google.com/accounts/ClientLogin", {
-      method: "get",
-      parameters: {service: "reader", Email: credentials.email, Passwd: credentials.password},
+    new Ajax.Request("https://theoldreader.com/reader/api/0/accounts/ClientLogin", {
+      method: "post",
+      parameters: {client: "The Old Feeder", accountType: "HOSTED_OR_GOOGLE", service: "reader", Email: credentials.email, Passwd: credentials.password},
       onSuccess: authSuccess,
       onFailure: failure
     })
   },
-
+  
   getTags: function(success, failure) {
     new Ajax.Request(Api.BASE_URL + "tag/list", {
       method: "get",
@@ -186,8 +187,9 @@ var Api = Class.create({
       onFailure: failure,
       onSuccess: function(response) {
         var json = response.responseText.evalJSON()
-
+		
         if(json.denied) {
+          
           failure()
         }
         else {
@@ -239,7 +241,7 @@ var Api = Class.create({
 
   _getArticles: function(id, exclude, continuation, success, failure) {
     var parameters = {output: "json", n: 40}
-
+	
     if(id != "user/-/state/com.google/starred" &&
        id != "user/-/state/com.google/broadcast" &&
        Preferences.isOldestFirst()) {
@@ -253,17 +255,33 @@ var Api = Class.create({
     if(exclude) {
       parameters.xt = exclude
     }
-
-    new Ajax.Request(Api.BASE_URL + "stream/contents/" + escape(id), {
-      method: "get",
-      parameters: parameters,
-      requestHeaders: this._requestHeaders(),
-      onFailure: failure,
-      onSuccess: function(response) {
-        var articles = response.responseText.evalJSON()
-        success(articles.items, articles.id, articles.continuation)
-      }
-    })
+	
+    if(id == "user/-/state/com.google/reading-list" || id == "user/-/state/com.google/broadcast" || id == "user/-/state/com.google/starred")
+	{
+		new Ajax.Request(Api.BASE_URL2 + escape(id), {
+		  method: "get",
+		  parameters: parameters,
+		  requestHeaders: this._requestHeaders(),
+		  onFailure: failure,
+		  onSuccess: function(response) {
+			var articles = response.responseText.evalJSON()
+			success(articles.items, articles.id, articles.continuation)
+		  }
+		})
+	}
+	else
+	{
+		new Ajax.Request(Api.BASE_URL + "stream/contents/" + escape(id), {
+		  method: "get",
+		  parameters: parameters,
+		  requestHeaders: this._requestHeaders(),
+		  onFailure: failure,
+		  onSuccess: function(response) {
+			var articles = response.responseText.evalJSON()
+			success(articles.items, articles.id, articles.continuation)
+		  }
+		})
+    }
   },
 
   markAllRead: function(id, success, failure) {
@@ -459,4 +477,5 @@ var Api = Class.create({
   }
 })
 
-Api.BASE_URL = "http://www.google.com/reader/api/0/"
+Api.BASE_URL = "https://theoldreader.com/reader/api/0/"
+Api.BASE_URL2 = "https://theoldreader.com/reader/atom/"

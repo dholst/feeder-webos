@@ -123,18 +123,20 @@ var Article = Class.create({
   },
 
   turnStarOn: function(success, failure) {
-    this._setState("Starred", "isStarred", true, success, failure)
+    //this._setState("Starred", "isStarred", true, success, failure)
+    Feeder.notify($L("Starring Not Available"))
   },
 
   turnStarOff: function(success, failure) {
-    this._setState("NotStarred", "isStarred", false, success, failure)
+    //this._setState("NotStarred", "isStarred", false, success, failure)
+    Feeder.notify($L("Starring Not Available"))
   },
 
   _setState: function(apiState, localProperty, localValue, success, failure, sticky) {
     Log.debug("setting article state - " + apiState)
 
     if(apiState.match(/Read/) && this.readLocked) {
-      Feeder.notify("Read state has been locked by Google")
+      Feeder.notify("Read state has been locked by The Old Feeder")
       success(false)
     }
     else {

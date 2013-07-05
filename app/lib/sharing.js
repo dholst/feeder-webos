@@ -1,13 +1,14 @@
 var Sharing = {
+  
   items: [
-    {id: "sharing-aa", label: $L("Google"), defaultEnabled: true},
-    {id: "sharing-ab", label: $L("Share"), command: "share-with-google", defaultEnabled: true},
-    {id: "sharing-ac", label: $L("Twitter"), defaultEnabled: true},
+    {id: "sharing-aa", label: $L("The Old Reader"), defaultEnabled: true},
+    {id: "sharing-ab", label: $L("Share"), command: "share-with-google", defaultEnabled: false},
+    /*{id: "sharing-ac", label: $L("Twitter"), defaultEnabled: true},
     {id: "sharing-ad", label: $L("Bad Kitty"), command: "send-to-bad-kitty", defaultEnabled: true},
     {id: "sharing-ae", label: $L("Spaz"), command: "send-to-spaz", defaultEnabled: true},
     {id: "sharing-an", label: $L("Twee"), command: "send-to-twee", defaultEnabled: false},
     {id: "sharing-ao", label: $L("Tweed"), command: "send-to-tweed", defaultEnabled: false},
-    {id: "sharing-aq", label: $L("Carbon"), command: "send-to-carbon", defaultEnabled: true},
+    {id: "sharing-aq", label: $L("Carbon"), command: "send-to-carbon", defaultEnabled: true},*/
     {id: "sharing-af", label: $L("Share"), defaultEnabled: true},
     {id: "sharing-ag", label: $L("Facebook"), command: "send-to-facebook", defaultEnabled: true},
     {id: "sharing-ah", label: $L("Email"), command: "send-to-email", defaultEnabled: true},
@@ -109,15 +110,17 @@ var Sharing = {
   },
 
   shareWithGoogle: function(article, controller) {
-    article.turnShareOn(function() {
-      Feeder.notify($L("Article shared"))
-    })
+    //article.turnShareOn(function() {
+    //  Feeder.notify($L("Article shared"))
+    //})
+    Feeder.notify($L("Sharing Not Available"))
   },
 
   unshareWithGoogle: function(article, controller) {
-    article.turnShareOff(function() {
-      Feeder.notify($L("Article unshared"))
-    })
+    //article.turnShareOff(function() {
+    //  Feeder.notify($L("Article unshared"))
+    //})
+    Feeder.notify($L("Sharing Not Available"))
   },
 
   sendToFacebook: function(article, controller) {
