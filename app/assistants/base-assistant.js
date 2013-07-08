@@ -269,12 +269,14 @@ var BaseAssistant = Class.create({
   },
 
   listenForSearch: function() {
-    $(this.controller.document).observe("keypress", this.startSearch)
-    this.controller.get("search-text").mojo.setConsumesEnterKey(false)
+    // The search feature is not currently available through The Old Reader API
+    //$(this.controller.document).observe("keypress", this.startSearch)
+    //this.controller.get("search-text").mojo.setConsumesEnterKey(false)
   },
 
   stopListeningForSearch: function() {
-    $(this.controller.document).stopObserving("keypress", this.startSearch)
+    // The search feature is not currently available through The Old Reader API
+    //$(this.controller.document).stopObserving("keypress", this.startSearch)
   },
 
   scrollToTop: function() {
@@ -317,7 +319,8 @@ var BaseAssistant = Class.create({
       items.push({label: $L("Hide read feeds"), command: "hide-read-feeds"});
     }
 
-    items.push({label: $L("Search"), command: "search"});
+    // The search feature is not currently available through The Old Reader API
+    // items.push({label: $L("Search"), command: "search"});
 
     this.controller.popupSubmenu({
       placeNear: this.controller.get("header-text"),
@@ -351,7 +354,8 @@ var BaseAssistant = Class.create({
     }
 
     items.push({label: $L("Refresh"), command: "refresh"});
-    items.push({label: $L("Search"), command: "search"});
+    // The search feature is not currently available through The Old Reader API
+    // items.push({label: $L("Search"), command: "search"});
 
     this.controller.popupSubmenu({
       placeNear: this.controller.get("header-text"),
