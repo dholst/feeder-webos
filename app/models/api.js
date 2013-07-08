@@ -256,21 +256,22 @@ var Api = Class.create({
       parameters.xt = exclude
     }
 	
-    if(id == "user/-/state/com.google/reading-list" || id == "user/-/state/com.google/broadcast" || id == "user/-/state/com.google/starred")
-	{
-		new Ajax.Request(Api.BASE_URL2 + escape(id), {
-		  method: "get",
-		  parameters: parameters,
-		  requestHeaders: this._requestHeaders(),
-		  onFailure: failure,
-		  onSuccess: function(response) {
-			var articles = response.responseText.evalJSON()
-			success(articles.items, articles.id, articles.continuation)
-		  }
-		})
-	}
-	else
-	{
+	new Ajax.Request(Api.BASE_URL2 + escape(id), {
+	  method: "get",
+	  parameters: parameters,
+	  requestHeaders: this._requestHeaders(),
+	  onFailure: failure,
+	  onSuccess: function(response) {
+		var articles = response.responseText.evalJSON()
+		success(articles.items, articles.id, articles.continuation)
+	  }
+	})
+	
+	// NOTE: This is the original Google Reader API Logic. The Old Reader API does not properly support using this method
+	// for accessing "feeds of feeds" such as the all items feed, or "all" feeds within a folder. These must be accessed using
+	// the Atom feed (https://theoldreader.com/reader/atom/) instead. Once The Old Reader fixes their API, I will look into
+	// re-implementing the original logic for consistency's sake.
+	/*
 		new Ajax.Request(Api.BASE_URL + "stream/contents/" + escape(id), {
 		  method: "get",
 		  parameters: parameters,
@@ -281,7 +282,7 @@ var Api = Class.create({
 			success(articles.items, articles.id, articles.continuation)
 		  }
 		})
-    }
+    */
   },
 
   markAllRead: function(id, success, failure) {

@@ -3,9 +3,9 @@ var Sharing = {
   items: [
     {id: "sharing-aa", label: $L("The Old Reader"), defaultEnabled: true},
     {id: "sharing-ab", label: $L("Share"), command: "share-with-google", defaultEnabled: false},
-    /*{id: "sharing-ac", label: $L("Twitter"), defaultEnabled: true},
-    {id: "sharing-ad", label: $L("Bad Kitty"), command: "send-to-bad-kitty", defaultEnabled: true},
-    {id: "sharing-ae", label: $L("Spaz"), command: "send-to-spaz", defaultEnabled: true},
+    {id: "sharing-ac", label: $L("Twitter"), defaultEnabled: true},
+    {id: "sharing-ad", label: $L("Project Macaw"), command: "send-to-project-macaw", defaultEnabled: true},
+    /*{id: "sharing-ae", label: $L("Spaz"), command: "send-to-spaz", defaultEnabled: true},
     {id: "sharing-an", label: $L("Twee"), command: "send-to-twee", defaultEnabled: false},
     {id: "sharing-ao", label: $L("Tweed"), command: "send-to-tweed", defaultEnabled: false},
     {id: "sharing-aq", label: $L("Carbon"), command: "send-to-carbon", defaultEnabled: true},*/
@@ -96,7 +96,7 @@ var Sharing = {
       case "send-to-readontouch-pro": Sharing.sendToReadontouchPro(article, controller); break;
       case "send-to-spare-time":  Sharing.sendToSpareTime(article, controller); break;
       case "send-to-relego":      Sharing.sendToRelego(article, controller); break;
-      case "send-to-bad-kitty":   Sharing.sendToBadKitty(article, controller); break;
+      case "send-to-project-macaw":   Sharing.sendToProjectMacaw(article, controller); break;
       case "send-to-spaz":        Sharing.sendToSpaz(article, controller); break;
       case "send-to-twee":        Sharing.sendToTwee(article, controller); break;
       case "send-to-tweed":       Sharing.sendToTweed(article, controller); break;
@@ -127,8 +127,8 @@ var Sharing = {
     Sharing.sendToApp(controller, $L("Facebook"), "com.palm.app.facebook", {status: article.title + "\n\n" + article.url})
   },
 
-  sendToBadKitty: function(article, controller) {
-    Sharing.sendToApp(controller, $L("Bad Kitty"), "com.superinhuman.badkitty", {action: "tweet", tweet: article.title + "\n\n" + article.url})
+  sendToProjectMacaw: function(article, controller) {
+    Sharing.sendToApp(controller, $L("Project Macaw"), "net.minego.phnx", {action: "tweet", msg: article.title + "\n\n" + article.url})
   },
 
   sendToSpaz: function(article, controller) {
