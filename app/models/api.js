@@ -1,6 +1,5 @@
 var Api = Class.create({
   login: function(credentials, success, failure) {
-  	
     var authSuccess = function(response) {
       var authMatch = response.responseText.match(/Auth\=(.*)/)
       this.auth = authMatch ? authMatch[1] : ''
@@ -9,7 +8,7 @@ var Api = Class.create({
 
     new Ajax.Request("https://theoldreader.com/reader/api/0/accounts/ClientLogin", {
       method: "post",
-      parameters: {client: "The Old Feeder", accountType: "HOSTED_OR_GOOGLE", service: "reader", Email: credentials.email, Passwd: credentials.password},
+      parameters: {client: "FeedSpider", accountType: "HOSTED_OR_GOOGLE", service: "reader", Email: credentials.email, Passwd: credentials.password},
       onSuccess: authSuccess,
       onFailure: failure
     })

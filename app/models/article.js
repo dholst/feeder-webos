@@ -136,7 +136,7 @@ var Article = Class.create({
     Log.debug("setting article state - " + apiState)
 
     if(apiState.match(/Read/) && this.readLocked) {
-      Feeder.notify("Read state has been locked by The Old Feeder")
+      Feeder.notify("Read state has been locked by The Old Reader")
       success(false)
     }
     else {

@@ -1,11 +1,12 @@
 {
-  "id": "com.othelloventures.theoldfeeder",
-  "version": "0.8.2",
+  "id": "com.othelloventures.feedspider",
+  "version": "0.8.3",
   "vendor": "Othello Ventures",
   "type": "web",
   "main": "index.html",
-  "title": "The Old Feeder",
+  "title": "FeedSpider",
   "icon": "feeder_64.png",
+  "miniicon": "feeder_48.png",
   "splashicon": "feeder_250.png",
   "noWindow": "true",
   "uiRevision": 2
