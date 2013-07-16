@@ -8,6 +8,15 @@
   }
 }
 
+body.theme-dark {
+  background-color: #444 !important;
+  color: white !important;
+}
+
+.theme-dark a{
+  color: white !important;
+}
+
 body.theme-grey {
   background-color: #e6e3de !important;
 }
@@ -71,6 +80,10 @@ body.theme-light {
   padding: 0;
 }
 
+.theme-dark .palm-popup-container {
+  color: black;
+}
+
 .preferences .check {
   width: 32px;
 }
@@ -90,6 +103,14 @@ body.theme-light {
 
 .palm-row {
   background-image: url(../images/list-separator.png);
+}
+
+.theme-dark .palm-divider.labeled .left {
+  background: url(../images/divider-line-dark.png) no-repeat 100% 60%;
+}
+
+.theme-dark .palm-divider.labeled .right {
+  background: url(../images/divider-line-dark.png) no-repeat 0% 60%;
 }
 
 .theme-light .palm-divider.labeled .left {
@@ -113,10 +134,20 @@ body.theme-light {
   text-transform: none;
 }
 
+.theme-dark .palm-divider .label {
+  color: #EEE;
+  text-transform: none;
+}
+
 .article #header {
   padding: 15px;
   font-size: 16px;
   border-bottom: 1px solid #444;
+}
+
+.theme-dark .article #header {
+  color: white;
+  background-color: #black;
 }
 
 .theme-grey .article #header {
@@ -125,8 +156,12 @@ body.theme-light {
 }
 
 .theme-light .article #header {
-  color: black;
+  color: #222;
   background-color: white;
+}
+
+.theme-dark .article #title {
+  color: white;
 }
 
 .theme-grey .article #title {
@@ -139,6 +174,10 @@ body.theme-light {
 
 .article #author, .article #subscription {
   font-size: 14px;
+}
+
+.theme-dark .article #author, .theme-dark .article #subscription {
+  color: #EEE;
 }
 
 .theme-grey .article #author, .theme-grey .article #subscription {
@@ -271,6 +310,10 @@ body.lefty .palm-page-header.fixed #lefties {
   color: #444;
 }
 
+.theme-dark .article-title {
+  color: white;
+}
+
 .theme-light .article-title {
   color: black;
 }
@@ -279,6 +322,10 @@ body.lefty .palm-page-header.fixed #lefties {
   margin-top: 10px;
   font-size: 14px;
   color: #999;
+}
+
+.theme-dark .article-origin {
+  color: #EEE;
 }
 
 .theme-light .article-origin {
@@ -303,6 +350,10 @@ body.lefty .palm-page-header.fixed #lefties {
   margin: 0px 10px;
   padding: 0;
   line-height: 50px;
+}
+
+.theme-dark .subscription-title, .theme-dark .subscription-count, .theme-dark .folder-title, .theme-dark .folder-count, .search-title {
+  color: white;
 }
 
 .theme-light .subscription-title, .theme-light .subscription-count, .theme-light .folder-title, .theme-light .folder-count, .search-title {
@@ -425,6 +476,10 @@ body.lefty #small-spinner {
   color: #333;
   margin: 10px;
   padding: 5px;
+}
+
+.theme-dark #summary {
+  color: white;
 }
 
 .theme-light #summary {

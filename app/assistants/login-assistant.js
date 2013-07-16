@@ -10,9 +10,6 @@ var LoginAssistant = Class.create(BaseAssistant, {
 
   setup: function($super) {
     $super()
-
-    Log.debug("sending metrix data")
-    Feeder.Metrix.postDeviceData()
   },
     
   activate: function($super, changes) {

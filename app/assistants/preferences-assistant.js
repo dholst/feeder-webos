@@ -21,7 +21,8 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
 
     this.themeChoices = {choices: [
       {label: $L("Grey Theme"), value: "grey"},
-      {label: $L("Light Theme"), value: "light"}
+      {label: $L("Light Theme"), value: "light"},
+      {label: $L("Dark Theme"), value: "dark"}
     ]}
 
     this.intervalChoices = {choices: [

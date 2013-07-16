@@ -1,6 +1,6 @@
 {
   "id": "com.othelloventures.feedspider",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "vendor": "Othello Ventures",
   "type": "web",
   "main": "index.html",

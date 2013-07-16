@@ -10,7 +10,6 @@ var HomeAssistant = Class.create(BaseAssistant, {
 
   setup: function($super) {
     $super()
-    Feeder.Metrix.checkBulletinBoard(this.controller, 20);
     this.setupLists()
     this.setupListeners()
     this.setupSearch()
