@@ -1,14 +1,14 @@
 var Sharing = {
   
   items: [
-    {id: "sharing-aa", label: $L("The Old Reader"), defaultEnabled: true},
+    {id: "sharing-aa", label: $L("Reader"), defaultEnabled: true},
     {id: "sharing-ab", label: $L("Share"), command: "share-with-google", defaultEnabled: false},
     {id: "sharing-ac", label: $L("Twitter"), defaultEnabled: true},
     {id: "sharing-ad", label: $L("Project Macaw"), command: "send-to-project-macaw", defaultEnabled: true},
-    /*{id: "sharing-ae", label: $L("Spaz"), command: "send-to-spaz", defaultEnabled: true},
-    {id: "sharing-an", label: $L("Twee"), command: "send-to-twee", defaultEnabled: false},
-    {id: "sharing-ao", label: $L("Tweed"), command: "send-to-tweed", defaultEnabled: false},
-    {id: "sharing-aq", label: $L("Carbon"), command: "send-to-carbon", defaultEnabled: true},*/
+    {id: "sharing-ae", label: $L("Glimpse"), command: "send-to-glimpse", defaultEnabled: true},
+    {id: "sharing-aq", label: $L("Quick Post"), defaultEnabled: true},
+    {id: "sharing-ar", label: $L("Default Accounts"), command: "send-to-qp-default", defaultEnabled: true},
+    {id: "sharing-as", label: $L("All Accounts"), command: "send-to-qp-all", defaultEnabled: true},
     {id: "sharing-af", label: $L("Share"), defaultEnabled: true},
     {id: "sharing-ag", label: $L("Facebook"), command: "send-to-facebook", defaultEnabled: true},
     {id: "sharing-ah", label: $L("Email"), command: "send-to-email", defaultEnabled: true},
@@ -97,10 +97,9 @@ var Sharing = {
       case "send-to-spare-time":  Sharing.sendToSpareTime(article, controller); break;
       case "send-to-relego":      Sharing.sendToRelego(article, controller); break;
       case "send-to-project-macaw":   Sharing.sendToProjectMacaw(article, controller); break;
-      case "send-to-spaz":        Sharing.sendToSpaz(article, controller); break;
-      case "send-to-twee":        Sharing.sendToTwee(article, controller); break;
-      case "send-to-tweed":       Sharing.sendToTweed(article, controller); break;
-      case "send-to-carbon":      Sharing.sendToCarbon(article, controller); break;
+      case "send-to-glimpse":        Sharing.sendToGlimpse(article, controller); break;
+      case "send-to-qp-default":       Sharing.sendToQPDefault(article, controller); break;
+      case "send-to-qp-all":      Sharing.sendToQPAll(article, controller); break;
       case "send-to-email":       Sharing.sendToEmail(article, controller); break;
       case "send-to-sms":         Sharing.sendToSms(article, controller); break;
       case "send-to-neato":       Sharing.sendToNeato(article, controller); break;
@@ -131,20 +130,16 @@ var Sharing = {
     Sharing.sendToApp(controller, $L("Project Macaw"), "net.minego.phnx", {action: "tweet", msg: article.title + "\n\n" + article.url})
   },
 
-  sendToSpaz: function(article, controller) {
-    Sharing.sendToApp(controller, $L("Spaz"), "com.funkatron.app.spaz", {action: "prepPost", tweet: article.title + "\n\n" + article.url})
+  sendToGlimpse: function(article, controller) {
+    Sharing.sendToApp(controller, $L("Glimpse"), "com.ingloriousapps.glimpse", {query: "tweet/" + article.title + "\n\n" + article.url})
   },
 
-  sendToTwee: function(article, controller) {
-    Sharing.sendToApp(controller, $L("Twee"), "com.deliciousmorsel.twee", {tweet: article.title + "\n\n" + article.url})
+  sendToQPDefault: function(article, controller) {
+    Sharing.sendToApp(controller, $L("Default Accounts"), "com.hedami.quickpost", {quickPost: article.title + "\n\n" + article.url})
   },
 
-  sendToTweed: function(article, controller) {
-    Sharing.sendToApp(controller, $L("Tweed"), "com.pivotallabs.tweed.us", {newTweet: article.title + "\n\n" + article.url})
-  },
-
-  sendToCarbon: function(article, controller) {
-    Sharing.sendToApp(controller, $L("Carbon"), "com.dotsandlines.carbon", {action: "compose", body: article.title + "\n\n" + article.url})
+  sendToQPAll: function(article, controller) {
+    Sharing.sendToApp(controller, $L("All Accounts"), "com.hedami.quickpost", {quickPost: "z " + article.title + "\n\n" + article.url})
   },
 
   sendToInstapaper: function(article, controller) {
