@@ -20,6 +20,8 @@
   {"source": "app/models/folder.js"},
   {"source": "app/models/preferences.js"},
   {"source": "app/models/search.js"},
+  {"source": "app/models/tor-api.js"},
+  {"source": "app/models/ino-api.js"},
 
   {"source": "app/lib/ajax.js"},
   {"source": "app/lib/instapaper.js"},

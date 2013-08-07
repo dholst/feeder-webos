@@ -164,10 +164,10 @@ var HomeAssistant = Class.create(BaseAssistant, {
 
   sourceTapped: function(event) {
     if(event.item.isFolder && !Preferences.combineFolders()) {
-      this.controller.stageController.pushScene("folder", event.item)
+      this.controller.stageController.pushScene("folder", this.api, event.item)
     }
     else {
-      this.controller.stageController.pushScene("articles", event.item)
+      this.controller.stageController.pushScene("articles", this.api, event.item)
     }
   },
 
@@ -247,6 +247,6 @@ var HomeAssistant = Class.create(BaseAssistant, {
   },
 
   doSearch: function(query) {
-    this.controller.stageController.pushScene("articles", new Search(this.api, query))
+    this.controller.stageController.pushScene("articles", this.api, new Search(this.api, query))
   }
 })

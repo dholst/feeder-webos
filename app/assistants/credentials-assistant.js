@@ -6,6 +6,11 @@ var CredentialsAssistant = Class.create(BaseAssistant, {
     this.showMessage = showMessage
     this.button = {buttonLabel: $L("Login")}
     this.hideLogout = true
+    
+    this.serviceChoices = [
+      {label: $L("The Old Reader"), value: "tor"},
+      {label: $L("InoReader"), value: "ino"}
+    ]
   },
 
   setup: function($super) {
@@ -13,8 +18,9 @@ var CredentialsAssistant = Class.create(BaseAssistant, {
     this.setupWidgets()
     this.setupListeners()
 
-    this.controller.update("email-label", $L("Email"))
+    this.controller.update("email-label", $L("Username"))
     this.controller.update("password-label", $L("Password"))
+    this.controller.update("service-label", $L("Service"))
     this.controller.update("error-message", $L("Login failed. Try again."))
   },
 
@@ -32,6 +38,7 @@ var CredentialsAssistant = Class.create(BaseAssistant, {
   setupWidgets: function() {
     this.controller.setupWidget("email", {modelProperty: "email", changeOnKeyPress: true, autoFocus: true, textCase: Mojo.Widget.steModeLowerCase}, this.credentials)
     this.controller.setupWidget("password", {modelProperty: "password", changeOnKeyPress: true}, this.credentials)
+    this.controller.setupWidget("service", {modelProperty: "service", choices: this.serviceChoices}, this.credentials)
     this.controller.setupWidget("login", {type: Mojo.Widget.activityButton}, this.button)
   },
 
@@ -39,13 +46,15 @@ var CredentialsAssistant = Class.create(BaseAssistant, {
     this.propertyChanged = this.propertyChanged.bind(this)
     this.login = this.login.bind(this)
 
-		this.controller.listen("password", Mojo.Event.propertyChange, this.propertyChanged)
+	this.controller.listen("password", Mojo.Event.propertyChange, this.propertyChanged)
+	this.controller.listen("service", Mojo.Event.propertyChange, this.setService = this.setService.bind(this))
     this.controller.listen("login", Mojo.Event.tap, this.login)
   },
 
   cleanupListeners: function() {
-		this.controller.stopListening("password", Mojo.Event.propertyChange, this.propertyChanged)
+	this.controller.stopListening("password", Mojo.Event.propertyChange, this.propertyChanged)
     this.controller.stopListening("login", Mojo.Event.tap, this.login)
+    this.controller.stopListening("service", Mojo.Event.propertyChange, this.setService)
   },
 
   propertyChanged: function(event) {
@@ -56,5 +65,8 @@ var CredentialsAssistant = Class.create(BaseAssistant, {
 
   login: function() {
     this.controller.stageController.swapScene("login", this.credentials)
-  }
+  },
+  
+  setService: function() {
+  },
 })

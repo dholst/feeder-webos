@@ -5,7 +5,7 @@ var LoginAssistant = Class.create(BaseAssistant, {
     this.credentials = credentials || new Credentials()
     this.api = new Api()
     this.triedLogin = false
-    this.hideLogout = true
+    this.hideLogout = true   
   },
 
   setup: function($super) {

@@ -1,10 +1,24 @@
 var AllSources = Class.create({
   initialize: function(api) {
-    this.all = new AllArticles(api)
-    //this.starred = new Starred(api)
-    //this.shared = new Shared(api)
-    //this.stickySources = {items: [this.all, this.starred, this.shared]}
-    this.stickySources = {items: [this.all]}
+    this.stickySources = {items: []}
+
+    if (api.supportsAllArticles())
+    {
+    	this.all = new AllArticles(api)
+    	this.stickySources.items.push(this.all)
+    }
+     
+    if (api.supportsStarred())
+    {
+    	this.starred = new Starred(api)
+    	this.stickySources.items.push(this.starred)
+    }
+    
+    if (api.supportsShared())
+    {
+    	this.shared = new Shared(api)
+    	this.stickySources.items.push(this.shared)
+    }
 
     this.subscriptions = new AllSubscriptions(api)
     this.subscriptionSources = {items: []}

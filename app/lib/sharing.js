@@ -109,17 +109,15 @@ var Sharing = {
   },
 
   shareWithGoogle: function(article, controller) {
-    //article.turnShareOn(function() {
-    //  Feeder.notify($L("Article shared"))
-    //})
-    Feeder.notify($L("Sharing Not Available"))
+    article.turnShareOn(function() {
+      Feeder.notify($L("Article shared"))
+    })
   },
 
   unshareWithGoogle: function(article, controller) {
-    //article.turnShareOff(function() {
-    //  Feeder.notify($L("Article unshared"))
-    //})
-    Feeder.notify($L("Sharing Not Available"))
+    article.turnShareOff(function() {
+      Feeder.notify($L("Article unshared"))
+    })
   },
 
   sendToFacebook: function(article, controller) {
