@@ -383,7 +383,6 @@ var TorApi = Class.create({
   },
 
   setArticleShared: function(articleId, subscriptionId, success, failure) {
-    Feeder.notify($L("Sharing Not Available"))
     /*this._editTag(
       articleId,
       subscriptionId,
@@ -395,7 +394,6 @@ var TorApi = Class.create({
   },
 
   setArticleNotShared: function(articleId, subscriptionId, success, failure) {
-    Feeder.notify($L("Sharing Not Available"))
     /*this._editTag(
       articleId,
       subscriptionId,
@@ -407,7 +405,6 @@ var TorApi = Class.create({
   },
 
   setArticleStarred: function(articleId, subscriptionId, success, failure) {
-    Feeder.notify($L("Starring Not Available"))
     /*this._editTag(
       articleId,
       subscriptionId,
@@ -419,7 +416,6 @@ var TorApi = Class.create({
   },
 
   setArticleNotStarred: function(articleId, subscriptionId, success, failure) {
-    Feeder.notify($L("Starring Not Available"))
     /*this._editTag(
       articleId,
       subscriptionId,

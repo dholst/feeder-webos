@@ -115,19 +115,47 @@ var Article = Class.create({
   },
 
   turnShareOn: function(success, failure) {
-    this._setState("Shared", "isShared", true, success, failure)
+    if(this.api.supportsShared())
+    {
+    	this._setState("Shared", "isShared", true, success, failure)
+    }
+    else
+    {
+    	Feeder.notify($L("Sharing Not Available"))
+    }
   },
 
   turnShareOff: function(success, failure) {
-    this._setState("NotShared", "isShared", false, success, failure)
+    if(this.api.supportsShared())
+    {
+    	this._setState("NotShared", "isShared", false, success, failure)
+    }
+    else
+    {
+    	Feeder.notify($L("Sharing Not Available"))
+    }
   },
 
   turnStarOn: function(success, failure) {
-    this._setState("Starred", "isStarred", true, success, failure)
+    if(this.api.supportsStarred())
+    {
+    	this._setState("Starred", "isStarred", true, success, failure)
+    }
+	else
+    {
+    	Feeder.notify($L("Starring Not Available"))
+    }
   },
 
   turnStarOff: function(success, failure) {
-    this._setState("NotStarred", "isStarred", false, success, failure)
+    if(this.api.supportsStarred())
+    {
+    	this._setState("NotStarred", "isStarred", false, success, failure)
+    }
+    else
+    {
+    	Feeder.notify($L("Starring Not Available"))
+    }
   },
 
   _setState: function(apiState, localProperty, localValue, success, failure, sticky) {
