@@ -58,7 +58,7 @@ var Api = Class.create({
   },
 
   titleFor: function(id) {
-    this.appApi.titleFor(id)
+    return this.appApi.titleFor(id)
   },
 
   getUnreadCounts: function(success, failure) {

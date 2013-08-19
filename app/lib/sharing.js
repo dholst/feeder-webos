@@ -3,6 +3,8 @@ var Sharing = {
   items: [
     {id: "sharing-aa", label: $L("Reader"), defaultEnabled: true},
     {id: "sharing-ab", label: $L("Share"), command: "share-with-google", defaultEnabled: false},
+    {id: "sharing-at", label: $L("Clipboard"), defaultEnabled: true},
+    {id: "sharing-au", label: $L("Copy URL"), command: "send-to-clipboard", defaultEnabled: true},
     {id: "sharing-ac", label: $L("Twitter"), defaultEnabled: true},
     {id: "sharing-ad", label: $L("Project Macaw"), command: "send-to-project-macaw", defaultEnabled: true},
     {id: "sharing-ae", label: $L("Glimpse"), command: "send-to-glimpse", defaultEnabled: true},
@@ -104,6 +106,7 @@ var Sharing = {
       case "send-to-sms":         Sharing.sendToSms(article, controller); break;
       case "send-to-neato":       Sharing.sendToNeato(article, controller); break;
       case "send-to-facebook":    Sharing.sendToFacebook(article, controller); break;
+      case "send-to-clipboard":    Sharing.sendToClipboard(article, controller); break;
       case "configure":           controller.stageController.pushScene("configure-sharing", Sharing.items)
     }
   },
@@ -182,6 +185,11 @@ var Sharing = {
 
   sendToReadontouchPro: function(article, controller) {
     Sharing.sendToApp(controller, $L("ReadOnTouch PRO"), "com.sven-ziegler.readontouch", {action: 'addLink', url: article.url, title: article.title})
+  },
+  
+  sendToClipboard: function(article, controller) {
+    controller.stageController.setClipboard(article.url)
+    Feeder.notify($L("URL Copied"))
   },
 
   sendToApp: function(controller, appName, id, params) {
