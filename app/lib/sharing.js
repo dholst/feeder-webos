@@ -1,5 +1,6 @@
 var Sharing = {
   
+  //variables in use up to av
   items: [
     {id: "sharing-aa", label: $L("Reader"), defaultEnabled: true},
     {id: "sharing-ab", label: $L("Share"), command: "share-with-google", defaultEnabled: false},
@@ -8,6 +9,7 @@ var Sharing = {
     {id: "sharing-ac", label: $L("Twitter"), defaultEnabled: true},
     {id: "sharing-ad", label: $L("Project Macaw"), command: "send-to-project-macaw", defaultEnabled: true},
     {id: "sharing-ae", label: $L("Glimpse"), command: "send-to-glimpse", defaultEnabled: true},
+    {id: "sharing-av", label: $L("Browser"), command: "send-to-browser", defaultEnabled: true},
     {id: "sharing-aq", label: $L("Quick Post"), defaultEnabled: true},
     {id: "sharing-ar", label: $L("Default Accounts"), command: "send-to-qp-default", defaultEnabled: true},
     {id: "sharing-as", label: $L("All Accounts"), command: "send-to-qp-all", defaultEnabled: true},
@@ -106,7 +108,8 @@ var Sharing = {
       case "send-to-sms":         Sharing.sendToSms(article, controller); break;
       case "send-to-neato":       Sharing.sendToNeato(article, controller); break;
       case "send-to-facebook":    Sharing.sendToFacebook(article, controller); break;
-      case "send-to-clipboard":    Sharing.sendToClipboard(article, controller); break;
+      case "send-to-clipboard":   Sharing.sendToClipboard(article, controller); break;
+      case "send-to-browser":     Sharing.sendToBrowser(article, controller); break;
       case "configure":           controller.stageController.pushScene("configure-sharing", Sharing.items)
     }
   },
@@ -190,6 +193,10 @@ var Sharing = {
   sendToClipboard: function(article, controller) {
     controller.stageController.setClipboard(article.url)
     Feeder.notify($L("URL Copied"))
+  },
+  
+  sendToBrowser: function(article, controller) {
+    Sharing.sendToApp(controller, $L("Browser"), "com.palm.app.browser", {target: "https://twitter.com/intent/tweet?text=" + encodeURIComponent(article.title) + "&url=" + encodeURI(article.url)})
   },
 
   sendToApp: function(controller, appName, id, params) {

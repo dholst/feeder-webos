@@ -269,14 +269,18 @@ var BaseAssistant = Class.create({
   },
 
   listenForSearch: function() {
-    // The search feature is not currently available through The Old Reader API
-    $(this.controller.document).observe("keypress", this.startSearch)
-    this.controller.get("search-text").mojo.setConsumesEnterKey(false)
+    if(this.api.supportsSearch())
+    {
+    	$(this.controller.document).observe("keypress", this.startSearch)
+    	this.controller.get("search-text").mojo.setConsumesEnterKey(false)
+    }
   },
 
   stopListeningForSearch: function() {
-    // The search feature is not currently available through The Old Reader API
-    $(this.controller.document).stopObserving("keypress", this.startSearch)
+  	if(this.api.supportsSearch())
+    {
+    	$(this.controller.document).stopObserving("keypress", this.startSearch)
+    }
   },
 
   scrollToTop: function() {

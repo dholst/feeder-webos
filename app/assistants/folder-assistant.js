@@ -109,7 +109,14 @@ var FolderAssistant = Class.create(BaseAssistant, {
   },
 
   doSearch: function(query) {
-    this.controller.stageController.pushScene("articles", this.api, new Search(this.folder.api, query, this.folder.id))
+    if(this.api.supportsSearch())
+    {
+    	this.controller.stageController.pushScene("articles", this.api, new Search(this.folder.api, query, this.folder.id))
+    }
+    else
+    {
+    	Feeder.notify($L("Search Not Available"))
+    }
   },
 
   handleCommand: function($super, event) {

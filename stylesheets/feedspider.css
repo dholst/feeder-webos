@@ -467,9 +467,53 @@ body.lefty #small-spinner {
   background: url(../images/error.png) no-repeat center;
 }
 
+/* Handle image sizing for Touchpad */
+@media (orientation: portrait) and (max-width: 1024px) {
+	#summary img {
+  		max-width: 738px !important;
+	}
+}
+
+@media (orientation: landscape) and (max-width: 1024px) {
+	#summary img {
+  		max-width: 994px !important;
+	}
+}
+
+/* Handle image sizing for Pre 3 */
+@media (orientation: portrait) and (max-width: 480px) {
+	#summary img {
+  		max-width: 290px !important;		
+	}
+}
+
+@media (orientation: landscape) and (max-width: 800px) {
+	#summary img {
+  		max-width: 505px !important;
+	}
+}
+
+/* Handle image sizing for Pre, Pre 2, Pixi, and Veer */
+@media (orientation: portrait) and (max-width: 320px) {
+	#summary img {
+  		max-width: 290px !important;
+	}
+}
+
+@media (orientation: landscape) and (max-width: 480px){
+	#summary img {
+  		max-width: 450px !important;
+	}
+}
+
+@media (orientation: landscape) and (max-width: 400px){
+	#summary img {
+  		max-width: 370px !important;
+	}
+}
+
 #summary img {
-  max-width: 290px !important;
-  height: auto !important;
+	height: auto !important;
 }
 
 #summary {

@@ -247,6 +247,13 @@ var HomeAssistant = Class.create(BaseAssistant, {
   },
 
   doSearch: function(query) {
-    this.controller.stageController.pushScene("articles", this.api, new Search(this.api, query))
+  	if(this.api.supportsSearch())
+    {
+    	this.controller.stageController.pushScene("articles", this.api, new Search(this.api, query))
+    }
+    else
+    {
+    	Feeder.notify($L("Search Not Available"))
+    }
   }
 })
