@@ -472,7 +472,13 @@ var InoApi = Class.create({
   
   supportsSearch: function() {
 	return false
+  },
+  
+  //UPDATED 0.9.5
+  supportsManualSort: function() {
+	return true
   }
+  
 })
 
 InoApi.BASE_URL = "https://www.inoreader.com/reader/api/0/"

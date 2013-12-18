@@ -10,8 +10,29 @@ var Article = Class.create({
     var content = data.content || data.summary || {content: ""}
     this.summary = this.cleanUp(content.content)
     this.readLocked = data.isReadStateLocked
-    this.setStates(data.categories)
-    this.setDates(parseInt(data.crawlTimeMsec, 10))
+    this.isRead = false
+    this.isShared = false
+    this.isStarred = false
+    
+    if(data.tags)
+    {
+		this.setStates(data.tags)
+		
+		if (data.unread !== undefined)
+		{
+			this.isRead = !data.unread
+		}
+    }
+    else if (data.unread !== undefined)
+    {
+    	this.isRead = !data.unread
+    }
+    else
+    {
+    	this.setStates(data.categories)
+    }
+    var pubDate = data.crawlTimeMsec || data.crawled
+    this.setDates(parseInt(pubDate, 10))
     this.setArticleLink(data.alternate)
   },
 
@@ -40,26 +61,35 @@ var Article = Class.create({
   },
 
   setStates: function(categories) {
-    this.isRead = false
-    this.isShared = false
-    this.isStarred = false
-
     categories.each(function(category) {
-      if(category.endsWith("/state/com.google/read")) {
-        this.isRead = true
-      }
+    	if (category.id !== undefined)
+    	{
+			if(category.id.endsWith("/tag/global.read")) {
+        		this.isRead = true
+      		}
 
-      if(category.endsWith("/state/com.google/kept-unread")) {
-        this.keepUnread = true
-      }
+      		if(category.id.endsWith("/tag/global.saved")) {
+        		this.isStarred = true
+      		}
+    	}
+    	else
+    	{
+			if(category.endsWith("/state/com.google/read")) {
+        		this.isRead = true
+      		}
 
-      if(category.endsWith("/state/com.google/starred")) {
-        this.isStarred = true
-      }
+      		if(category.endsWith("/state/com.google/kept-unread")) {
+        		this.keepUnread = true
+      		}
 
-      if(category.endsWith("/state/com.google/broadcast")) {
-        this.isShared = true
-      }
+      		if(category.endsWith("/state/com.google/starred")) {
+        		this.isStarred = true
+      		}
+
+      		if(category.endsWith("/state/com.google/broadcast")) {
+        		this.isShared = true
+      		}    		
+    	}
     }.bind(this))
   },
 

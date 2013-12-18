@@ -20,7 +20,7 @@ var LoginAssistant = Class.create(BaseAssistant, {
       parameters: {},
 
       onSuccess: function(response) {
-        if(this.credentials.email && this.credentials.password) {
+        if((this.credentials.email && this.credentials.password) || this.credentials.service == "feedly") {
           if(this.triedLogin) {
             Log.debug("ALREADY TRIED LOGGING IN, WHAT MAKES YOU THINK ITS GOING TO WORK NOW")
           }
@@ -28,7 +28,7 @@ var LoginAssistant = Class.create(BaseAssistant, {
             this.triedLogin = true
             Log.debug("logging in as " + this.credentials.email)
             this.spinnerOn($L("logging in..."))
-            this.api.login(this.credentials, this.loginSuccess.bind(this), this.loginFailure.bind(this))
+            this.api.login(this.credentials, this.loginSuccess.bind(this), this.loginFailure.bind(this), this.controller)
           }
         }
         else {

@@ -6,10 +6,17 @@ var CredentialsAssistant = Class.create(BaseAssistant, {
     this.showMessage = showMessage
     this.button = {buttonLabel: $L("Login")}
     this.hideLogout = true
+    this.showFields = true
+    
+    if (credentials.service == "feedly")
+    {
+    	this.showFields = false
+    }
     
     this.serviceChoices = [
       {label: $L("The Old Reader"), value: "tor"},
-      {label: $L("InoReader"), value: "ino"}
+      {label: $L("InoReader"), value: "ino"},
+      {label: $L("Feedly"), value: "feedly"}
     ]
   },
 
@@ -28,6 +35,8 @@ var CredentialsAssistant = Class.create(BaseAssistant, {
     $super(changes)
     this.controller.get("password").mojo.setConsumesEnterKey(false)
     this.controller.get("login-failure")[this.showMessage ? "show" : "hide"]()
+    this.controller.get("email-group")[this.showFields ? "show" : "hide"]()
+    this.controller.get("password-group")[this.showFields ? "show" : "hide"]()
   },
 
   cleanup: function($super) {
@@ -36,9 +45,9 @@ var CredentialsAssistant = Class.create(BaseAssistant, {
   },
 
   setupWidgets: function() {
+    this.controller.setupWidget("service", {modelProperty: "service", choices: this.serviceChoices}, this.credentials)
     this.controller.setupWidget("email", {modelProperty: "email", changeOnKeyPress: true, autoFocus: true, textCase: Mojo.Widget.steModeLowerCase}, this.credentials)
     this.controller.setupWidget("password", {modelProperty: "password", changeOnKeyPress: true}, this.credentials)
-    this.controller.setupWidget("service", {modelProperty: "service", choices: this.serviceChoices}, this.credentials)
     this.controller.setupWidget("login", {type: Mojo.Widget.activityButton}, this.button)
   },
 
@@ -67,6 +76,16 @@ var CredentialsAssistant = Class.create(BaseAssistant, {
     this.controller.stageController.swapScene("login", this.credentials)
   },
   
-  setService: function() {
+  setService: function(propertyChangeEvent) {
+  	if (propertyChangeEvent.value == "feedly")
+  	{
+  		this.controller.get("email-group")["hide"]()
+  		this.controller.get("password-group")["hide"]()
+  	}
+  	else
+  	{
+  		this.controller.get("email-group")["show"]()
+  		this.controller.get("password-group")["show"]()
+  	}
   },
 })

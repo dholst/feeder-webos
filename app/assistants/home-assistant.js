@@ -121,8 +121,13 @@ var HomeAssistant = Class.create(BaseAssistant, {
 
     if("logout" == command) {
       var creds = new Credentials()
-      creds.password = false
-      creds.save()
+      creds.password = null
+      creds.id = null
+	  creds.refreshToken = null
+	  creds.accessToken = null
+	  creds.tokenType = null
+	  creds.plan = null
+      creds.clear()
       this.controller.stageController.swapScene("credentials", creds)
     }
     else if(command && command.feedAdded) {

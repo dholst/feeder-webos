@@ -18,30 +18,38 @@ var SubscriptionContainer = Class.create(Countable, {
   },
 
   move: function(subscription, beforeSubscription) {
-    var self = this
+    if (this.api.supportsManualSort())
+    {
+    	var self = this
 
-    self.items.each(function(item, index) {
-      if(item.id == subscription.id) {
-        Log.debug("removing " + subscription.id + " at index " + index)
-        self.items.splice(index, 1)
-        throw $break
-      }
-    })
+    	self.items.each(function(item, index) {
+      		if(item.id == subscription.id) {
+        		Log.debug("removing " + subscription.id + " at index " + index)
+        		self.items.splice(index, 1)
+        		throw $break
+      		}
+    	})
 
-    if(beforeSubscription) {
-      self.items.each(function(item, index) {
-        if(item.id == beforeSubscription.id) {
-          Log.debug("inserting " + subscription.id + " at index " + index)
-          self.items.splice(index, 0, subscription)
-          throw $break
-        }
-      })
+    	if(beforeSubscription) {
+      		self.items.each(function(item, index) {
+        		if(item.id == beforeSubscription.id) {
+          			Log.debug("inserting " + subscription.id + " at index " + index)
+          			self.items.splice(index, 0, subscription)
+          			throw $break
+        		}
+      		})
+    	}
+    	else {
+      		self.items.push(subscription)
+    	}
+	
+    	var sortOrder = self.items.map(function(subscription) {return subscription.sortId}).join("")
+    	this.api.setSortOrder(sortOrder, this.subscriptionOrderingStream)
     }
-    else {
-      self.items.push(subscription)
+    else
+    {
+    	Feeder.notify($L("Manual Sort Not Available"))
+      	Preferences.setManualFeedSort(false)
     }
-
-    var sortOrder = self.items.map(function(subscription) {return subscription.sortId}).join("")
-    this.api.setSortOrder(sortOrder, this.subscriptionOrderingStream)
   }
 })

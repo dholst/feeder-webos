@@ -22,6 +22,7 @@
   {"source": "app/models/search.js"},
   {"source": "app/models/tor-api.js"},
   {"source": "app/models/ino-api.js"},
+  {"source": "app/models/feedly-api.js"},
 
   {"source": "app/lib/ajax.js"},
   {"source": "app/lib/instapaper.js"},
@@ -45,5 +46,6 @@
   {"source": "app/assistants/notification-feeds-assistant.js"},
   {"source": "app/assistants/folder-assistant.js"},
   {"source": "app/assistants/configure-sharing-assistant.js"},
-  {"source": "app/assistants/instapaper-credentials-assistant.js"}
+  {"source": "app/assistants/instapaper-credentials-assistant.js"},
+  {"scenes": "oauth", "source": "app/assistants/oauth-assistant.js"}
 ]

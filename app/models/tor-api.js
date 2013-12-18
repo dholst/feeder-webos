@@ -405,25 +405,25 @@ var TorApi = Class.create({
   },
 
   setArticleStarred: function(articleId, subscriptionId, success, failure) {
-    /*this._editTag(
+    this._editTag(
       articleId,
       subscriptionId,
       "user/-/state/com.google/starred",
       null,
       success,
       failure
-    )*/
+    )
   },
 
   setArticleNotStarred: function(articleId, subscriptionId, success, failure) {
-    /*this._editTag(
+    this._editTag(
       articleId,
       subscriptionId,
       null,
       "user/-/state/com.google/starred",
       success,
       failure
-    )*/
+    )
   },
 
   _editTag: function(articleId, subscriptionId, addTag, removeTag, success, failure) {
@@ -482,7 +482,7 @@ var TorApi = Class.create({
   },
   
   supportsStarred: function() {
-	return false
+	return true
   },
   
   supportsShared: function() {
@@ -491,6 +491,11 @@ var TorApi = Class.create({
   
   supportsSearch: function() {
 	return false
+  },
+  
+  //UPDATED 0.9.5
+  supportsManualSort: function() {
+	return true
   }
 })
 

@@ -3,7 +3,7 @@ var Api = Class.create({
   	this.appApi = undefined
   },
   
-  login: function(credentials, success, failure) {
+  login: function(credentials, success, failure, controller) {
   	if (credentials.service == "tor")
   	{
   		this.appApi = new TorApi()
@@ -13,6 +13,11 @@ var Api = Class.create({
   	{
   		this.appApi = new InoApi()
 		this.appApi.login(credentials, success, failure)
+	}
+	else if (credentials.service == "feedly")
+  	{
+  		this.appApi = new FeedlyApi()
+		this.appApi.login(credentials, success, failure, controller)
 	}
 	else
 	{
@@ -135,5 +140,9 @@ var Api = Class.create({
   
   supportsSearch: function() {
 	return this.appApi.supportsSearch()
+  },
+  
+  supportsManualSort: function() {
+	return this.appApi.supportsManualSort()
   }
 })
