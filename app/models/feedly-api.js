@@ -462,62 +462,76 @@ var FeedlyApi = Class.create({
     }
   },
   
-  //UPDATED 0.9.5
+  //UPDATED 1.0.0
   _ajaxPut: function(params, url, success, failure) {
-	try {
-        var req = new XMLHttpRequest()
-        req.open("PUT", url, true)
-        req.setRequestHeader('Content-Type', 'application/json')
-        req.setRequestHeader('Authorization', "OAuth " + this.credentials.accessToken)
-        req.send(JSON.stringify(params))
-        req.onreadystatechange = function() {
-     		if(req.readyState === 4 && req.status === 200){
-        		success
-        	} 
-        	else if(req.readyState === 4 && req.status !== 200){
-        		failure
-        	}
-        	else
-        	{
-        		return
-        	}
-        }
+	if (this._checkTokenExpiry)
+	{
+		try {
+			var req = new XMLHttpRequest()
+			req.open("PUT", url, true)
+			req.setRequestHeader('Content-Type', 'application/json')
+			req.setRequestHeader('Authorization', "OAuth " + this.credentials.accessToken)
+			req.send(JSON.stringify(params))
+			req.onreadystatechange = function() {
+				if(req.readyState === 4 && req.status === 200){
+					success
+				} 
+				else if(req.readyState === 4 && req.status !== 200){
+					failure
+				}
+				else
+				{
+					return
+				}
+			}
+		}
+		catch (e) {
+			Log.debug('_ajaxPut failed! Error:' + e)
+			failure
+		}
     }
-    catch (e) {
-        Log.debug('_ajaxPut failed! Error:' + e)
-        failure
+    else
+    {
+    	failure
     }
   },
   
-  //UPDATED 0.9.5
+  //UPDATED 1.0.0
   _ajaxDelete: function(url, success, failure) {
-	try {
-        var req = new XMLHttpRequest()
-        req.open("DELETE", url, true)
-        req.setRequestHeader('Authorization', "OAuth " + this.credentials.accessToken)
-        req.send()
-        req.onreadystatechange = function() {
-     		if(req.readyState === 4 && req.status === 200){
-        		success
-        	} 
-        	else if(req.readyState === 4 && req.status !== 200){
-				failure
-        	}
-        	else
-        	{
-        		return
-        	}
-        }
+	if (this._checkTokenExpiry)
+	{
+		try {
+			var req = new XMLHttpRequest()
+			req.open("DELETE", url, true)
+			req.setRequestHeader('Authorization', "OAuth " + this.credentials.accessToken)
+			req.send()
+			req.onreadystatechange = function() {
+				if(req.readyState === 4 && req.status === 200){
+					success
+				} 
+				else if(req.readyState === 4 && req.status !== 200){
+					failure
+				}
+				else
+				{
+					return
+				}
+			}
+		}
+		catch (e) {
+			Log.debug('_ajaxDelete failed! Error:' + e)
+			failure
+		}
     }
-    catch (e) {
-        Log.debug('_ajaxDelete failed! Error:' + e)
-        failure
+    else
+    {
+    	failure
     }
   },
   
-  //UPDATED 0.9.5
+  //UPDATED 1.0.0
   _checkTokenExpiry: function() {
-    if (new Date(expiryDate) > new Date())
+    if (new Date(this.credentials.tokenExpiry) > new Date())
     {
     	return true
     } 
@@ -601,6 +615,6 @@ var FeedlyApi = Class.create({
   }
 })
 
-FeedlyApi.BASE_URL = "https://sandbox.feedly.com/v3/";
-FeedlyApi.CLIENT_ID = "sandbox264";
-FeedlyApi.CLIENT_SECRET = "HQ88RW5P2O5HZHPLXM1QY2Z7";
+FeedlyApi.BASE_URL = "https://cloud.feedly.com/v3/";
+FeedlyApi.CLIENT_ID = "feedspider";
+FeedlyApi.CLIENT_SECRET = "FE01DA2G93CK87ZP8NW6T5WYG862";
