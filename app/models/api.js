@@ -14,6 +14,11 @@ var Api = Class.create({
   		this.appApi = new InoApi()
 		this.appApi.login(credentials, success, failure)
 	}
+	else if (credentials.service == "bq")
+  	{
+  		this.appApi = new BQApi()
+		this.appApi.login(credentials, success, failure)
+	}
 	else if (credentials.service == "feedly")
   	{
   		this.appApi = new FeedlyApi()

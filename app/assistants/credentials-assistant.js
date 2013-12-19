@@ -14,9 +14,10 @@ var CredentialsAssistant = Class.create(BaseAssistant, {
     }
     
     this.serviceChoices = [
-      {label: $L("The Old Reader"), value: "tor"},
+      {label: $L("BazQux"), value: "bq"},
+      {label: $L("Feedly"), value: "feedly"},
       {label: $L("InoReader"), value: "ino"},
-      {label: $L("Feedly"), value: "feedly"}
+      {label: $L("The Old Reader"), value: "tor"}
     ]
   },
 
