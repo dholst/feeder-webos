@@ -161,7 +161,7 @@ OauthAssistant.prototype.codeToken = function(code) {
 				
 				var expiryDate = new Date();
 				expiryDate.setSeconds(expiryDate.getSeconds() + responseJSON.expires_in);
-				this.credentials.tokenExpiry = expiryDate;
+				this.credentials.tokenExpiry = expiryDate.getTime();
 				
 				this.controller.stageController.swapScene(this.callbackScene, this.credentials);
 			}

@@ -10,6 +10,14 @@ var FeedlyApi = Class.create({
     	}
     	else
     	{
+    		this.credentials.password = null
+      		this.credentials.server = null
+      		this.credentials.id = null
+	  		this.credentials.refreshToken = null
+	  		this.credentials.accessToken = null
+	  		this.credentials.tokenType = null
+	  		this.credentials.plan = null
+      		this.credentials.clear()
     		failure()
     		return
     	}
@@ -529,9 +537,9 @@ var FeedlyApi = Class.create({
     }
   },
   
-  //UPDATED 1.0.0
+  //UPDATED 1.0.3
   _checkTokenExpiry: function() {
-    if (new Date(this.credentials.tokenExpiry) > new Date())
+    if (new Date(this.credentials.tokenExpiry).getTime() > new Date().getTime())
     {
     	return true
     } 
