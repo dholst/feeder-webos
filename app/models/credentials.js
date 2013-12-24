@@ -2,6 +2,7 @@ var Credentials = Class.create({
   initialize: function() {
     this.email = this.emailCookie().get()
     this.password = this.passwordCookie().get()
+    this.server = this.serverCookie().get()
     if(this.serviceCookie().get())
     {
     	this.service = this.serviceCookie().get()
@@ -25,6 +26,9 @@ var Credentials = Class.create({
     if (this.password !== undefined){
     	this.passwordCookie().put(this.password)
     }
+    if (this.server !== undefined){
+    	this.serverCookie().put(this.server)
+    }    
     if (this.service !== undefined){
     	this.serviceCookie().put(this.service)
     }
@@ -51,6 +55,7 @@ var Credentials = Class.create({
   clear: function() {
     this.emailCookie().remove()
     this.passwordCookie().remove()
+    this.serverCookie().remove()
     this.serviceCookie().remove()
     this.idCookie().remove()
     this.accessTokenCookie().remove()
@@ -68,6 +73,10 @@ var Credentials = Class.create({
     return this.getCookie("password")
   },
   
+  serverCookie: function() {
+    return this.getCookie("server")
+  },
+
   serviceCookie: function() {
     return this.getCookie("service")
   },

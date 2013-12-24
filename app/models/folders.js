@@ -26,7 +26,7 @@ var Folders = Class.create({
       function(tags) {
         tags.each(function(tag) {
           var folder = self.items.find(function(item) {return item.id == tag.id})
-          if(folder) folder.sortId = tag.sortid
+          if(folder) folder.sortId = tag.sortid || tag.order_id
         })
 
         success()

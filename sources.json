@@ -24,6 +24,7 @@
   {"source": "app/models/ino-api.js"},
   {"source": "app/models/feedly-api.js"},
   {"source": "app/models/bq-api.js"},
+  {"source": "app/models/ttrss-api.js"},
 
   {"source": "app/lib/ajax.js"},
   {"source": "app/lib/instapaper.js"},

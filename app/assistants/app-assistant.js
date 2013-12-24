@@ -44,7 +44,7 @@ var AppAssistant = Class.create({
 
         $A(counts).each(function(count) {
           if(count.count && Preferences.wantsNotificationFor(count.id)) {
-            unreadCount += count.count
+            unreadCount += count.count || count.counter
           }
         })
 

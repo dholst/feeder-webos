@@ -3,12 +3,19 @@ var Article = Class.create({
     this.api = subscription.api
     this.id = data.id
     this.subscription = subscription
-    this.subscriptionId = data.origin ? data.origin.streamId : subscription.id
+    if (data.origin)
+    {
+    	 this.subscriptionId = data.origin.streamId
+    }
+    else
+    {
+    	 this.subscriptionId = data.feed_id || subscription.id
+    }
     this.title = data.title || "No Title"
     this.author = data.author
     this.origin = this.api.titleFor(this.subscriptionId)
     var content = data.content || data.summary || {content: ""}
-    this.summary = this.cleanUp(content.content)
+    this.summary = content.content ? this.cleanUp(content.content) : this.cleanUp(content) 
     this.readLocked = data.isReadStateLocked
     this.isRead = false
     this.isShared = false
@@ -16,12 +23,23 @@ var Article = Class.create({
     
     if(data.tags)
     {
+    	//This section controls behaviour for Feedly and TTRSS
 		this.setStates(data.tags)
 		
 		if (data.unread !== undefined)
 		{
 			this.isRead = !data.unread
 		}
+		
+		if (data.marked !== undefined)
+    	{
+    		this.isStarred = data.marked
+    	}
+    	
+    	if (data.published !== undefined)
+    	{
+    		this.isShared = data.published
+    	}
     }
     else if (data.unread !== undefined)
     {
@@ -31,7 +49,8 @@ var Article = Class.create({
     {
     	this.setStates(data.categories)
     }
-    var pubDate = data.crawlTimeMsec || data.crawled
+    
+    var pubDate = data.crawlTimeMsec || data.crawled || data.updated + "000"
     this.setDates(parseInt(pubDate, 10))
     this.setArticleLink(data.alternate)
   },
@@ -64,29 +83,29 @@ var Article = Class.create({
     categories.each(function(category) {
     	if (category.id !== undefined)
     	{
-			if(category.id.endsWith("/tag/global.read")) {
+			if(category.id.toString().endsWith("/tag/global.read")) {
         		this.isRead = true
       		}
 
-      		if(category.id.endsWith("/tag/global.saved")) {
+      		if(category.id.toString().endsWith("/tag/global.saved")) {
         		this.isStarred = true
       		}
     	}
     	else
     	{
-			if(category.endsWith("/state/com.google/read")) {
+			if(category.toString().endsWith("/state/com.google/read")) {
         		this.isRead = true
       		}
 
-      		if(category.endsWith("/state/com.google/kept-unread")) {
+      		if(category.toString().endsWith("/state/com.google/kept-unread")) {
         		this.keepUnread = true
       		}
 
-      		if(category.endsWith("/state/com.google/starred")) {
+      		if(category.toString().endsWith("/state/com.google/starred")) {
         		this.isStarred = true
       		}
 
-      		if(category.endsWith("/state/com.google/broadcast")) {
+      		if(category.toString().endsWith("/state/com.google/broadcast")) {
         		this.isShared = true
       		}    		
     	}

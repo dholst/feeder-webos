@@ -48,12 +48,27 @@ var AllSubscriptions = Class.create(SubscriptionContainer, {
     self.api.getUnreadCounts(
       function(counts) {
         counts.each(function(count) {
-          if(count.id.startsWith("feed")) {
-            self.incrementUnreadCountBy(count.count)
+          if(count.id.toString().startsWith("feed") || (count.id > 0 && count.kind !== "cat")){
+            
+            if (count.count !== undefined)
+            {         	
+            	self.incrementUnreadCountBy(count.count)
+            }
+            else
+            {
+            	self.incrementUnreadCountBy(count.counter)
+            }
 
             self.items.each(function(item) {
               if(item.id == count.id) {
-                item.setUnreadCount(count.count)
+              	if (count.count !== undefined)
+              	{
+              		item.setUnreadCount(count.count)
+              	}
+              	else
+              	{
+                	item.setUnreadCount(count.counter)
+                }
               }
 
               if(item.isFolder) {

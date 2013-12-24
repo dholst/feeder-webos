@@ -19,6 +19,11 @@ var Api = Class.create({
   		this.appApi = new BQApi()
 		this.appApi.login(credentials, success, failure)
 	}
+	else if (credentials.service == "ttrss")
+  	{
+  		this.appApi = new TTRSSApi()
+		this.appApi.login(credentials, success, failure)
+	}
 	else if (credentials.service == "feedly")
   	{
   		this.appApi = new FeedlyApi()

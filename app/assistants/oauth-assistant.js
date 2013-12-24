@@ -268,7 +268,7 @@ OauthAssistant.prototype.loadProgress = function(event) {
 		}
 	}
 	catch(e) {
-		Mojo.Log.logException(e, e.description);
+		Log.debug(e.description);
 	}
 };
 OauthAssistant.prototype._updateLoadProgress = function(image) {

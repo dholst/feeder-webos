@@ -122,6 +122,7 @@ var HomeAssistant = Class.create(BaseAssistant, {
     if("logout" == command) {
       var creds = new Credentials()
       creds.password = null
+      creds.server = null
       creds.id = null
 	  creds.refreshToken = null
 	  creds.accessToken = null
