@@ -341,7 +341,7 @@ var TTRSSApi = Class.create({
     )
   },
 
-  //UPDATED 1.1.0
+  //UPDATED 1.1.1
   _getArticles: function(id, exclude, continuation, success, failure) {
     
     var parameters = {
@@ -364,6 +364,11 @@ var TTRSSApi = Class.create({
 
     if(exclude) {
       parameters.view_mode = exclude
+    }
+    
+    if (id.constructor == String)
+    {
+    	parameters.is_cat = true
     }    
     
     new Ajax.Request(TTRSSApi.BASE_URL, {

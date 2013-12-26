@@ -52,7 +52,14 @@ var Article = Class.create({
     
     var pubDate = data.crawlTimeMsec || data.crawled || data.updated + "000"
     this.setDates(parseInt(pubDate, 10))
-    this.setArticleLink(data.alternate)
+    if (data.alternate)
+    {
+	    this.setArticleLink(data.alternate)
+    }
+    else
+    {
+        this.url = data.link
+    }
   },
 
   cleanUp: function(content) {
