@@ -117,17 +117,9 @@ var AddAssistant = Class.create(BaseAssistant, {
     if(json.content && json.content.content) {
       subscription.content = json.content.content
     }
-    else if (json.website && json.subscribers)
-    {
-    	subscription.content = $L("Website") + ": " + json.website + ", " + $L("Subscribers") + ": " + json.subscribers
-    }
 
     if(json.feed && json.feed.length && json.feed[0].href) {
       subscription.url = json.feed[0].href
-    }
-    else if (json.feedId)
-    {
-    	subscription.url = json.feedId.substr(5)
     }
 
     return subscription

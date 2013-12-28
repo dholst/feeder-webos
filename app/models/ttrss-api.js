@@ -47,7 +47,7 @@ var TTRSSApi = Class.create({
     })
   },
   
-  //UPDATED 1.1.0
+  //UPDATED 1.1.2
   getTags: function(success, failure) {
     var params = {
 		sid: this.auth,
@@ -59,7 +59,13 @@ var TTRSSApi = Class.create({
 		method: "post",
 		postBody: JSON.stringify(params),
 		onSuccess: function(response){
-			success(response.responseText.evalJSON().content)
+			//Post-Processing
+			var tags = response.responseText.evalJSON()
+			tags.content.each(function(tag) {
+				tag.sortid = tag.order_id
+			})
+			
+			success(tags.content)
 		},
 		onFailure: failure,
 	})
@@ -278,7 +284,7 @@ var TTRSSApi = Class.create({
     return this.titles[id]
   },
 
-  //UPDATED 1.1.0
+  //UPDATED 1.1.2
   getUnreadCounts: function(success, failure) {
     var params = {
     	sid: this.auth,
@@ -290,8 +296,18 @@ var TTRSSApi = Class.create({
 		method: "post",
 		postBody: JSON.stringify(params),
 		onSuccess: function(response){
-			var json = response.responseText.evalJSON()			
-			success(json.content)
+			var json = response.responseText.evalJSON()
+			var feeds = []
+			
+			json.content.each(function(feed) {
+				if (feed.id > 0 && feed.kind !== "cat")
+				{
+					feed.count = feed.counter
+					feeds.push(feed)
+				}
+			})
+						
+			success(feeds)
 		},
 		onFailure: failure
 	})
@@ -341,9 +357,8 @@ var TTRSSApi = Class.create({
     )
   },
 
-  //UPDATED 1.1.1
+  //UPDATED 1.1.2
   _getArticles: function(id, exclude, continuation, success, failure) {
-    
     var parameters = {
     	sid: this.auth,
     	op: "getHeadlines",
@@ -376,6 +391,43 @@ var TTRSSApi = Class.create({
 		postBody: JSON.stringify(parameters),
 		onSuccess: function(response){
 			var articles = response.responseText.evalJSON()
+
+			//Do post-processing to conform articles to FeedSpider spec
+			articles.content.each(function(article) {
+				//Set article origin
+				article.origin = {streamId : article.feed_id}
+				
+				//Set article content				
+				article.content = {content: article.content}
+				
+				//Set article categories
+				article.categories = []
+				if (!article.unread)
+				{
+					article.categories.push("/state/com.google/read")
+				}
+				
+				if (article.marked)
+				{
+					article.categories.push("/state/com.google/starred")
+				}
+				
+				if (article.published)
+				{
+					article.categories.push("/state/com.google/broadcast")
+				}
+				
+				//Set article link
+				article.alternate = [{
+					type: "html",
+					href: article.link
+				}]
+				
+				//Set article timestamp
+				article.crawlTimeMsec = article.updated + "000"
+			})
+			
+			//Load more articles (if there are more to load)
 			if(articles.content.length == 40)
 			{
 				if(continuation)

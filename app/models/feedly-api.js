@@ -111,7 +111,7 @@ var FeedlyApi = Class.create({
     this._ajaxDelete(FeedlyApi.BASE_URL + "categories/" + encodeURIComponent(folder.id), function() {Mojo.Event.send(document, "FolderDeleted", {id: folder.id})}, function() {})
   },
 
-  //UPDATED 0.9.5
+  //UPDATED 1.1.2
   searchSubscriptions: function(query, success, failure) {
     var self = this
 
@@ -121,7 +121,14 @@ var FeedlyApi = Class.create({
       requestHeaders: this._requestHeaders(),
       onFailure: failure,
       onSuccess: function(response) {
+        //Post-processing
         var subscriptions = response.responseText.evalJSON().results
+		
+		subscriptions.each(function(subscription) {
+		  subscription.content = {content: $L("Website") + ": " + subscription.website + ", " + $L("Subscribers") + ": " + subscription.subscribers}
+		  subscription.feed = [{href: subscription.feedId.substr(5)}]
+		})
+        
         success(subscriptions)
       }
     })
@@ -250,7 +257,7 @@ var FeedlyApi = Class.create({
     )
   },
 
-  //UPDATED 0.9.5
+  //UPDATED 1.1.2
   getAllArticlesFor: function(id, continuation, success, failure) {
     this._getArticles(
       id,
@@ -284,6 +291,37 @@ var FeedlyApi = Class.create({
       onFailure: failure,
       onSuccess: function(response) {
         var articles = response.responseText.evalJSON()
+        
+        //Do post-processing to conform articles to FeedSpider spec
+		articles.items.each(function(article) {
+			//Set article categories
+			article.categories = []
+			if(article.tags){
+				article.tags.each(function(tag) {
+					if (tag.id !== undefined)
+					{
+						if(tag.id.endsWith("/tag/global.read")) {
+							article.categories.push("/state/com.google/read")
+						}
+						
+						if(tag.id.endsWith("/tag/global.saved")) {
+							article.categories.push("/state/com.google/starred")
+						}
+					}
+    			})
+			}
+			if (article.unread !== undefined)
+			{
+				if(article.unread == false)
+				{
+					article.categories.push("/state/com.google/read")
+				}
+			}
+
+			//Set article timestamp
+			article.crawlTimeMsec = article.crawled
+		})
+        
         success(articles.items, articles.id, articles.continuation)
       }
     })
@@ -470,7 +508,7 @@ var FeedlyApi = Class.create({
     }
   },
   
-  //UPDATED 1.0.0
+  //UPDATED 1.1.2
   _ajaxPut: function(params, url, success, failure) {
 	if (this._checkTokenExpiry)
 	{
@@ -482,10 +520,10 @@ var FeedlyApi = Class.create({
 			req.send(JSON.stringify(params))
 			req.onreadystatechange = function() {
 				if(req.readyState === 4 && req.status === 200){
-					success
+					success()
 				} 
 				else if(req.readyState === 4 && req.status !== 200){
-					failure
+					failure()
 				}
 				else
 				{
@@ -495,7 +533,7 @@ var FeedlyApi = Class.create({
 		}
 		catch (e) {
 			Log.debug('_ajaxPut failed! Error:' + e)
-			failure
+			failure()
 		}
     }
     else
@@ -504,7 +542,7 @@ var FeedlyApi = Class.create({
     }
   },
   
-  //UPDATED 1.0.0
+  //UPDATED 1.1.2
   _ajaxDelete: function(url, success, failure) {
 	if (this._checkTokenExpiry)
 	{
@@ -515,10 +553,10 @@ var FeedlyApi = Class.create({
 			req.send()
 			req.onreadystatechange = function() {
 				if(req.readyState === 4 && req.status === 200){
-					success
+					success()
 				} 
 				else if(req.readyState === 4 && req.status !== 200){
-					failure
+					failure()
 				}
 				else
 				{
@@ -528,7 +566,7 @@ var FeedlyApi = Class.create({
 		}
 		catch (e) {
 			Log.debug('_ajaxDelete failed! Error:' + e)
-			failure
+			failure()
 		}
     }
     else

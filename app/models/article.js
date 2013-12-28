@@ -3,63 +3,19 @@ var Article = Class.create({
     this.api = subscription.api
     this.id = data.id
     this.subscription = subscription
-    if (data.origin)
-    {
-    	 this.subscriptionId = data.origin.streamId
-    }
-    else
-    {
-    	 this.subscriptionId = data.feed_id || subscription.id
-    }
+    this.subscriptionId = data.origin ? data.origin.streamId : subscription.id
     this.title = data.title || "No Title"
     this.author = data.author
     this.origin = this.api.titleFor(this.subscriptionId)
     var content = data.content || data.summary || {content: ""}
-    this.summary = content.content ? this.cleanUp(content.content) : this.cleanUp(content) 
+    this.summary = this.cleanUp(content.content)
     this.readLocked = data.isReadStateLocked
     this.isRead = false
     this.isShared = false
     this.isStarred = false
-    
-    if(data.tags)
-    {
-    	//This section controls behaviour for Feedly and TTRSS
-		this.setStates(data.tags)
-		
-		if (data.unread !== undefined)
-		{
-			this.isRead = !data.unread
-		}
-		
-		if (data.marked !== undefined)
-    	{
-    		this.isStarred = data.marked
-    	}
-    	
-    	if (data.published !== undefined)
-    	{
-    		this.isShared = data.published
-    	}
-    }
-    else if (data.unread !== undefined)
-    {
-    	this.isRead = !data.unread
-    }
-    else
-    {
-    	this.setStates(data.categories)
-    }
-    
-    var pubDate = data.crawlTimeMsec || data.crawled || data.updated + "000"
-    this.setDates(parseInt(pubDate, 10))
-    if (data.alternate)
-    {
-	    this.setArticleLink(data.alternate)
-    }
-    else
-    {
-        this.url = data.link
-    }
+    this.setStates(data.categories)
+    this.setDates(parseInt(data.crawlTimeMsec, 10))
+    this.setArticleLink(data.alternate)
   },
 
   cleanUp: function(content) {
@@ -88,34 +44,21 @@ var Article = Class.create({
 
   setStates: function(categories) {
     categories.each(function(category) {
-    	if (category.id !== undefined)
-    	{
-			if(category.id.toString().endsWith("/tag/global.read")) {
-        		this.isRead = true
-      		}
+		if(category.endsWith("/state/com.google/read")) {
+			this.isRead = true
+		}
 
-      		if(category.id.toString().endsWith("/tag/global.saved")) {
-        		this.isStarred = true
-      		}
-    	}
-    	else
-    	{
-			if(category.toString().endsWith("/state/com.google/read")) {
-        		this.isRead = true
-      		}
+		if(category.endsWith("/state/com.google/kept-unread")) {
+			this.keepUnread = true
+		}
 
-      		if(category.toString().endsWith("/state/com.google/kept-unread")) {
-        		this.keepUnread = true
-      		}
+		if(category.endsWith("/state/com.google/starred")) {
+			this.isStarred = true
+		}
 
-      		if(category.toString().endsWith("/state/com.google/starred")) {
-        		this.isStarred = true
-      		}
-
-      		if(category.toString().endsWith("/state/com.google/broadcast")) {
-        		this.isShared = true
-      		}    		
-    	}
+		if(category.endsWith("/state/com.google/broadcast")) {
+			this.isShared = true
+		}    		
     }.bind(this))
   },
 

@@ -14,7 +14,7 @@ var Countable = Class.create({
       this.unreadCount = 0
     }
 
-    this.unreadCountDisplay = count > 999 ? "1000+" : count
+    this.unreadCountDisplay = count > 9999 ? "10000+" : count
     this.unreadCountDisplay = count <= 0 ? "" : this.unreadCountDisplay
   },
 

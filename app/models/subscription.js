@@ -6,8 +6,8 @@ var Subscription = Class.create(ArticleContainer, {
     this.icon = "rss"
     this.divideBy = $L("Subscriptions")
     this.canMarkAllRead = true
-    this.sortId = data.sortid || data.order_id
-    this.categories = data.categories || data.cat_id
+    this.sortId = data.sortid
+    this.categories = data.categories
   },
 
   belongsToFolder: function() {
