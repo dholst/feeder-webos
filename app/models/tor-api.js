@@ -239,6 +239,7 @@ var TorApi = Class.create({
     )
   },
 
+  //UPDATED 1.1.3
   _getArticles: function(id, exclude, continuation, success, failure) {
     var parameters = {output: "json", n: 40}
 	
@@ -262,7 +263,7 @@ var TorApi = Class.create({
 	  requestHeaders: this._requestHeaders(),
 	  onFailure: failure,
 	  onSuccess: function(response) {
-		var articles = response.responseText.evalJSON()
+		var articles = JSON2.parse(response.responseText)
 		success(articles.items, articles.id, articles.continuation)
 	  }
 	})

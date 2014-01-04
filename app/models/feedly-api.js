@@ -268,7 +268,7 @@ var FeedlyApi = Class.create({
     )
   },
 
-  //UPDATED 0.9.5
+  //UPDATED 1.1.3
   _getArticles: function(id, exclude, continuation, success, failure) {
     var parameters = {output: "json", count: 40}
 
@@ -290,7 +290,7 @@ var FeedlyApi = Class.create({
       requestHeaders: this._requestHeaders(),
       onFailure: failure,
       onSuccess: function(response) {
-        var articles = response.responseText.evalJSON()
+        var articles = JSON2.parse(response.responseText)
         
         //Do post-processing to conform articles to FeedSpider spec
 		articles.items.each(function(article) {

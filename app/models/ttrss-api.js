@@ -357,7 +357,7 @@ var TTRSSApi = Class.create({
     )
   },
 
-  //UPDATED 1.1.2
+  //UPDATED 1.1.3
   _getArticles: function(id, exclude, continuation, success, failure) {
     var parameters = {
     	sid: this.auth,
@@ -371,6 +371,8 @@ var TTRSSApi = Class.create({
        id != -2 &&
        Preferences.isOldestFirst()) {
       parameters.order_by = "date_reverse"
+    } else {
+      parameters.order_by = "feed_dates"
     }
 
     if(continuation) {
@@ -390,7 +392,7 @@ var TTRSSApi = Class.create({
 		method: "post",
 		postBody: JSON.stringify(parameters),
 		onSuccess: function(response){
-			var articles = response.responseText.evalJSON()
+			var articles = JSON2.parse(response.responseText)
 
 			//Do post-processing to conform articles to FeedSpider spec
 			articles.content.each(function(article) {
@@ -428,15 +430,15 @@ var TTRSSApi = Class.create({
 			})
 			
 			//Load more articles (if there are more to load)
-			if(articles.content.length == 40)
+			if(articles.content.length == parameters.limit)
 			{
 				if(continuation)
 				{
-					continuation = continuation + 40
+					continuation = continuation + parameters.limit
 				}
 				else
 				{
-					continuation = 40
+					continuation = parameters.limit
 				}
 				success(articles.content, id, continuation)
 			}
