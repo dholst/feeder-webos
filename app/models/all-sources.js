@@ -7,6 +7,12 @@ var AllSources = Class.create({
     	this.all = new AllArticles(api)
     	this.stickySources.items.push(this.all)
     }
+    
+    if (api.supportsFresh())
+    {
+    	this.fresh = new Fresh(api)
+    	this.stickySources.items.push(this.fresh)
+    }
      
     if (api.supportsStarred())
     {
@@ -19,7 +25,13 @@ var AllSources = Class.create({
     	this.shared = new Shared(api)
     	this.stickySources.items.push(this.shared)
     }
-
+    
+    if (api.supportsArchived())
+    {
+    	this.archived = new Archived(api)
+    	this.stickySources.items.push(this.archived)
+    }
+    
     this.subscriptions = new AllSubscriptions(api)
     this.subscriptionSources = {items: []}
   },

@@ -346,6 +346,28 @@ var TTRSSApi = Class.create({
     )
   },
 
+  //UPDATED 1.2.0
+  getAllFresh: function(continuation, success, failure) {
+    this._getArticles(
+      -3,
+      "all_articles",
+      continuation,
+      success,
+      failure
+    )
+  },
+
+  //UPDATED 1.2.0
+  getAllArchived: function(continuation, success, failure) {
+    this._getArticles(
+      -0,
+      "all_articles",
+      continuation,
+      success,
+      failure
+    )
+  },
+
   //UPDATED 1.1.0
   getAllArticlesFor: function(id, continuation, success, failure) {
     this._getArticles(
@@ -368,7 +390,9 @@ var TTRSSApi = Class.create({
     }
     
     if(id != -4 &&
+       id != -3 &&
        id != -2 &&
+       id != 0 &&
        Preferences.isOldestFirst()) {
       parameters.order_by = "date_reverse"
     } else {
@@ -644,6 +668,16 @@ var TTRSSApi = Class.create({
 
   //UPDATED 1.1.0    
   supportsAllArticles: function() {
+	return true
+  },
+
+  //UPDATED 1.2.0  
+  supportsArchived: function() {
+	return true
+  },
+  
+  //UPDATED 1.2.0  
+  supportsFresh: function() {
 	return true
   },
 

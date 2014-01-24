@@ -18,6 +18,15 @@ Preferences = {
   INSTAPAPER_USERNAME: "q-instapaper-username",
   INSTAPAPER_PASSWORD: "r-instapaper-password",
   LEFTY_FRIENDLY: "s-lefty-friendly",
+  FEEDLY_SORT_ENGAGEMENT: "feedly-sort-engagement",
+
+  isFeedlySortEngagement: function() {
+    return this.getCookie(this.FEEDLY_SORT_ENGAGEMENT, false)
+  },
+
+  setFeedlySortEngagement: function(isFeedlySortEngagement) {
+    this.setCookie(this.FEEDLY_SORT_ENGAGEMENT, isFeedlySortEngagement)
+  },
 
   isLeftyFriendly: function() {
     return this.getCookie(this.LEFTY_FRIENDLY, false)

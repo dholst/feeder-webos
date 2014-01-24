@@ -56,6 +56,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.notificationInterval = {value: Preferences.notificationInterval()}
     this.notificationFeeds = {value: Preferences.anyOrSelectedFeedsForNotifications()}
     this.notificationFeedSelection = {buttonLabel: $L("Select Feeds")}
+    this.feedlySortEngagement = {value: Preferences.isFeedlySortEngagement()}
 
     this.originalAllowLandscape = Preferences.allowLandscape()
     this.originalSortOrder = Preferences.isOldestFirst()
@@ -65,6 +66,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.originalFeedSortOrder = Preferences.isManualFeedSort()
     this.originalTheme = Preferences.getTheme()
     this.originalNotificationInterval = Preferences.notificationInterval()
+    this.originalFeedlySortEngagement = Preferences.isFeedlySortEngagement()
   },
 
   setup: function($super) {
@@ -91,6 +93,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.controller.setupWidget("notification-interval", this.intervalChoices, this.notificationInterval)
     this.controller.setupWidget("notification-feeds", this.notificationFeedsChoices, this.notificationFeeds)
     this.controller.setupWidget("notification-feed-selection", {}, this.notificationFeedSelection)
+    this.controller.setupWidget("feedly-sort-engagement", {}, this.feedlySortEngagement)
   },
 
   addListeners: function() {
@@ -110,6 +113,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.controller.listen("notification-feeds", Mojo.Event.propertyChange, this.setNotificationFeeds = this.setNotificationFeeds.bind(this))
     this.controller.listen("notification-feed-selection", Mojo.Event.tap, this.selectFeeds = this.selectFeeds.bind(this))
     // this.controller.listen("lefties", Mojo.Event.hold, this.weLoveLefties = this.weLoveLefties.bind(this))
+    this.controller.listen("feedly-sort-engagement", Mojo.Event.propertyChange, this.setFeedlySortEngagement = this.setFeedlySortEngagement.bind(this))
   },
 
   updateLabels: function() {
@@ -128,6 +132,8 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     // this.controller.get("debug-log-label").update($L("Debug Log"))
     this.controller.get("mark-read-scroll-label").update($L("Mark read as you scroll"))
     this.controller.get("notifications-label").update($L("Notifications"))
+    this.controller.get("feedly-label").update($L("Feedly Options"))
+    this.controller.get("feedly-sort-engagement-label").update($L("Show most engaging articles only"))
   },
 
   cleanup: function($super) {
@@ -147,6 +153,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("notification-feeds", Mojo.Event.propertyChange, this.setNotificationFeeds)
     this.controller.stopListening("notification-feed-selection", Mojo.Event.tap, this.selectFeeds)
     // this.controller.stopListening("lefties", Mojo.Event.hold, this.weLoveLefties)
+    this.controller.stopListening("feedly-sort-engagement", Mojo.Event.propertyChange, this.setFeedlySortEngagement)
   },
 
   showAndHideStuff: function() {
@@ -170,6 +177,10 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
         this.controller.get("notification-feed-selection-row").addClassName("last")
       }
     }
+  },
+  
+  setFeedlySortEngagement: function() {
+    Preferences.setFeedlySortEngagement(this.feedlySortEngagement.value)
   },
 
   setAllowLandscape: function() {
@@ -256,6 +267,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     if (this.originalFontSize != Preferences.fontSize()) changes.fontSizeChanged = true
     if (this.originalFeedSortOrder != Preferences.isManualFeedSort()) changes.feedSortOrderChanged = true
     if (this.originalTheme != Preferences.getTheme()) changes.themeChanged = true
+    if (this.originalFeedlySortEngagement != Preferences.isFeedlySortEngagement()) changes.sortOrderChanged = true
 
     this.controller.stageController.popScene(changes)
   },

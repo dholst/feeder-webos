@@ -29,6 +29,11 @@ var Api = Class.create({
   		this.appApi = new FeedlyApi()
 		this.appApi.login(credentials, success, failure, controller)
 	}
+	else if (credentials.service == "aol")
+  	{
+  		this.appApi = new AolApi()
+		this.appApi.login(credentials, success, failure, controller)
+	}
 	else
 	{
 		// No supported service to log into
@@ -91,6 +96,14 @@ var Api = Class.create({
   getAllShared: function(continuation, success, failure) {
 	this.appApi.getAllShared(continuation, success, failure)
   },
+  
+  getAllFresh: function(continuation, success, failure) {
+	this.appApi.getAllFresh(continuation, success, failure)
+  },
+  
+  getAllArchived: function(continuation, success, failure) {
+	this.appApi.getAllArchived(continuation, success, failure)
+  },
 
   getAllArticlesFor: function(id, continuation, success, failure) {
 	this.appApi.getAllArticlesFor(id, continuation, success, failure)
@@ -138,6 +151,14 @@ var Api = Class.create({
   
   supportsAllArticles: function() {
 	return this.appApi.supportsAllArticles()
+  },
+  
+  supportsFresh: function() {
+	return this.appApi.supportsFresh()
+  },
+  
+  supportsArchived: function() {
+	return this.appApi.supportsArchived()
   },
   
   supportsStarred: function() {

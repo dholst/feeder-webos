@@ -8,6 +8,7 @@ var CredentialsAssistant = Class.create(BaseAssistant, {
     this.hideLogout = true
     
     this.serviceChoices = [
+      {label: $L("AOL Reader"), value: "aol"},
       {label: $L("BazQux"), value: "bq"},
       {label: $L("Feedly"), value: "feedly"},
       {label: $L("InoReader"), value: "ino"},
@@ -84,7 +85,7 @@ var CredentialsAssistant = Class.create(BaseAssistant, {
   },
   
   setService: function(propertyChangeEvent) {
-  	if (propertyChangeEvent.value == "feedly")
+  	if (propertyChangeEvent.value == "feedly" || propertyChangeEvent.value == "aol")
   	{
   		this.controller.get("email-group")["hide"]()
   		this.controller.get("password-group")["hide"]()

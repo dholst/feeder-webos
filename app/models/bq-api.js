@@ -243,6 +243,30 @@ var BQApi = Class.create({
     )
   },
 
+  //UPDATED 1.2.0
+  getAllFresh: function(continuation, success, failure) {
+  	failure()
+    /*this._getArticles(
+      -3,
+      "all_articles",
+      continuation,
+      success,
+      failure
+    )*/
+  },
+
+  //UPDATED 1.2.0
+  getAllArchived: function(continuation, success, failure) {
+    failure()
+    /*this._getArticles(
+      -0,
+      "all_articles",
+      continuation,
+      success,
+      failure
+    )*/
+  },
+
   //UPDATED 1.0.1
   getAllArticlesFor: function(id, continuation, success, failure) {
     this._getArticles(
@@ -492,6 +516,16 @@ var BQApi = Class.create({
   //UPDATED 1.0.1  
   supportsAllArticles: function() {
 	return true
+  },
+
+  //UPDATED 1.2.0  
+  supportsArchived: function() {
+	return false
+  },
+  
+  //UPDATED 1.2.0  
+  supportsFresh: function() {
+	return false
   },
 
   //UPDATED 1.0.1  

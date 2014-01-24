@@ -289,10 +289,22 @@ body.lefty .palm-page-header.fixed #lefties {
   background: url(../images/starred-grey.png) center center no-repeat;
 }
 
+.palm-row .fresh {
+  height: 50px;
+  width: 30px;
+  background: url(../images/fresh.png) center center no-repeat;
+}
+
 .palm-row .shared {
   height: 50px;
   width: 30px;
   background: url(../images/shared-grey.png) center center no-repeat;
+}
+
+.palm-row .archived {
+  height: 50px;
+  width: 30px;
+  background: url(../images/archived.png) center center no-repeat;
 }
 
 .palm-row .list {

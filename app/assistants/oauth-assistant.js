@@ -16,6 +16,7 @@ function OauthAssistant(oauthConfig) {
 	this.url = '';
 	this.requested_token = '';
 	this.exchangingToken = false;
+	this.service = oauthConfig.service;
 }
 
 OauthAssistant.prototype.setup = function() {
@@ -67,7 +68,12 @@ OauthAssistant.prototype.setup = function() {
 }
 
 OauthAssistant.prototype.urlChanged = function(event) {
-	if (!Mojo.Environment.DeviceInfo.keyboardAvailable && (event.url.indexOf("accounts.google.com") !== -1 || event.url.indexOf("public-api.wordpress.com") !== -1 || event.url.indexOf("http://api.twitter.com") !== -1))
+	if (!Mojo.Environment.DeviceInfo.keyboardAvailable && 
+		(event.url.indexOf("accounts.google.com") !== -1 || 
+		event.url.indexOf("public-api.wordpress.com") !== -1 || 
+		event.url.indexOf("http://api.twitter.com") !== -1 ||
+		event.url.indexOf("api.screenname.aol.com") !== -1 ||
+		event.url.indexOf("facebook.com") !== -1))
 	{
 		this.controller.window.PalmSystem.setManualKeyboardEnabled(true);
 		this.controller.window.PalmSystem.allowResizeOnPositiveSpaceChange(true);
@@ -93,6 +99,10 @@ OauthAssistant.prototype.mimeFailure = function(event) {
 			Log.debug(this.TAG + ': code is ' + code);
 			this.codeToken(code);
 		}
+		else
+		{
+			this.controller.stageController.swapScene("credentials", new Credentials(), true);
+		}
 	}
 }
 
@@ -108,7 +118,8 @@ OauthAssistant.prototype.requestGrant = function() {
 	
 	var url = this.authorizeUrl + '?client_id=' + this.client_id + '&redirect_uri=' + this.redirect_uri + '&response_type=' + this.response_type;
 	if(scope != '') url = url + '&scope=' + scope;
-	
+	if(this.service === 'aol') url = url + '&supportedIdType=facebook,google,twitter';
+
 	this.controller.get('browser').mojo.clearCookies();
 	this.controller.get('browser').mojo.openURL(url);
 };
@@ -116,7 +127,7 @@ OauthAssistant.prototype.requestGrant = function() {
 OauthAssistant.prototype.codeToken = function(code) {
 	this.exchangingToken = true;
 	this.url = this.accessTokenUrl;
-	this.code = code.replace(/[^\da-zA-Z]/g, '');
+	this.code = code; //code.replace(/[^\da-zA-Z]/g, '');
 	this.method = this.accessTokenMethod;
 	var postParams = {
 		client_id: this.client_id,
@@ -152,7 +163,7 @@ OauthAssistant.prototype.codeToken = function(code) {
 				this.credentials = new Credentials();
 				this.credentials.email = false;
 				this.credentials.password = false;
-				this.credentials.service = "feedly";
+				this.credentials.service = this.service;
 				this.credentials.id = responseJSON.id;
 				this.credentials.refreshToken = responseJSON.refresh_token;
 				this.credentials.accessToken = responseJSON.access_token;

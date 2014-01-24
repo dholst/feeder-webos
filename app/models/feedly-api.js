@@ -1,5 +1,5 @@
 var FeedlyApi = Class.create({
-  //UPDATED 0.9.5
+  //UPDATED 1.2.0
   login: function(credentials, success, failure, controller) {
     if (credentials.id != null && credentials.accessToken != null && credentials.refreshToken != null && credentials.tokenExpiry != null)
     {
@@ -33,7 +33,8 @@ var FeedlyApi = Class.create({
 			client_secret: FeedlyApi.CLIENT_SECRET,
 			redirect_uri:'urn:ietf:wg:oauth:2.0:oob', // Optional - 'oob' by default if not specified
         	response_type:'code', // now only support code
-        	scope: ['https://cloud.feedly.com/subscriptions']
+        	scope: ['https://cloud.feedly.com/subscriptions'],
+        	service: credentials.service       	
 	 	};
 	 controller.stageController.pushScene('oauth',oauthConfig);
 	 }
@@ -257,6 +258,30 @@ var FeedlyApi = Class.create({
     )
   },
 
+  //UPDATED 1.2.0
+  getAllFresh: function(continuation, success, failure) {
+    failure()
+    /*this._getArticles(
+      -3,
+      "all_articles",
+      continuation,
+      success,
+      failure
+    )*/
+  },
+
+  //UPDATED 1.2.0
+  getAllArchived: function(continuation, success, failure) {
+    failure()
+    /*this._getArticles(
+      -0,
+      "all_articles",
+      continuation,
+      success,
+      failure
+    )*/
+  },
+
   //UPDATED 1.1.2
   getAllArticlesFor: function(id, continuation, success, failure) {
     this._getArticles(
@@ -268,7 +293,7 @@ var FeedlyApi = Class.create({
     )
   },
 
-  //UPDATED 1.1.3
+  //UPDATED 1.2.0
   _getArticles: function(id, exclude, continuation, success, failure) {
     var parameters = {output: "json", count: 40}
 
@@ -283,48 +308,69 @@ var FeedlyApi = Class.create({
     if(exclude) {
       parameters.unreadOnly = exclude
     }
-
-    new Ajax.Request(FeedlyApi.BASE_URL + "streams/" + encodeURIComponent(id) + "/contents", {
-      method: "get",
-      parameters: parameters,
-      requestHeaders: this._requestHeaders(),
-      onFailure: failure,
-      onSuccess: function(response) {
-        var articles = JSON2.parse(response.responseText)
-        
-        //Do post-processing to conform articles to FeedSpider spec
-		articles.items.each(function(article) {
-			//Set article categories
-			article.categories = []
-			if(article.tags){
-				article.tags.each(function(tag) {
-					if (tag.id !== undefined)
-					{
-						if(tag.id.endsWith("/tag/global.read")) {
-							article.categories.push("/state/com.google/read")
-						}
-						
-						if(tag.id.endsWith("/tag/global.saved")) {
-							article.categories.push("/state/com.google/starred")
-						}
-					}
-    			})
-			}
-			if (article.unread !== undefined)
-			{
-				if(article.unread == false)
-				{
-					article.categories.push("/state/com.google/read")
-				}
-			}
-
-			//Set article timestamp
-			article.crawlTimeMsec = article.crawled
+	
+	if (Preferences.isFeedlySortEngagement() && !id.endsWith("/tag/global.saved")){
+		parameters.count = 20
+		
+		new Ajax.Request(FeedlyApi.BASE_URL + "mixes/" + encodeURIComponent(id) + "/contents", {
+		  method: "get",
+		  parameters: parameters,
+		  requestHeaders: this._requestHeaders(),
+		  onFailure: failure,
+		  onSuccess: function(response) {
+			var articles = JSON2.parse(response.responseText)
+			this._processArticles(articles, success)
+		  }.bind(this)
+		})        	
+    }
+    else
+    {
+		new Ajax.Request(FeedlyApi.BASE_URL + "streams/" + encodeURIComponent(id) + "/contents", {
+		  method: "get",
+		  parameters: parameters,
+		  requestHeaders: this._requestHeaders(),
+		  onFailure: failure,
+		  onSuccess: function(response) {
+			var articles = JSON2.parse(response.responseText)
+			this._processArticles(articles, success)
+		  }.bind(this)
 		})
-        
-        success(articles.items, articles.id, articles.continuation)
-      }
-    })
+    }
+  },
+  
+  //UPDATED 1.2.0
+  _processArticles: function(articles, success) {
+	//Do post-processing to conform articles to FeedSpider spec
+	articles.items.each(function(article) {
+		//Set article categories
+		article.categories = []
+		if(article.tags){
+			article.tags.each(function(tag) {
+				if (tag.id !== undefined)
+				{
+					if(tag.id.endsWith("/tag/global.read")) {
+						article.categories.push("/state/com.google/read")
+					}
+			
+					if(tag.id.endsWith("/tag/global.saved")) {
+						article.categories.push("/state/com.google/starred")
+					}
+				}
+			})
+		}
+		if (article.unread !== undefined)
+		{
+			if(article.unread == false)
+			{
+				article.categories.push("/state/com.google/read")
+			}
+		}
+
+		//Set article timestamp
+		article.crawlTimeMsec = article.crawled
+	})
+
+	success(articles.items, articles.id, articles.continuation)
   },
 
   //UPDATED 0.9.5
@@ -638,6 +684,16 @@ var FeedlyApi = Class.create({
   //UPDATED 0.9.5
   supportsAllArticles: function() {
 	return true
+  },
+  
+  //UPDATED 1.2.0  
+  supportsArchived: function() {
+	return false
+  },
+  
+  //UPDATED 1.2.0  
+  supportsFresh: function() {
+	return false
   },
   
   //UPDATED 0.9.5

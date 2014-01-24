@@ -14,6 +14,8 @@
   {"source": "app/models/load-more.js"},
   {"source": "app/models/all-sources.js"},
   {"source": "app/models/all-articles.js"},
+  {"source": "app/models/archived.js"},
+  {"source": "app/models/fresh.js"},
   {"source": "app/models/starred.js"},
   {"source": "app/models/shared.js"},
   {"source": "app/models/folders.js"},
@@ -25,6 +27,7 @@
   {"source": "app/models/feedly-api.js"},
   {"source": "app/models/bq-api.js"},
   {"source": "app/models/ttrss-api.js"},
+  {"source": "app/models/aol-api.js"},
 
   {"source": "app/lib/ajax.js"},
   {"source": "app/lib/instapaper.js"},

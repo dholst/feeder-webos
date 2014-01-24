@@ -1,31 +1,59 @@
-var InoApi = Class.create({
-  login: function(credentials, success, failure) {
-    var authSuccess = function(response) {
-      var authMatch = response.responseText.match(/Auth\=(.*)/)
-      this.auth = authMatch ? authMatch[1] : ''
-      success(this.auth)
-    }.bind(this)
-
-    new Ajax.Request("https://www.inoreader.com/accounts/ClientLogin", {
-      method: "post",
-      parameters: {Email: credentials.email, Passwd: credentials.password},
-      onSuccess: authSuccess,
-      onFailure: failure
-    })
+var AolApi = Class.create({
+  //UPDATED 1.2.0
+  login: function(credentials, success, failure, controller) {
+    if (credentials.accessToken != null && credentials.refreshToken != null && credentials.tokenExpiry != null)
+    {
+    	this.credentials = credentials
+    	if (this._checkTokenExpiry())
+    	{
+    		success(this.credentials.accessToken)
+    	}
+    	else
+    	{
+    		this.credentials.password = null
+      		this.credentials.server = null
+      		this.credentials.id = null
+	  		this.credentials.refreshToken = null
+	  		this.credentials.accessToken = null
+	  		this.credentials.tokenType = null
+	  		this.credentials.plan = null
+      		this.credentials.clear()
+    		failure()
+    		return
+    	}
+    }
+    else
+    { 
+		var oauthConfig={
+			callbackScene:'login', //Name of the assistant to be called on the OAuth Success
+			authorizeUrl: AolApi.AUTH_URL + 'authorize',
+			accessTokenUrl: AolApi.AUTH_URL + 'access_token',
+			accessTokenMethod:'POST', // Optional - 'GET' by default if not specified
+			client_id: AolApi.CLIENT_ID,
+			client_secret: AolApi.CLIENT_SECRET,
+			redirect_uri:'urn:ietf:wg:oauth:2.0:oob', // Optional - 'oob' by default if not specified
+			response_type:'code', // now only support code
+			scope: ['reader'], //for example, this is instagram scope
+			service: credentials.service
+		 };
+		 controller.stageController.pushScene('oauth',oauthConfig);
+	 }
   },
 
+  //UPDATED 1.2.0
   getTags: function(success, failure) {
-    new Ajax.Request(InoApi.BASE_URL + "tag/list", {
+    new Ajax.Request(AolApi.BASE_URL + "tag/list", {
       method: "get",
-      parameters: {output: "json"},
-      requestHeaders: this._requestHeaders(),
+      parameters: this._requestHeaders(),
       onFailure: failure,
       onSuccess: function(response) {success(response.responseText.evalJSON().tags)}
     })
   },
 
+  //NOT SUPPORTED BY API
   getSortOrder: function(success, failure) {
-    new Ajax.Request(InoApi.BASE_URL + "preference/stream/list", {
+	failure()
+  /*  new Ajax.Request(AolApi.BASE_URL + "preference/stream/list", {
       method: "get",
       parameters: {output: "json"},
       requestHeaders: this._requestHeaders(),
@@ -48,11 +76,13 @@ var InoApi = Class.create({
 
         success(sortOrder)
       }
-    })
+    })*/
   },
 
+  //NOT SUPPORTED BY API
   setSortOrder: function(sortOrder, stream) {
-    this._getEditToken(function(token) {
+	failure()
+  	/*this._getEditToken(function(token) {
       var parameters = {
         T: token,
         s: stream || "user/-/state/com.google/root",
@@ -60,58 +90,54 @@ var InoApi = Class.create({
         v: sortOrder
       }
 
-      new Ajax.Request(InoApi.BASE_URL + "preference/stream/set", {
+      new Ajax.Request(AolApi.BASE_URL + "preference/stream/set", {
         method: "post",
         parameters: parameters,
         requestHeaders: this._requestHeaders()
       })
-    }.bind(this))
+    }.bind(this))*/
   },
 
+  //UPDATED 1.2.0
   unsubscribe: function(feed) {
     if(feed.constructor == Folder) {
       this.removeLabel(feed)
     }
     else {
-      this._getEditToken(function(token) {
-        var parameters = {
-          T: token,
-          s: feed.id,
-          ac: "unsubscribe",
-          t: feed.title
-        }
+		var parameters = {
+		  access_token: this._getAuthToken(),
+		  s: feed.id,
+		  ac: "unsubscribe"
+		}
 
-        new Ajax.Request(InoApi.BASE_URL + "subscription/edit", {
-          method: "post",
-          parameters: parameters,
-          requestHeaders: this._requestHeaders(),
-          onSuccess: function() {Mojo.Event.send(document, "SubscriptionDeleted", {id: feed.id, count: feed.unreadCount})}
-        })
-      }.bind(this))
+		new Ajax.Request(AolApi.BASE_URL + "subscription/edit", {
+		  method: "post",
+		  parameters: parameters,
+		  onSuccess: function() {Mojo.Event.send(document, "SubscriptionDeleted", {id: feed.id, count: feed.unreadCount})}
+		})
     }
   },
 
+  //UPDATED 1.2.0
   removeLabel: function(folder) {
-    this._getEditToken(function(token) {
-      var parameters = {
-        T: token,
-        s: folder.id,
-        t: folder.title
-      }
+	  var parameters = {
+		access_token: this._getAuthToken(),
+		s: folder.id
+	  }
 
-      new Ajax.Request(InoApi.BASE_URL + "disable-tag", {
-        method: "post",
-        parameters: parameters,
-        requestHeaders: this._requestHeaders(),
-        onSuccess: function() {Mojo.Event.send(document, "FolderDeleted", {id: folder.id})}
-      })
-    }.bind(this))
+	  new Ajax.Request(AolApi.BASE_URL + "disable-tag", {
+		method: "post",
+		parameters: parameters,
+		onSuccess: function() {Mojo.Event.send(document, "FolderDeleted", {id: folder.id})}
+	  })
   },
 
-  searchSubscriptions: function(query, success, failure) {
-    var self = this
+  //NOT SUPPORTED BY API
+  searchSubscriptions: function(query, success, failure) {	
+    failure()
+    /*var self = this
 
-    new Ajax.Request(InoApi.BASE_URL + "feed-finder", {
+    new Ajax.Request(AolApi.BASE_URL + "feed-finder", {
       method: "get",
       parameters: {q: query, output: "json"},
       requestHeaders: this._requestHeaders(),
@@ -120,20 +146,19 @@ var InoApi = Class.create({
         var subscriptions = response.responseText.evalJSON().items
         success(subscriptions)
       }
-    })
+    })*/
   },
 
+  //UPDATED 1.2.0
   addSubscription: function(url, success, failure) {
-    this._getEditToken(function(token) {
       var parameters = {
-        T: token,
+        access_token: this._getAuthToken(),
         quickadd: url
       }
 
-      new Ajax.Request(InoApi.BASE_URL + "subscription/quickadd", {
+      new Ajax.Request(AolApi.BASE_URL + "subscription/quickadd", {
         method: "post",
         parameters: parameters,
-        requestHeaders: this._requestHeaders(),
         onFailure: failure,
         onSuccess: function(response) {
           var json = response.responseText.evalJSON()
@@ -146,16 +171,15 @@ var InoApi = Class.create({
           }
         }
       })
-    }.bind(this))
   },
 
+  //UPDATED 1.2.0
   getAllSubscriptions: function(success, failure) {
     var self = this
 
-    new Ajax.Request(InoApi.BASE_URL + "subscription/list", {
+    new Ajax.Request(AolApi.BASE_URL + "subscription/list", {
       method: "get",
-      parameters: {output: "json"},
-      requestHeaders: this._requestHeaders(),
+      parameters: this._requestHeaders(),
       onFailure: failure,
       onSuccess: function(response) {
         var subscriptions = response.responseText.evalJSON().subscriptions
@@ -165,6 +189,7 @@ var InoApi = Class.create({
     })
   },
 
+  //UPDATED 1.2.0
   cacheTitles: function(subscriptions) {
     var self = this
     self.titles = {}
@@ -174,15 +199,16 @@ var InoApi = Class.create({
     })
   },
 
+  //UPDATED 1.2.0
   titleFor: function(id) {
     return this.titles[id]
   },
 
+  //UPDATED 1.2.0
   getUnreadCounts: function(success, failure) {
-    new Ajax.Request(InoApi.BASE_URL + "unread-count", {
+    new Ajax.Request(AolApi.BASE_URL + "unread-count", {
       method: "get",
-      parameters: {output: "json"},
-      requestHeaders: this._requestHeaders(),
+      parameters: this._requestHeaders(),
       onFailure: failure,
       onSuccess: function(response) {
         var json = response.responseText.evalJSON()
@@ -197,30 +223,11 @@ var InoApi = Class.create({
     })
   },
 
+  //UPDATED 1.2.0
   getAllArticles: function(continuation, success, failure) {
     this._getArticles(
-      "user/-/state/com.google/reading-list",
-      Preferences.hideReadArticles() ? "user/-/state/com.google/read" : null,
-      continuation,
-      success,
-      failure
-    )
-  },
-
-  getAllStarred: function(continuation, success, failure) {
-    this._getArticles(
-      "user/-/state/com.google/starred",
-      null,
-      continuation,
-      success,
-      failure
-    )
-  },
-
-  getAllShared: function(continuation, success, failure) {
-    this._getArticles(
-      "user/-/state/com.google/broadcast",
-      null,
+      "user/-/state/reading-list",
+      Preferences.hideReadArticles() ? "user/-/state/read" : null,
       continuation,
       success,
       failure
@@ -228,8 +235,30 @@ var InoApi = Class.create({
   },
 
   //UPDATED 1.2.0
+  getAllStarred: function(continuation, success, failure) {
+    this._getArticles(
+      "user/-/state/starred",
+      null,
+      continuation,
+      success,
+      failure
+    )
+  },
+
+  //NOT SUPPORTED BY API
+  getAllShared: function(continuation, success, failure) {
+    failure()
+    /*this._getArticles(
+      "user/-/state/com.google/broadcast",
+      null,
+      continuation,
+      success,
+      failure
+    )*/
+  },
+
+  //UPDATED 1.2.0
   getAllFresh: function(continuation, success, failure) {
-  	failure()    
     /*this._getArticles(
       -3,
       "all_articles",
@@ -241,7 +270,6 @@ var InoApi = Class.create({
 
   //UPDATED 1.2.0
   getAllArchived: function(continuation, success, failure) {
-  	failure()
     /*this._getArticles(
       -0,
       "all_articles",
@@ -251,22 +279,22 @@ var InoApi = Class.create({
     )*/
   },
 
+  //UPDATED 1.2.0
   getAllArticlesFor: function(id, continuation, success, failure) {
     this._getArticles(
       id,
-      Preferences.hideReadArticles() ? "user/-/state/com.google/read" : null,
+      Preferences.hideReadArticles() ? "user/-/state/read" : null,
       continuation,
       success,
       failure
     )
   },
 
-  //UPDATED 1.1.3
+  //UPDATED 1.2.0
   _getArticles: function(id, exclude, continuation, success, failure) {
-    var parameters = {output: "json", n: 40}
+    var parameters = {output: "json", n: 40, access_token: this._getAuthToken()}
 
-    if(id != "user/-/state/com.google/starred" &&
-       id != "user/-/state/com.google/broadcast" &&
+    if(id != "user/-/state/starred" &&
        Preferences.isOldestFirst()) {
       parameters.r = "o"
     }
@@ -279,41 +307,71 @@ var InoApi = Class.create({
       parameters.xt = exclude
     }
 
-    new Ajax.Request(InoApi.BASE_URL + "stream/contents/" + escape(id), {
+    new Ajax.Request(AolApi.BASE_URL + "stream/contents/" + escape(id), {
       method: "get",
       parameters: parameters,
       requestHeaders: this._requestHeaders(),
       onFailure: failure,
       onSuccess: function(response) {
         var articles = JSON2.parse(response.responseText)
-        success(articles.items, articles.id, articles.continuation)
+        
+        //Post Processing
+        articles.items.each(function(item){
+        	item.crawlTimeMsec = item.crawlTimeMsec.substring(0, item.crawlTimeMsec.length - 3)
+        	item.alternate.each(function(alternate){
+        		alternate.type = "html"
+        	})
+       	    item.categories.each(function(category) {
+				if(category.endsWith("/state/read")) {
+					item.categories.push("/state/com.google/read")
+				}
+
+				if(category.endsWith("/state/kept-unread")) {
+					item.categories.push("/state/com.google/kept-unread")
+				}
+
+				if(category.endsWith("/state/starred")) {
+					item.categories.push("/state/com.google/starred")
+				}	
+			})
+        })
+        
+        //Load more articles (if there are more to load)
+		if(articles.items.length == parameters.n)
+		{
+			success(articles.items, articles.id, articles.continuation)
+		}
+		else
+		{
+			success(articles.items, articles.id, false)
+		}
       }
     })
   },
 
+  //UPDATED 1.2.0
   markAllRead: function(id, success, failure) {
-    this._getEditToken(
-      function(token) {
-        var parameters = {
-          T: token,
-          s: id
-        }
+	if (id === "user/-/state/com.google/reading-list") {
+		id = "user/-/state/reading-list"
+	}
+	
+	var parameters = {
+	  access_token: this._getAuthToken(),
+	  s: id
+	}
 
-        new Ajax.Request(InoApi.BASE_URL + "mark-all-as-read", {
-          method: "post",
-          parameters: parameters,
-          requestHeaders: this._requestHeaders(),
-          onSuccess: success,
-          onFailure: failure
-        })
-      }.bind(this),
-
-      failure
-    )
+	new Ajax.Request(AolApi.BASE_URL + "mark-all-as-read", {
+	  method: "post",
+	  parameters: parameters,
+	  onSuccess: success,
+	  onFailure: failure
+	})
   },
 
+  //NOT SUPPORTED BY API
   search: function(query, id, success, failure) {
-    var parameters = {
+  	failure()
+    /*var parameters = {
       q: query,
       num: 50,
       output: "json"
@@ -323,17 +381,19 @@ var InoApi = Class.create({
       parameters.s = id
     }
 
-    new Ajax.Request(InoApi.BASE_URL + "search/items/ids", {
+    new Ajax.Request(AolApi.BASE_URL + "search/items/ids", {
       method: "get",
       parameters: parameters,
       requestHeaders: this._requestHeaders(),
       onSuccess: this.searchItemsFound.bind(this, success, failure),
       onFailure: failure
-    })
+    })*/
   },
 
+  //NOT SUPPORTED BY API
   searchItemsFound: function(success, failure, response) {
-    var self = this
+  	failure()
+    /*var self = this
     var ids = response.responseText.evalJSON().results
 
     if(ids.length) {
@@ -344,7 +404,7 @@ var InoApi = Class.create({
             i: ids.map(function(n) {return n.id})
           }
 
-          new Ajax.Request(InoApi.BASE_URL + "stream/items/contents", {
+          new Ajax.Request(AolApi.BASE_URL + "stream/items/contents", {
             method: "post",
             parameters: parameters,
             requestHeaders: self._requestHeaders(),
@@ -359,130 +419,192 @@ var InoApi = Class.create({
     }
     else {
       success([], "", false)
-    }
+    }*/
   },
 
+  //UPDATED 1.2.0
   mapSearchResults: function(response) {
     console.log(response.responseText)
   },
 
+  //UPDATED 1.2.0
   setArticleRead: function(articleId, subscriptionId, success, failure) {
     this._editTag(
       articleId,
       subscriptionId,
-      "user/-/state/com.google/read",
+      "user/-/state/read",
       null,
       success,
       failure
     )
   },
 
+  //UPDATED 1.2.0
   setArticleNotRead: function(articleId, subscriptionId, success, failure, sticky) {
      this._editTag(
       articleId,
       subscriptionId,
       null,
-      "user/-/state/com.google/read",
+      "user/-/state/read",
       success,
       failure
     )
   },
 
+  //NOT SUPPORTED BY API
   setArticleShared: function(articleId, subscriptionId, success, failure) {
-    this._editTag(
+    failure()
+    /*this._editTag(
       articleId,
       subscriptionId,
       "user/-/state/com.google/broadcast",
       null,
       success,
       failure
-    )
+    )*/
   },
 
+  //NOT SUPPORTED BY API
   setArticleNotShared: function(articleId, subscriptionId, success, failure) {
-    this._editTag(
+    failure()
+    /*this._editTag(
       articleId,
       subscriptionId,
       null,
       "user/-/state/com.google/broadcast",
       success,
       failure
-    )
+    )*/
   },
 
+  //UPDATED 1.2.0
   setArticleStarred: function(articleId, subscriptionId, success, failure) {
     this._editTag(
       articleId,
       subscriptionId,
-      "user/-/state/com.google/starred",
+      "user/-/state/starred",
       null,
       success,
       failure
     )
   },
 
+  //UPDATED 1.2.0
   setArticleNotStarred: function(articleId, subscriptionId, success, failure) {
     this._editTag(
       articleId,
       subscriptionId,
       null,
-      "user/-/state/com.google/starred",
+      "user/-/state/starred",
       success,
       failure
     )
   },
 
+  //UPDATED 1.2.0
   _editTag: function(articleId, subscriptionId, addTag, removeTag, success, failure) {
     Log.debug("editing tag for article id = " + articleId + " and subscription id = " + subscriptionId)
-
-    this._getEditToken(
-      function(token) {
         var parameters = {
-          T: token,
-          i: articleId,
-          s: subscriptionId
+          access_token: this._getAuthToken(),
+          ac: "edit",
+          i: articleId
         }
 
         if(addTag) parameters.a = addTag
         if(removeTag) parameters.r = removeTag
 
-        new Ajax.Request(InoApi.BASE_URL + "edit-tag", {
+        new Ajax.Request(AolApi.BASE_URL + "edit-tag", {
           method: "post",
           parameters: parameters,
-          requestHeaders: this._requestHeaders(),
           onSuccess: success,
           onFailure: failure
         })
-      }.bind(this),
-
-      failure
-    )
   },
 
+  //UPDATED 1.2.0
   _requestHeaders: function() {
-    return {Authorization:"GoogleLogin auth=" + this.auth}
-  },
-
-  _getEditToken: function(success, failure) {
-    if(this.editToken && (new Date().getTime() - this.editTokenTime < 120000)) {
-      Log.debug("using last edit token - " + this.editToken)
-      success(this.editToken)
-    }
-    else {
-      new Ajax.Request(InoApi.BASE_URL + "token", {
-        method: "get",
-        requestHeaders: {Authorization:"GoogleLogin auth=" + this.auth},
-        onFailure: failure,
-        onSuccess: function(response) {
-          this.editToken = response.responseText
-          this.editTokenTime = new Date().getTime()
-          Log.debug("retrieved edit token - " + this.editToken)
-          success(this.editToken)
-        }.bind(this)
-      })
-    }
+    return {access_token: this._getAuthToken()}
   },
   
+  //UPDATED 1.2.0
+  _getAuthToken: function() {
+    if (this._checkTokenExpiry())
+    {
+    	return this.credentials.accessToken
+    }
+    else
+    {
+    	return "OAuth Error"
+    }
+  },
+
+  //UPDATED 1.2.0  
+  _serialize: function(obj) {
+	  var str = []
+	  for(var p in obj)
+	  {
+		if (obj.hasOwnProperty(p)) {
+		  str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]))
+		}
+	  }
+	  return str.join("&")
+  },
+
+  //UPDATED 1.2.0
+  _checkTokenExpiry: function() {
+    if (new Date(this.credentials.tokenExpiry).getTime() > new Date().getTime())
+    {
+    	return true
+    } 
+    else
+    {
+    	var parameters = {
+    		grant_type: "refresh_token",
+    		refresh_token: this.credentials.refreshToken,
+        	client_id: AolApi.CLIENT_ID,
+        	client_secret: AolApi.CLIENT_SECRET
+    	}
+
+    	try {
+        	var req = new XMLHttpRequest()
+        	req.open("POST", AolApi.AUTH_URL + "access_token", false)
+        	req.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
+        	req.send(this._serialize(parameters))
+			if(req.readyState === 4 && req.status === 200){
+				response = req.responseText.evalJSON()
+				if (response) {
+					if (response.access_token) {
+						this.credentials.accessToken = response.access_token
+					}
+					if (response.expires_in) {
+						var expiryDate = new Date();
+						expiryDate.setSeconds(expiryDate.getSeconds() + response.expires_in);
+						this.credentials.tokenExpiry = expiryDate
+					}
+					if (response.token_type) {
+						this.credentials.tokenType = response.token_type
+					}
+					this.credentials.save()
+					return true
+				}
+				else
+				{
+					return false
+				}
+			} 
+			else
+			{
+				throw req.responseText
+			}
+    	}
+    	catch (e) {
+        	Log.debug('_checkTokenExpiry failed! Error:' + e)
+        	return false
+    	}
+	}
+  },
+
+  //UPDATED 1.2.0  
   supportsAllArticles: function() {
 	return true
   },
@@ -496,24 +618,30 @@ var InoApi = Class.create({
   supportsFresh: function() {
 	return false
   },
-  
+
+  //UPDATED 1.2.0  
   supportsStarred: function() {
 	return true
   },
-  
+
+  //UPDATED 1.2.0  
   supportsShared: function() {
-	return true
+	return false
   },
-  
+
+  //UPDATED 1.2.0  
   supportsSearch: function() {
 	return false
   },
   
-  //UPDATED 0.9.5
+  //UPDATED 1.2.0
   supportsManualSort: function() {
-	return true
+	return false
   }
   
 })
 
-InoApi.BASE_URL = "https://www.inoreader.com/reader/api/0/"
+AolApi.BASE_URL = "https://reader.aol.com/reader/api/0/"
+AolApi.AUTH_URL = "https://api.screenname.aol.com/auth/"
+AolApi.CLIENT_ID = "fe1CgOIzMHHjg_5E";
+AolApi.CLIENT_SECRET = "2fHTh5uZTiUOsy-gs_l3";
