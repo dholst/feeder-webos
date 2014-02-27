@@ -20,7 +20,7 @@ var LoginAssistant = Class.create(BaseAssistant, {
       parameters: {},
 
       onSuccess: function(response) {
-        if((this.credentials.service !== "ttrss" && this.credentials.email && this.credentials.password) || (this.credentials.service === "ttrss" && this.credentials.email && this.credentials.password && this.credentials.server) || this.credentials.service === "feedly" || this.credentials.service === "aol" ) {
+        if(((this.credentials.service !== "ttrss" || this.credentials.service !== "oc") && this.credentials.email && this.credentials.password) || ((this.credentials.service === "ttrss" || this.credentials.service === "oc") && this.credentials.email && this.credentials.password && this.credentials.server) || this.credentials.service === "feedly" || this.credentials.service === "aol" ) {
           if(this.triedLogin) {
             Log.debug("ALREADY TRIED LOGGING IN, WHAT MAKES YOU THINK ITS GOING TO WORK NOW")
           }

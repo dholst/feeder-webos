@@ -12,6 +12,7 @@ var CredentialsAssistant = Class.create(BaseAssistant, {
       {label: $L("BazQux"), value: "bq"},
       {label: $L("Feedly"), value: "feedly"},
       {label: $L("InoReader"), value: "ino"},
+      {label: $L("OwnCloud News"), value: "oc"},
       {label: $L("The Old Reader"), value: "tor"},
       {label: $L("Tiny Tiny RSS"), value: "ttrss"}
     ]
@@ -91,7 +92,7 @@ var CredentialsAssistant = Class.create(BaseAssistant, {
   		this.controller.get("password-group")["hide"]()
  		this.controller.get("server-group")["hide"]()
   	}
-  	else if (propertyChangeEvent.value == "ttrss")
+  	else if (propertyChangeEvent.value == "ttrss" || propertyChangeEvent.value == "oc")
   	{
   		this.controller.get("email-group")["show"]()
   		this.controller.get("password-group")["show"]()

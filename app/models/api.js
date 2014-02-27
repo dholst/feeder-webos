@@ -34,6 +34,11 @@ var Api = Class.create({
   		this.appApi = new AolApi()
 		this.appApi.login(credentials, success, failure, controller)
 	}
+	else if (credentials.service == "oc")
+  	{
+  		this.appApi = new OCApi()
+		this.appApi.login(credentials, success, failure, controller)
+	}
 	else
 	{
 		// No supported service to log into
