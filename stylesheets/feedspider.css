@@ -542,6 +542,11 @@ body.lefty #small-spinner {
   color: black;
 }
 
+#summary.tiny, #summary.tiny p {
+  font-size: 12px !important;
+  line-height: 15px !important;
+}
+
 #summary.small, #summary.small p {
   font-size: 15px !important;
   line-height: 18px !important;

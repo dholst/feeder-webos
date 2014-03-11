@@ -9,6 +9,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     ]}
 
     this.fontSizeChoices = {choices: [
+      {label: $L("Tiny Font"), value: "tiny"},
       {label: $L("Small Font"), value: "small"},
       {label: $L("Medium Font"), value: "medium"},
       {label: $L("Large Font"), value: "large"}

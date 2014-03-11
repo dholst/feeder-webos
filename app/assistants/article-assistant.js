@@ -64,6 +64,7 @@ var ArticleAssistant = Class.create(BaseAssistant, {
 
   setFontSize: function() {
     var summary = this.controller.get("summary")
+    summary.removeClassName("tiny")
     summary.removeClassName("small")
     summary.removeClassName("medium")
     summary.removeClassName("large")
