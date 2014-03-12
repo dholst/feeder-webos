@@ -71,9 +71,10 @@ OauthAssistant.prototype.urlChanged = function(event) {
 	if (!Mojo.Environment.DeviceInfo.keyboardAvailable && 
 		(event.url.indexOf("accounts.google.com") !== -1 || 
 		event.url.indexOf("public-api.wordpress.com") !== -1 || 
-		event.url.indexOf("http://api.twitter.com") !== -1 ||
+		event.url.indexOf("twitter.com") !== -1 ||
 		event.url.indexOf("api.screenname.aol.com") !== -1 ||
-		event.url.indexOf("facebook.com") !== -1))
+		event.url.indexOf("facebook.com") !== -1 ||
+		event.url.indexOf("live.com") !== -1))
 	{
 		this.controller.window.PalmSystem.setManualKeyboardEnabled(true);
 		this.controller.window.PalmSystem.allowResizeOnPositiveSpaceChange(true);
