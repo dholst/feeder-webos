@@ -58,6 +58,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.notificationFeeds = {value: Preferences.anyOrSelectedFeedsForNotifications()}
     this.notificationFeedSelection = {buttonLabel: $L("Select Feeds")}
     this.feedlySortEngagement = {value: Preferences.isFeedlySortEngagement()}
+    this.shortenURLs = {value: Preferences.isShortenURLs()}
 
     this.originalAllowLandscape = Preferences.allowLandscape()
     this.originalSortOrder = Preferences.isOldestFirst()
@@ -95,6 +96,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.controller.setupWidget("notification-feeds", this.notificationFeedsChoices, this.notificationFeeds)
     this.controller.setupWidget("notification-feed-selection", {}, this.notificationFeedSelection)
     this.controller.setupWidget("feedly-sort-engagement", {}, this.feedlySortEngagement)
+    this.controller.setupWidget("shorten-urls", {}, this.shortenURLs)
   },
 
   addListeners: function() {
@@ -115,6 +117,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.controller.listen("notification-feed-selection", Mojo.Event.tap, this.selectFeeds = this.selectFeeds.bind(this))
     // this.controller.listen("lefties", Mojo.Event.hold, this.weLoveLefties = this.weLoveLefties.bind(this))
     this.controller.listen("feedly-sort-engagement", Mojo.Event.propertyChange, this.setFeedlySortEngagement = this.setFeedlySortEngagement.bind(this))
+    this.controller.listen("shorten-urls", Mojo.Event.propertyChange, this.setShortenURLs = this.setShortenURLs.bind(this))
   },
 
   updateLabels: function() {
@@ -135,6 +138,8 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.controller.get("notifications-label").update($L("Notifications"))
     this.controller.get("feedly-label").update($L("Feedly Options"))
     this.controller.get("feedly-sort-engagement-label").update($L("Show most engaging articles only"))
+    this.controller.get("sharing-label").update($L("Sharing"))
+    this.controller.get("shorten-urls-label").update($L("Shorten URLs"))
   },
 
   cleanup: function($super) {
@@ -155,6 +160,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("notification-feed-selection", Mojo.Event.tap, this.selectFeeds)
     // this.controller.stopListening("lefties", Mojo.Event.hold, this.weLoveLefties)
     this.controller.stopListening("feedly-sort-engagement", Mojo.Event.propertyChange, this.setFeedlySortEngagement)
+    this.controller.stopListening("shorten-urls", Mojo.Event.propertyChange, this.shortenURLs)
   },
 
   showAndHideStuff: function() {
@@ -178,6 +184,10 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
         this.controller.get("notification-feed-selection-row").addClassName("last")
       }
     }
+  },
+
+  setShortenURLs: function() {
+    Preferences.setShortenURLs(this.shortenURLs.value)
   },
   
   setFeedlySortEngagement: function() {
