@@ -212,7 +212,7 @@ var Sharing = {
   sendToEmail: function(article, controller, shorturl) {
   	if(Preferences.isShortenURLs() && !shorturl)
   	{
-  		Sharing.getShortURL(article, controller, article.url, "sendToBrowser")
+  		Sharing.getShortURL(article, controller, article.url, "sendToEmail")
   		return
   	}
   	
@@ -223,7 +223,7 @@ var Sharing = {
   sendToSms: function(article, controller, shorturl) {
    	if(Preferences.isShortenURLs() && !shorturl)
   	{
-  		Sharing.getShortURL(article, controller, article.url, "sendToBrowser")
+  		Sharing.getShortURL(article, controller, article.url, "sendToSms")
   		return
   	}
   	
