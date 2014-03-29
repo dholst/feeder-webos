@@ -160,7 +160,7 @@ var PreferencesAssistant = Class.create(BaseAssistant, {
     this.controller.stopListening("notification-feed-selection", Mojo.Event.tap, this.selectFeeds)
     // this.controller.stopListening("lefties", Mojo.Event.hold, this.weLoveLefties)
     this.controller.stopListening("feedly-sort-engagement", Mojo.Event.propertyChange, this.setFeedlySortEngagement)
-    this.controller.stopListening("shorten-urls", Mojo.Event.propertyChange, this.shortenURLs)
+    this.controller.stopListening("shorten-urls", Mojo.Event.propertyChange, this.setShortenURLs)
   },
 
   showAndHideStuff: function() {
