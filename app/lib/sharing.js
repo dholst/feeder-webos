@@ -25,7 +25,8 @@ var Sharing = {
     {id: "sharing-al", label: $L("Spare Time"), command: "send-to-spare-time", defaultEnabled: false},
     {id: "sharing-am", label: $L("Instapaper"), command: "send-to-instapaper", defaultEnabled: true},
     {id: "sharing-an", label: $L("ReadOnTouch PHONE"), command: "send-to-readontouch-phone", defaultEnabled: false},
-    {id: "sharing-ao", label: $L("ReadOnTouch PRO"), command: "send-to-readontouch-pro", defaultEnabled: false}
+    {id: "sharing-ao", label: $L("ReadOnTouch PRO"), command: "send-to-readontouch-pro", defaultEnabled: false},
+    {id: "sharing-ap", label: $L("MoboReader"), command: "send-to-mobo-reader", defaultEnabled: false}
   ],
   
   getPopupFor: function(article) {
@@ -114,6 +115,7 @@ var Sharing = {
       case "send-to-browser":     Sharing.sendToBrowser(article, controller); break;
       case "send-to-spaz-hd":     Sharing.sendToSpazHD(article, controller); break;
       case "send-to-spaz-beta":     Sharing.sendToSpazBeta(article, controller); break;
+      case "send-to-mobo-reader":  Sharing.sendToMoboReader(article, controller); break;
       case "configure":           controller.stageController.pushScene("configure-sharing", Sharing.items)
     }
   },
@@ -243,6 +245,11 @@ var Sharing = {
     Sharing.sendToApp(controller, $L("ReadOnTouch PRO"), "com.sven-ziegler.readontouch", {action: 'addLink', url: article.url, title: article.title})
   },
   
+
+  sendToMoboReader: function(article, controller) {
+    Sharing.sendToApp(controller, $L("MoboReader"), "info.mobo.moboreader", {action: 'addLink', url: article.url, title: article.title})
+  },
+
   sendToClipboard: function(article, controller) {
     controller.stageController.setClipboard(article.url)
     Feeder.notify($L("URL Copied"))
