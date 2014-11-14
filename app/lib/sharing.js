@@ -26,7 +26,7 @@ var Sharing = {
     {id: "sharing-am", label: $L("Instapaper"), command: "send-to-instapaper", defaultEnabled: true},
     {id: "sharing-an", label: $L("ReadOnTouch PHONE"), command: "send-to-readontouch-phone", defaultEnabled: false},
     {id: "sharing-ao", label: $L("ReadOnTouch PRO"), command: "send-to-readontouch-pro", defaultEnabled: false},
-    {id: "sharing-ap", label: $L("MoboReader"), command: "send-to-mobo-reader", defaultEnabled: false}
+    {id: "sharing-ay", label: $L("MoboReader"), command: "send-to-mobo-reader", defaultEnabled: false}
   ],
   
   getPopupFor: function(article) {
