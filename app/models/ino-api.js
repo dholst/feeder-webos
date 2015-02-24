@@ -8,6 +8,7 @@ var InoApi = Class.create({
 
     new Ajax.Request("https://www.inoreader.com/accounts/ClientLogin", {
       method: "post",
+      requestHeaders: {AppId: InoApi.APP_ID, AppKey: InoApi.APP_KEY},
       parameters: {Email: credentials.email, Passwd: credentials.password},
       onSuccess: authSuccess,
       onFailure: failure
@@ -460,7 +461,7 @@ var InoApi = Class.create({
   },
 
   _requestHeaders: function() {
-    return {Authorization:"GoogleLogin auth=" + this.auth}
+    return {Authorization:"GoogleLogin auth=" + this.auth, AppId: InoApi.APP_ID, AppKey: InoApi.APP_KEY}
   },
 
   _getEditToken: function(success, failure) {
@@ -471,7 +472,7 @@ var InoApi = Class.create({
     else {
       new Ajax.Request(InoApi.BASE_URL + "token", {
         method: "get",
-        requestHeaders: {Authorization:"GoogleLogin auth=" + this.auth},
+        requestHeaders: this._requestHeaders(),
         onFailure: failure,
         onSuccess: function(response) {
           this.editToken = response.responseText
@@ -516,4 +517,6 @@ var InoApi = Class.create({
   
 })
 
-InoApi.BASE_URL = "https://www.inoreader.com/reader/api/0/"
+InoApi.BASE_URL = "https://www.inoreader.com/reader/api/0/";
+InoApi.APP_ID = "1000001438";
+InoApi.APP_KEY = "Hea9JkjSNEepktY0s9ss9TUaETgCoBzg";
