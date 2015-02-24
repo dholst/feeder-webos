@@ -48,12 +48,12 @@ var AllSubscriptions = Class.create(SubscriptionContainer, {
     self.api.getUnreadCounts(
       function(counts) {
         counts.each(function(count) {
-          if(count.id.startsWith("feed")) {
+          if(count.id.toString().startsWith("feed") || count.id > 0){       	
             self.incrementUnreadCountBy(count.count)
 
             self.items.each(function(item) {
               if(item.id == count.id) {
-                item.setUnreadCount(count.count)
+              	item.setUnreadCount(count.count)
               }
 
               if(item.isFolder) {
@@ -71,10 +71,21 @@ var AllSubscriptions = Class.create(SubscriptionContainer, {
   },
 
   sort: function(success, failure) {
+    var self = this
     if(Preferences.isManualFeedSort()) {
-      this.sortManually(success, failure)
+      if (self.api.supportsManualSort())
+      {
+      	this.sortManually(success, failure)
+      }
+      else
+      {
+      	Feeder.notify($L("Manual Sort Not Available"))
+      	Preferences.setManualFeedSort(false)
+      	this.sortAlphabetically(success, failure)
+      }
     }
     else {
+      
       this.sortAlphabetically(success, failure)
     }
   },

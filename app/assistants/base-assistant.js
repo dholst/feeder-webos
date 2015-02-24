@@ -269,12 +269,18 @@ var BaseAssistant = Class.create({
   },
 
   listenForSearch: function() {
-    $(this.controller.document).observe("keypress", this.startSearch)
-    this.controller.get("search-text").mojo.setConsumesEnterKey(false)
+    if(this.api.supportsSearch())
+    {
+    	$(this.controller.document).observe("keypress", this.startSearch)
+    	this.controller.get("search-text").mojo.setConsumesEnterKey(false)
+    }
   },
 
   stopListeningForSearch: function() {
-    $(this.controller.document).stopObserving("keypress", this.startSearch)
+  	if(this.api.supportsSearch())
+    {
+    	$(this.controller.document).stopObserving("keypress", this.startSearch)
+    }
   },
 
   scrollToTop: function() {
@@ -317,8 +323,11 @@ var BaseAssistant = Class.create({
       items.push({label: $L("Hide read feeds"), command: "hide-read-feeds"});
     }
 
-    items.push({label: $L("Search"), command: "search"});
-
+    if(this.api.supportsSearch())
+    {
+    	items.push({label: $L("Search"), command: "search"});
+	}
+	
     this.controller.popupSubmenu({
       placeNear: this.controller.get("header-text"),
       items: items,
@@ -351,8 +360,12 @@ var BaseAssistant = Class.create({
     }
 
     items.push({label: $L("Refresh"), command: "refresh"});
-    items.push({label: $L("Search"), command: "search"});
 
+    if(this.api.supportsSearch())
+    {
+    	items.push({label: $L("Search"), command: "search"});
+	}
+	
     this.controller.popupSubmenu({
       placeNear: this.controller.get("header-text"),
       items: items,

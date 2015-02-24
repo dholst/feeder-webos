@@ -35,7 +35,14 @@ var Folder = Class.create(ArticleContainer, {
   addUnreadCount: function(count) {
     this.subscriptions.items.each(function(subscription) {
       if(subscription.id == count.id) {
-        subscription.setUnreadCount(count.count)
+      	if (count.count !== undefined)
+        {
+        	subscription.setUnreadCount(count.count)
+        }
+        else
+        {
+        	subscription.setUnreadCount(count.counter)
+        }
       }
     })
 

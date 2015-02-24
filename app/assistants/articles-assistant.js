@@ -1,6 +1,7 @@
 var ArticlesAssistant = Class.create(BaseAssistant, {
-  initialize: function($super, subscription) {
+  initialize: function($super, api, subscription) {
     $super()
+    this.api = api
     this.subscription = subscription
     this.subscription.reset()
   },
@@ -315,7 +316,14 @@ var ArticlesAssistant = Class.create(BaseAssistant, {
   },
 
   doSearch: function(query) {
-    this.controller.stageController.pushScene("articles", new Search(this.subscription.api, query, this.subscription.id))
+    if(this.api.supportsSearch())
+    {
+    	this.controller.stageController.pushScene("articles", this.api, new Search(this.subscription.api, query, this.subscription.id))
+    }
+    else
+    {
+    	Feeder.notify($L("Search Not Available"))
+    }
   },
 
   handleCommand: function($super, event) {

@@ -1,12 +1,13 @@
 {
-  "id": "com.semicolonapps.feeder",
-  "version": "0.7.5",
-  "vendor": "SemicolonApps",
+  "id": "com.othelloventures.feedspider",
+  "version": "1.2.6",
+  "vendor": "Othello Ventures",
   "type": "web",
   "main": "index.html",
-  "title": "Feeder",
-  "icon": "feeder_64.png",
-  "splashicon": "feeder_250.png",
+  "title": "FeedSpider",
+  "icon": "feedspider_64.png",
+  "miniicon": "feedspider_48.png",
+  "splashicon": "feedspider_256.png",
   "noWindow": "true",
   "uiRevision": 2
 }

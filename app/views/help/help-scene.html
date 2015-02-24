@@ -12,16 +12,232 @@
 </div>
 
 <div class="palm-text-wrapper">
-  <div class="palm-body-text">Thank you for your purchase. If you have questions or suggestions you can reach us at:</div>
+  <div class="palm-body-text">FeedSpider is a fork of Semicolon Apps&#39; excellent Google Reader app Feeder, adapted to work with Google Reader compatible applications.
+	  <br/><br/>It currently supports:
+	  <ul>
+ 	  	<li><a href="https://reader.aol.com">AOL Reader</a></li>
+	  	<li><a href="https://bazqux.com">BazQux Reader</a></li>
+		<li><a href="http://feedly.com">Feedly</a></li>
+		<li><a href="https://www.inoreader.com">InoReader</a></li>
+		<li><a href="https://www.owncloud.org">OwnCloud News</a></li>
+		<li><a href="http://tt-rss.org">Tiny Tiny RSS</a></li>
+		<li><a href="http://www.theoldreader.com">The Old Reader</a></li>
+	  </ul>
+  </div>
 
-  <ul>
-    <li><a href="http://twitter.com/semicolonapps">twitter</a></li>
-    <li><a href="mailto:feeder@semicolonapps.com">email</a></li>
-  </ul>
+  <div class="palm-body-text">Reach us through:
+	  <ul>
+		<li><a href="http://twitter.com/feedspiderapp">twitter</a></li>
+		<li><a href="mailto:feedspider@feedspider.net">email</a></li>
+		<li><a href="http://www.feedspider.net">web</a></li>
+	  </ul>
+  </div>
 </div>
 
 <div class="palm-text-wrapper">
   <div class="title">History</div>
+</div>
+
+<div class="palm-text-wrapper palm-info-text">
+  <div><strong>1.2.6</strong></div>
+  <ul>
+  	<li>added support for updated InoReader api</li>
+  </ul>
+</div>
+
+<div class="palm-text-wrapper palm-info-text">
+  <div><strong>1.2.5</strong></div>
+  <ul>
+  	<li>add MoboReader to sharing options (thanks to <a href="https://github.com/Garfonso">Garfonso</a>)</li>
+  </ul>
+</div>
+
+<div class="palm-text-wrapper palm-info-text">
+  <div><strong>1.2.4</strong></div>
+  <ul>
+  	<li>fixed issue with improper cleanup call being made on preferences page</li>
+  </ul>
+</div>
+
+<div class="palm-text-wrapper palm-info-text">
+  <div><strong>1.2.3</strong></div>
+  <ul>
+  	<li>re-added support for Spaz (available from <a href="http://www.mobo.info/webos/?p=68">Mobo Mobile</a>)</li>
+  	<li>added option to shorten URL for social media posts</li>
+    <li>fixed virtual keyboard not appearing for oauth login</li>
+  </ul>
+</div>
+
+<div class="palm-text-wrapper palm-info-text">
+  <div><strong>1.2.2</strong></div>
+  <ul>
+    <li>added Tiny Font option</li>
+  </ul>
+</div>
+
+<div class="palm-text-wrapper palm-info-text">
+  <div><strong>1.2.1</strong></div>
+  <ul>
+    <li>added support for OwnCloud News</li>
+  </ul>
+</div>
+
+<div class="palm-text-wrapper palm-info-text">
+  <div><strong>1.2.0</strong></div>
+  <ul>
+    <li>added support for AOL Reader</li>
+    <li>added support for the "Fresh" and "Archived" feeds in Tiny Tiny RSS</li>
+    <li>added support for mixes in Feedly</li>
+  </ul>
+</div>
+
+<div class="palm-text-wrapper palm-info-text">
+  <div><strong>1.1.3</strong></div>
+  <ul>
+    <li>replaced JSON parser to stop feeds from hanging</li>
+    <li>fixed bug in TT-RSS regarding badly sorted aggregate feeds</li>
+  </ul>
+</div>
+
+<div class="palm-text-wrapper palm-info-text">
+  <div><strong>1.1.2</strong></div>
+  <ul>
+    <li>streamlined apis</li>
+    <li>fixed bug in Feedly regarding starring and un-starring articles</li>
+  </ul>
+</div>
+
+<div class="palm-text-wrapper palm-info-text">
+  <div><strong>1.1.1</strong></div>
+  <ul>
+    <li>bugfixes for Tiny Tiny RSS</li>
+  </ul>
+</div>
+
+<div class="palm-text-wrapper palm-info-text">
+  <div><strong>1.1.0</strong></div>
+  <ul>
+    <li>added support for Tiny Tiny RSS</li>
+  </ul>
+</div>
+
+<div class="palm-text-wrapper palm-info-text">
+  <div><strong>1.0.3</strong></div>
+  <ul>
+    <li>fixed bugs related to Feedly login in webOS 1.4.5</li>
+  </ul>
+</div>
+
+<div class="palm-text-wrapper palm-info-text">
+  <div><strong>1.0.2</strong></div>
+  <ul>
+    <li>version bump for App Catalog</li>
+  </ul>
+</div>
+
+<div class="palm-text-wrapper palm-info-text">
+  <div><strong>1.0.1</strong></div>
+  <ul>
+    <li>added support for BazQux Reader</li>
+    <li>re-ordered service choices for login</li>
+  </ul>
+</div>
+
+<div class="palm-text-wrapper palm-info-text">
+  <div><strong>1.0.0</strong></div>
+  <ul>
+    <li>added support for Feedly (production)</li>
+    <li>fixed a bug that would cause FeedSpider to keep requesting a new Feedly token</li>
+    <li>added token validation checks on Feedly PUT and DELETE requests</li>
+  </ul>
+</div>
+
+<div class="palm-text-wrapper palm-info-text">
+  <div><strong>0.9.5</strong></div>
+  <ul>
+    <li>added support for starring articles in The Old Reader</li>
+    <li>added support for Feedly (sandbox)</li>
+    <li>fixed a bug when searching for feeds fails</li>
+  </ul>
+</div>
+
+<div class="palm-text-wrapper palm-info-text">
+  <div><strong>0.9.3</strong></div>
+  <ul>
+    <li>improved handling of images in feeds</li>
+    <li>added support for tweeting via the webOS Browser</li>
+    <li>fixed a bug that would allow a user to bring up the search box when the API does not support it</li>
+  </ul>
+</div>
+
+<div class="palm-text-wrapper palm-info-text">
+  <div><strong>0.9.2</strong></div>
+  <ul>
+    <li>fixed issue with feed names not displaying correctly</li>
+    <li>added experimental support for Simplified Chinese. (Thanks to konglang_616 for the translation!)</li>
+    <li>added support for copying article urls to clipboard</li>
+  </ul>
+</div>
+
+<div class="palm-text-wrapper palm-info-text">
+  <div><strong>0.9.1</strong></div>
+  <ul>
+    <li>bugfixes</li>
+  </ul>
+</div>
+
+<div class="palm-text-wrapper palm-info-text">
+  <div><strong>0.9.0</strong></div>
+  <ul>
+    <li>added support for InoReader</li>
+  </ul>
+</div>
+
+<div class="palm-text-wrapper palm-info-text">
+  <div><strong>0.8.5</strong></div>
+  <ul>
+    <li>new icon (Thanks RumoredNow!)</li>
+    <li>added support for Glimpse</li>
+    <li>added support for Quick Post</li>
+  </ul>
+</div>
+
+<div class="palm-text-wrapper palm-info-text">
+  <div><strong>0.8.4</strong></div>
+  <ul>
+    <li>added Dark Theme</li>
+    <li>removed Metrix tracking (service no longer available)</li>
+  </ul>
+</div>
+
+<div class="palm-text-wrapper palm-info-text">
+  <div><strong>0.8.3</strong></div>
+  <ul>
+    <li>changed name from The Old Feeder to FeedSpider</li>
+    <li>fixed missing Notification Bar icon on phones</li>
+  </ul>
+</div>
+
+<div class="palm-text-wrapper palm-info-text">
+  <div><strong>0.8.2</strong></div>
+  <ul>
+    <li>disable the search feature due to API incompatability</li>
+  </ul>
+</div>
+
+<div class="palm-text-wrapper palm-info-text">
+  <div><strong>0.8.1</strong></div>
+  <ul>
+    <li>add Project Macaw to sharing options</li>
+    <li>fix bug when displaying the &quot;All&quot; feed inside a folder</li>
+  </ul>
+</div>
+
+<div class="palm-text-wrapper palm-info-text">
+  <div><strong>0.8.0</strong></div>
+  <ul>
+    <li>change app to support The Old Reader after Google Reader shutdown</li>
+  </ul>
 </div>
 
 <div class="palm-text-wrapper palm-info-text">

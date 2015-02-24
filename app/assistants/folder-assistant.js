@@ -1,6 +1,7 @@
 var FolderAssistant = Class.create(BaseAssistant, {
-  initialize: function($super, folder) {
+  initialize: function($super, api, folder) {
     $super()
+    this.api = api
     this.folder = folder
     this.subscriptions = {items: []}
   },
@@ -74,7 +75,7 @@ var FolderAssistant = Class.create(BaseAssistant, {
   },
 
   folderTapped: function(event) {
-    this.controller.stageController.pushScene("articles", event.item)
+    this.controller.stageController.pushScene("articles", this.api, event.item)
   },
 
   folderRendered: function(listWidget, itemModel, itemNode) {
@@ -108,7 +109,14 @@ var FolderAssistant = Class.create(BaseAssistant, {
   },
 
   doSearch: function(query) {
-    this.controller.stageController.pushScene("articles", new Search(this.folder.api, query, this.folder.id))
+    if(this.api.supportsSearch())
+    {
+    	this.controller.stageController.pushScene("articles", this.api, new Search(this.folder.api, query, this.folder.id))
+    }
+    else
+    {
+    	Feeder.notify($L("Search Not Available"))
+    }
   },
 
   handleCommand: function($super, event) {

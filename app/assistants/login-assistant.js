@@ -5,14 +5,11 @@ var LoginAssistant = Class.create(BaseAssistant, {
     this.credentials = credentials || new Credentials()
     this.api = new Api()
     this.triedLogin = false
-    this.hideLogout = true
+    this.hideLogout = true   
   },
 
   setup: function($super) {
     $super()
-
-    Log.debug("sending metrix data")
-    Feeder.Metrix.postDeviceData()
   },
     
   activate: function($super, changes) {
@@ -23,7 +20,7 @@ var LoginAssistant = Class.create(BaseAssistant, {
       parameters: {},
 
       onSuccess: function(response) {
-        if(this.credentials.email && this.credentials.password) {
+        if(((this.credentials.service !== "ttrss" || this.credentials.service !== "oc") && this.credentials.email && this.credentials.password) || ((this.credentials.service === "ttrss" || this.credentials.service === "oc") && this.credentials.email && this.credentials.password && this.credentials.server) || this.credentials.service === "feedly" || this.credentials.service === "aol" ) {
           if(this.triedLogin) {
             Log.debug("ALREADY TRIED LOGGING IN, WHAT MAKES YOU THINK ITS GOING TO WORK NOW")
           }
@@ -31,7 +28,7 @@ var LoginAssistant = Class.create(BaseAssistant, {
             this.triedLogin = true
             Log.debug("logging in as " + this.credentials.email)
             this.spinnerOn($L("logging in..."))
-            this.api.login(this.credentials, this.loginSuccess.bind(this), this.loginFailure.bind(this))
+            this.api.login(this.credentials, this.loginSuccess.bind(this), this.loginFailure.bind(this), this.controller)
           }
         }
         else {

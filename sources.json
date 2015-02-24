@@ -1,6 +1,5 @@
 [
   {"source": "app/models/asyncWrappers.js"},
-  {"source": "app/models/metrix.js"},
   {"source": "app/models/feeder.js"},
   {"source": "app/models/credentials.js"},
   {"source": "app/models/api.js"},
@@ -15,15 +14,25 @@
   {"source": "app/models/load-more.js"},
   {"source": "app/models/all-sources.js"},
   {"source": "app/models/all-articles.js"},
+  {"source": "app/models/archived.js"},
+  {"source": "app/models/fresh.js"},
   {"source": "app/models/starred.js"},
   {"source": "app/models/shared.js"},
   {"source": "app/models/folders.js"},
   {"source": "app/models/folder.js"},
   {"source": "app/models/preferences.js"},
   {"source": "app/models/search.js"},
+  {"source": "app/models/tor-api.js"},
+  {"source": "app/models/ino-api.js"},
+  {"source": "app/models/feedly-api.js"},
+  {"source": "app/models/bq-api.js"},
+  {"source": "app/models/ttrss-api.js"},
+  {"source": "app/models/aol-api.js"},
+  {"source": "app/models/oc-api.js"},
 
   {"source": "app/lib/ajax.js"},
   {"source": "app/lib/instapaper.js"},
+  {"source": "app/lib/json2.js"},
   {"source": "app/lib/log.js"},
   {"source": "app/lib/sharing.js"},
 
@@ -44,5 +53,6 @@
   {"source": "app/assistants/notification-feeds-assistant.js"},
   {"source": "app/assistants/folder-assistant.js"},
   {"source": "app/assistants/configure-sharing-assistant.js"},
-  {"source": "app/assistants/instapaper-credentials-assistant.js"}
+  {"source": "app/assistants/instapaper-credentials-assistant.js"},
+  {"scenes": "oauth", "source": "app/assistants/oauth-assistant.js"}
 ]

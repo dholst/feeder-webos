@@ -10,7 +10,6 @@ var HomeAssistant = Class.create(BaseAssistant, {
 
   setup: function($super) {
     $super()
-    Feeder.Metrix.checkBulletinBoard(this.controller, 20);
     this.setupLists()
     this.setupListeners()
     this.setupSearch()
@@ -122,8 +121,14 @@ var HomeAssistant = Class.create(BaseAssistant, {
 
     if("logout" == command) {
       var creds = new Credentials()
-      creds.password = false
-      creds.save()
+      creds.password = null
+      creds.server = null
+      creds.id = null
+	  creds.refreshToken = null
+	  creds.accessToken = null
+	  creds.tokenType = null
+	  creds.plan = null
+      creds.clear()
       this.controller.stageController.swapScene("credentials", creds)
     }
     else if(command && command.feedAdded) {
@@ -165,10 +170,10 @@ var HomeAssistant = Class.create(BaseAssistant, {
 
   sourceTapped: function(event) {
     if(event.item.isFolder && !Preferences.combineFolders()) {
-      this.controller.stageController.pushScene("folder", event.item)
+      this.controller.stageController.pushScene("folder", this.api, event.item)
     }
     else {
-      this.controller.stageController.pushScene("articles", event.item)
+      this.controller.stageController.pushScene("articles", this.api, event.item)
     }
   },
 
@@ -248,6 +253,13 @@ var HomeAssistant = Class.create(BaseAssistant, {
   },
 
   doSearch: function(query) {
-    this.controller.stageController.pushScene("articles", new Search(this.api, query))
+  	if(this.api.supportsSearch())
+    {
+    	this.controller.stageController.pushScene("articles", this.api, new Search(this.api, query))
+    }
+    else
+    {
+    	Feeder.notify($L("Search Not Available"))
+    }
   }
 })

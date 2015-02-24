@@ -93,8 +93,8 @@ var AddAssistant = Class.create(BaseAssistant, {
   },
 
   subscriptionSearchFailure: function() {
-    this.controller.get("search").mojo.disabled = false
-    this.controller.get("search").mojo.deactivate()
+    this.controller.get("search-submit").mojo.disabled = false
+    this.controller.get("search-submit").mojo.deactivate()
     this.controller.modelChanged(this.searchButton)
     this.menuPanelOff()
     this.controller.get("error-message").update($L("Unable to add subscription"))

@@ -10,6 +10,9 @@ var Article = Class.create({
     var content = data.content || data.summary || {content: ""}
     this.summary = this.cleanUp(content.content)
     this.readLocked = data.isReadStateLocked
+    this.isRead = false
+    this.isShared = false
+    this.isStarred = false
     this.setStates(data.categories)
     this.setDates(parseInt(data.crawlTimeMsec, 10))
     this.setArticleLink(data.alternate)
@@ -40,26 +43,22 @@ var Article = Class.create({
   },
 
   setStates: function(categories) {
-    this.isRead = false
-    this.isShared = false
-    this.isStarred = false
-
     categories.each(function(category) {
-      if(category.endsWith("/state/com.google/read")) {
-        this.isRead = true
-      }
+		if(category.endsWith("/state/com.google/read")) {
+			this.isRead = true
+		}
 
-      if(category.endsWith("/state/com.google/kept-unread")) {
-        this.keepUnread = true
-      }
+		if(category.endsWith("/state/com.google/kept-unread")) {
+			this.keepUnread = true
+		}
 
-      if(category.endsWith("/state/com.google/starred")) {
-        this.isStarred = true
-      }
+		if(category.endsWith("/state/com.google/starred")) {
+			this.isStarred = true
+		}
 
-      if(category.endsWith("/state/com.google/broadcast")) {
-        this.isShared = true
-      }
+		if(category.endsWith("/state/com.google/broadcast")) {
+			this.isShared = true
+		}    		
     }.bind(this))
   },
 
@@ -115,26 +114,54 @@ var Article = Class.create({
   },
 
   turnShareOn: function(success, failure) {
-    this._setState("Shared", "isShared", true, success, failure)
+    if(this.api.supportsShared())
+    {
+    	this._setState("Shared", "isShared", true, success, failure)
+    }
+    else
+    {
+    	Feeder.notify($L("Sharing Not Available"))
+    }
   },
 
   turnShareOff: function(success, failure) {
-    this._setState("NotShared", "isShared", false, success, failure)
+    if(this.api.supportsShared())
+    {
+    	this._setState("NotShared", "isShared", false, success, failure)
+    }
+    else
+    {
+    	Feeder.notify($L("Sharing Not Available"))
+    }
   },
 
   turnStarOn: function(success, failure) {
-    this._setState("Starred", "isStarred", true, success, failure)
+    if(this.api.supportsStarred())
+    {
+    	this._setState("Starred", "isStarred", true, success, failure)
+    }
+	else
+    {
+    	Feeder.notify($L("Starring Not Available"))
+    }
   },
 
   turnStarOff: function(success, failure) {
-    this._setState("NotStarred", "isStarred", false, success, failure)
+    if(this.api.supportsStarred())
+    {
+    	this._setState("NotStarred", "isStarred", false, success, failure)
+    }
+    else
+    {
+    	Feeder.notify($L("Starring Not Available"))
+    }
   },
 
   _setState: function(apiState, localProperty, localValue, success, failure, sticky) {
     Log.debug("setting article state - " + apiState)
 
     if(apiState.match(/Read/) && this.readLocked) {
-      Feeder.notify("Read state has been locked by Google")
+      Feeder.notify("Read state has been locked by the service")
       success(false)
     }
     else {
